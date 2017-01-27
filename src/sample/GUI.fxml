@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Import" />
+                        <MenuItem mnemonicParsing="false" text="Export" />
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <Canvas height="310.0" width="480.0" BorderPane.alignment="TOP_LEFT">
+            <BorderPane.margin>
+                <Insets left="10.0" top="10.0" />
+            </BorderPane.margin>
+        </Canvas>
+    </center>
+    <right>
+        <VBox prefHeight="322.0" prefWidth="101.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Cell">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Label>
+                <ColorPicker>
+                    <VBox.margin>
+                        <Insets right="10.0" />
+                    </VBox.margin>
+                </ColorPicker>
+                <Label alignment="TOP_CENTER" contentDisplay="TOP" text="Background">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Label>
+                <ColorPicker>
+                    <VBox.margin>
+                        <Insets right="10.0" />
+                    </VBox.margin>
+                </ColorPicker>
+                <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="80.0" text="Grid">
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
+                </Button>
+                <Label text="Size">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
+                </Label>
+                <TextField prefHeight="27.0" prefWidth="90.0">
+                    <VBox.margin>
+                        <Insets right="10.0" />
+                    </VBox.margin>
+                </TextField>
+                <Label text="Generation:">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
+                </Label>
+                <Label prefHeight="15.0" prefWidth="36.0" text="value">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="5.0" />
+                    </VBox.margin>
+                </Label>
+                <Label text="Cells alive:">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
+                </Label>
+                <Label prefHeight="15.0" prefWidth="36.0" text="value">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="5.0" />
+                    </VBox.margin>
+                </Label>
+            </children>
+            <BorderPane.margin>
+                <Insets />
+            </BorderPane.margin>
+            <padding>
+                <Insets left="10.0" />
+            </padding>
+        </VBox>
+    </right>
+    <bottom>
+        <HBox prefHeight="49.0" prefWidth="600.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+            <children>
+                <Button mnemonicParsing="false" prefWidth="90.0" text="Start">
+                    <HBox.margin>
+                        <Insets left="14.0" top="10.0" />
+                    </HBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" prefWidth="90.0" text="Pause">
+                    <HBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                    </HBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" prefWidth="90.0" text="Reset">
+                    <HBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                    </HBox.margin>
+                </Button>
+                <Label nodeOrientation="LEFT_TO_RIGHT" text="Speed">
+                    <HBox.margin>
+                        <Insets left="100.0" top="15.0" />
+                    </HBox.margin>
+                </Label>
+                <Slider blockIncrement="0.0" majorTickUnit="5.0" max="30.0" minorTickCount="1" nodeOrientation="LEFT_TO_RIGHT" showTickLabels="true" showTickMarks="true" value="5.0">
+                    <HBox.margin>
+                        <Insets left="5.0" top="15.0" />
+                    </HBox.margin>
+                </Slider>
+            </children></HBox>
+    </bottom>
+</BorderPane>
