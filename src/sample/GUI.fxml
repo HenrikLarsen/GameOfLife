@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+Skrevet av Oscar Vladau-Husevold og Henrik Finnerud Larsen.
+FXML er konstruert ved bruk av scenebuilder.
+-->
+
+
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
