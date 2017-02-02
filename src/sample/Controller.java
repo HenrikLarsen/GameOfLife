@@ -23,13 +23,21 @@ public class Controller {
 
     private Color currentCellColor = Color.BLACK;
     private Color currentBackgroundColor = Color.WHITE;
-    private Board board = new StaticBoard();
+    private StaticBoard board = new StaticBoard();
 
 
     public void drawStartGrid(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
         gc.setFill(currentCellColor);
-        gc.fillRect(0, 0, board.cellSize, board.cellSize);
+
+        for (int x = 0; x < board.boardGrid.length; x++) {
+            for (int y = 0; y < board.boardGrid[0].length; y++ ) {
+                if (board.boardGrid[x][y] == 1) {
+                    gc.fillRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
+                }
+            }
+        }
+       // gc.fillRect(0, 0, board.cellSize, board.cellSize);
     }
 
 
