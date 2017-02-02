@@ -5,6 +5,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 
@@ -27,9 +29,10 @@ public class Controller {
 
 
     public void drawStartGrid(){
-        GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        gc.setFill(currentCellColor);
 
+        GraphicsContext gc = canvasArea.getGraphicsContext2D();
+        gc.clearRect(0,0, 800, 800);
+        gc.setFill(currentCellColor);
         for (int x = 0; x < board.boardGrid.length; x++) {
             for (int y = 0; y < board.boardGrid[0].length; y++ ) {
                 if (board.boardGrid[x][y] == 1) {
@@ -53,5 +56,11 @@ public class Controller {
 
     public void startDraw(ActionEvent actionEvent) {
         drawStartGrid();
+    }
+
+    public void cellSizeOnEnter(ActionEvent ae) {
+            int size = Integer.parseInt(sizeInputField.getText());
+            board.setCellSize(size);
+            drawStartGrid();
     }
 }

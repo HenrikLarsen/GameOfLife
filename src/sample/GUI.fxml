@@ -75,7 +75,7 @@ Layout er konstruert ved bruk av scenebuilder.
                         <Insets top="15.0" />
                     </VBox.margin>
                 </Label>
-                <TextField fx:id="sizeInputField" prefHeight="27.0" prefWidth="90.0">
+                <TextField fx:id="sizeInputField" onAction="#cellSizeOnEnter" prefHeight="27.0" prefWidth="90.0">
                     <VBox.margin>
                         <Insets right="10.0" />
                     </VBox.margin>
