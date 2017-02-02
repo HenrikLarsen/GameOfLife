@@ -12,7 +12,7 @@ Layout er konstruert ved bruk av scenebuilder.
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:controller="sample.Controller" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
     <top>
         <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
             <menus>
@@ -27,7 +27,7 @@ Layout er konstruert ved bruk av scenebuilder.
         </MenuBar>
     </top>
     <center>
-        <Canvas height="310.0" width="480.0" BorderPane.alignment="TOP_LEFT">
+        <Canvas fx:id="canvasArea" height="310.0" width="480.0" BorderPane.alignment="TOP_LEFT">
             <BorderPane.margin>
                 <Insets left="10.0" top="10.0" />
             </BorderPane.margin>
@@ -124,7 +124,7 @@ Layout er konstruert ved bruk av scenebuilder.
     <bottom>
         <HBox prefHeight="49.0" prefWidth="600.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="startButton" mnemonicParsing="false" prefWidth="90.0" text="Start">
+                <Button fx:id="startButton" mnemonicParsing="false" onAction="#startDraw" prefWidth="90.0" text="Start">
                     <HBox.margin>
                         <Insets left="14.0" top="10.0" />
                     </HBox.margin>

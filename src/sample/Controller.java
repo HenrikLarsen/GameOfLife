@@ -1,10 +1,13 @@
 package sample;
 
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
+
 
 public class Controller {
     @FXML private Button startButton;
@@ -16,9 +19,19 @@ public class Controller {
     @FXML private Button gridToggleButton;
     @FXML private TextField sizeInputField;
     @FXML private MenuBar menuBar;
+    @FXML private Canvas canvasArea;
 
     private Color currentCellColor = Color.BLACK;
     private Color currentBackgroundColor = Color.WHITE;
+    private Board board = new StaticBoard();
+
+
+    public void drawStartGrid(){
+        GraphicsContext gc = canvasArea.getGraphicsContext2D();
+        gc.setFill(currentCellColor);
+        gc.fillRect(0, 0, board.cellSize, board.cellSize);
+    }
+
 
     public void trueCellColor(){
         currentCellColor = cellColorPicker.getValue();
@@ -30,4 +43,7 @@ public class Controller {
         System.out.println(currentBackgroundColor);
     }
 
+    public void startDraw(ActionEvent actionEvent) {
+        drawStartGrid();
+    }
 }
