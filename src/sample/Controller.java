@@ -29,7 +29,6 @@ public class Controller {
 
 
     public void drawStartGrid(){
-
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
         gc.clearRect(0,0, 800, 800);
         gc.setFill(currentCellColor);
@@ -47,6 +46,7 @@ public class Controller {
     public void trueCellColor(){
         currentCellColor = cellColorPicker.getValue();
         System.out.println(currentCellColor);
+        drawStartGrid();
     }
 
     public void trueBackgroundColor(){
@@ -59,8 +59,8 @@ public class Controller {
     }
 
     public void cellSizeOnEnter(ActionEvent ae) {
-            int size = Integer.parseInt(sizeInputField.getText());
-            board.setCellSize(size);
-            drawStartGrid();
+        int size = Integer.parseInt(sizeInputField.getText());
+        board.setCellSize(size);
+        drawStartGrid();
     }
 }
