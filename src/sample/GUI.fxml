@@ -124,7 +124,7 @@ Layout er konstruert ved bruk av scenebuilder.
     <bottom>
         <HBox prefHeight="49.0" prefWidth="600.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="startButton" mnemonicParsing="false" onAction="#startDraw" prefWidth="90.0" text="Start">
+                <Button fx:id="startButton" mnemonicParsing="false" onAction="#startClick" prefWidth="90.0" text="Start">
                     <HBox.margin>
                         <Insets left="14.0" top="10.0" />
                     </HBox.margin>

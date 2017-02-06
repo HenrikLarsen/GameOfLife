@@ -5,10 +5,23 @@ package sample;
  */
 public class GameOfLife {
     public int genCounter;
-    public Board playBoard;
+    public StaticBoard playBoard;
     public boolean isAlive;
 
+    public GameOfLife(StaticBoard board) {
+        this.playBoard = board;
+    }
+
     public void nextGeneration() {
+        for (int x = 0; x < playBoard.boardGrid.length; x++) {
+            for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
+                if (playBoard.boardGrid[x][y] == 1) {
+                    playBoard.boardGrid[x][y] = 0;
+                } else {
+                    playBoard.boardGrid[x][y] = 1;
+                }
+            }
+        }
     }
 
     private void countNeighbours() {

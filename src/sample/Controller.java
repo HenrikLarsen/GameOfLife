@@ -1,17 +1,16 @@
 package sample;
 
 
+import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 
 
-public class Controller {
+public class Controller implements Initializable {
     @FXML private Button startButton;
     @FXML private Button pauseButton;
     @FXML private Button resetButton;
@@ -26,9 +25,14 @@ public class Controller {
     private Color currentCellColor = Color.BLACK;
     private Color currentBackgroundColor = Color.WHITE;
     private StaticBoard board = new StaticBoard();
+    private GameOfLife gOL = new GameOfLife(board);
+
+    public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+        draw();
+    }
 
 
-    public void drawStartGrid(){
+    public void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
         gc.clearRect(0,0, 800, 800);
         gc.setFill(currentCellColor);
@@ -39,14 +43,13 @@ public class Controller {
                 }
             }
         }
-       // gc.fillRect(0, 0, board.cellSize, board.cellSize);
     }
 
 
     public void trueCellColor(){
         currentCellColor = cellColorPicker.getValue();
         System.out.println(currentCellColor);
-        drawStartGrid();
+        draw();
     }
 
     public void trueBackgroundColor(){
@@ -54,13 +57,14 @@ public class Controller {
         System.out.println(currentBackgroundColor);
     }
 
-    public void startDraw(ActionEvent actionEvent) {
-        drawStartGrid();
+    public void startClick(ActionEvent actionEvent) {
+        gOL.nextGeneration();
+        draw();
     }
 
     public void cellSizeOnEnter(ActionEvent ae) {
         int size = Integer.parseInt(sizeInputField.getText());
         board.setCellSize(size);
-        drawStartGrid();
+        draw();
     }
 }

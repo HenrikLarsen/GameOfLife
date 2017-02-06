@@ -9,11 +9,14 @@ public class StaticBoard extends Board {
 
     //Constructor
     public StaticBoard() {
-        this.boardGrid = new byte[][]{{0, 1, 1, 1,0, 1, 1, 0}, {1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 0, 1, 1, 0},{1, 1, 1, 1,0, 1, 1, 0}, {1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 0, 1, 1, 0}};
+        this.boardGrid = new byte[][]{{0, 1, 1, 0}, {1, 0, 0, 1}, {1, 0, 0, 1},  {0, 1, 1, 0}};
     }
-
 
     public StaticBoard(byte[][] setBoard){
         this.boardGrid = setBoard;
+    }
+
+    public void setBoard(byte[][] newGrid) {
+        this.boardGrid = newGrid;
     }
 }
