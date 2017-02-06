@@ -58,9 +58,19 @@ public class Controller implements Initializable {
     }
 
     public void startClick(ActionEvent actionEvent) {
-        gOL.nextGeneration();
-        draw();
+        for (int i = 0; i <= 10; i++) {
+            gOL.nextGeneration();
+            draw();
+
+            try {
+                //thread to sleep for the specified number of milliseconds
+                Thread.sleep(100);
+            } catch ( java.lang.InterruptedException ie) {
+                System.out.println(ie);
+            }
+        }
     }
+
 
     public void cellSizeOnEnter(ActionEvent ae) {
         int size = Integer.parseInt(sizeInputField.getText());
