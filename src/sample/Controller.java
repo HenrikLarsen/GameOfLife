@@ -1,6 +1,9 @@
 package sample;
 
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
+import javafx.util.Duration;
 
 
 public class Controller implements Initializable {
@@ -21,14 +25,27 @@ public class Controller implements Initializable {
     @FXML private TextField sizeInputField;
     @FXML private MenuBar menuBar;
     @FXML private Canvas canvasArea;
+    @FXML private Label generationLabel;
 
     private Color currentCellColor = Color.BLACK;
     private Color currentBackgroundColor = Color.WHITE;
     private StaticBoard board = new StaticBoard();
     private GameOfLife gOL = new GameOfLife(board);
+    private Timeline timeline;
+    private KeyFrame keyframe;
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         draw();
+        Duration duration = Duration.millis(200);
+        keyframe = new KeyFrame(duration, e -> {
+            gOL.nextGeneration();
+            draw();
+            gOL.genCounter++;
+            generationLabel.setText(Integer.toString(gOL.genCounter));
+        });
+        timeline = new Timeline(keyframe);
+        timeline.setCycleCount(Animation.INDEFINITE);
+
     }
 
 
@@ -58,17 +75,18 @@ public class Controller implements Initializable {
     }
 
     public void startClick(ActionEvent actionEvent) {
-        for (int i = 0; i <= 10; i++) {
-            gOL.nextGeneration();
-            draw();
+        timeline.play();
+    }
 
-            try {
-                //thread to sleep for the specified number of milliseconds
-                Thread.sleep(100);
-            } catch ( java.lang.InterruptedException ie) {
-                System.out.println(ie);
-            }
-        }
+    public void pauseClick(ActionEvent actionEvent) {
+        timeline.pause();
+    }
+
+    public void resetClick(ActionEvent actionEvent) {
+        timeline.stop();
+        gOL.genCounter = 0;
+        gOL.killAll();
+        draw();
     }
 
 

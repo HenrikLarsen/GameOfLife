@@ -88,7 +88,7 @@ Layout er konstruert ved bruk av scenebuilder.
                         <Insets top="15.0" />
                     </VBox.margin>
                 </Label>
-                <Label prefHeight="15.0" prefWidth="36.0" text="value">
+                <Label fx:id="generationLabel" prefHeight="15.0" prefWidth="36.0" text="value">
                     <font>
                         <Font size="12.0" />
                     </font>
@@ -129,12 +129,12 @@ Layout er konstruert ved bruk av scenebuilder.
                         <Insets left="14.0" top="10.0" />
                     </HBox.margin>
                 </Button>
-                <Button fx:id="pauseButton" mnemonicParsing="false" prefWidth="90.0" text="Pause">
+                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseClick" prefWidth="90.0" text="Pause">
                     <HBox.margin>
                         <Insets left="10.0" top="10.0" />
                     </HBox.margin>
                 </Button>
-                <Button fx:id="resetButton" mnemonicParsing="false" prefWidth="90.0" text="Reset">
+                <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetClick" prefWidth="90.0" text="Reset">
                     <HBox.margin>
                         <Insets left="10.0" top="10.0" />
                     </HBox.margin>

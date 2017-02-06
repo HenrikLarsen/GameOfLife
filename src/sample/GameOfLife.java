@@ -4,7 +4,7 @@ package sample;
  * Created by Oscar Vladau on 30.01.2017.
  */
 public class GameOfLife {
-    public int genCounter;
+    public int genCounter = 0;
     public StaticBoard playBoard;
     public boolean isAlive;
 
@@ -20,6 +20,14 @@ public class GameOfLife {
                 } else {
                     playBoard.boardGrid[x][y] = 1;
                 }
+            }
+        }
+    }
+
+    public void killAll() {
+        for (int x = 0; x < playBoard.boardGrid.length; x++) {
+            for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
+                playBoard.boardGrid[x][y] = 0;
             }
         }
     }
