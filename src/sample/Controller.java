@@ -4,6 +4,7 @@ package sample;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -87,6 +88,10 @@ public class Controller implements Initializable {
         gOL.genCounter = 0;
         gOL.killAll();
         draw();
+    }
+
+    public void closeClick(ActionEvent ae) {
+        Platform.exit();
     }
 
 

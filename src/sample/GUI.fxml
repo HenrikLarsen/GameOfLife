@@ -20,7 +20,7 @@ Layout er konstruert ved bruk av scenebuilder.
                     <items>
                         <MenuItem mnemonicParsing="false" text="Import" />
                         <MenuItem mnemonicParsing="false" text="Export" />
-                        <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem mnemonicParsing="false" text="Close" onAction="#closeClick" />
                     </items>
                 </Menu>
             </menus>
