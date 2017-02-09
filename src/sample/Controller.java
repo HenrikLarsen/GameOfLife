@@ -14,13 +14,9 @@ import javafx.event.ActionEvent;
 import javafx.util.Duration;
 
 public class Controller implements Initializable {
-    @FXML private Button startButton;
-    @FXML private Button pauseButton;
-    @FXML private Button resetButton;
     @FXML private Slider speedSlider;
     @FXML private ColorPicker cellColorPicker;
     @FXML private ColorPicker backgroundColorPicker;
-    @FXML private Button gridToggleButton;
     @FXML private TextField sizeInputField;
     @FXML private MenuBar menuBar;
     @FXML private Canvas canvasArea;
@@ -33,7 +29,7 @@ public class Controller implements Initializable {
     private StaticBoard board = new StaticBoard();
     private GameOfLife gOL = new GameOfLife(board);
     private Timeline timeline;
-    private boolean grid = true;
+    private boolean gridToggle = true;
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         draw();
@@ -64,10 +60,10 @@ public class Controller implements Initializable {
             for (int y = 0; y < board.boardGrid[0].length; y++ ) {
                 if (board.boardGrid[x][y] == 1) {
                     gc.fillRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
-                    if(grid){
+                    if(gridToggle){
                         gc.strokeRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
                     }
-                }else if(grid){
+                }else if(gridToggle){
                     gc.strokeRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
                 }
             }
@@ -111,7 +107,7 @@ public class Controller implements Initializable {
     }
 
     public void gridClick(ActionEvent ae) {
-        grid = !grid;
+        gridToggle = !gridToggle;
         draw();
     }
 
