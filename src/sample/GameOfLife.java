@@ -12,6 +12,7 @@ public class GameOfLife {
         this.playBoard = board;
     }
 
+
     public void nextGeneration() {
         for (int x = 0; x < playBoard.boardGrid.length; x++) {
             for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
@@ -33,9 +34,11 @@ public class GameOfLife {
     }
 
     private void countNeighbours() {
+
     }
 
     private void checkCells() {
+
     }
 
 
