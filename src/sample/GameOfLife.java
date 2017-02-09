@@ -15,12 +15,14 @@ public class GameOfLife {
 
 
     public void nextGeneration() {
+        cellsAlive = 0;
         for (int x = 0; x < playBoard.boardGrid.length; x++) {
             for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
                 if (playBoard.boardGrid[x][y] == 1) {
                     playBoard.boardGrid[x][y] = 0;
                 } else {
                     playBoard.boardGrid[x][y] = 1;
+                    cellsAlive++;
                 }
             }
         }

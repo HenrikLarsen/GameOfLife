@@ -28,6 +28,7 @@ public class Controller implements Initializable {
     @FXML private Canvas canvasArea;
     @FXML private Label generationLabel;
     @FXML private Label fpsLabel;
+    @FXML private Label aliveLabel;
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.WHITE;
@@ -36,27 +37,19 @@ public class Controller implements Initializable {
     private Timeline timeline;
     private KeyFrame keyframe;
     private boolean grid = true;
-    private int keyframePerSecond = 1000;
 
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         draw();
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
-
-        Duration duration = Duration.millis(keyframePerSecond);
+        Duration duration = Duration.millis(1000);
         keyframe = addNewKeyFrame(duration);
         timeline = new Timeline(keyframe);
         timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.rateProperty().bind(speedSlider.valueProperty());
-
-       speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+        timeline.rateProperty().bindBidirectional(speedSlider.valueProperty());
+        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
-            /*Duration newDuration = Duration.millis(keyframePerSecond);
-            keyframe = addNewKeyFrame(newDuration);
-            timeline.getKeyFrames().removeAll();
-            timeline.getKeyFrames().add(keyframe);*/
         });
-
     }
 
     public KeyFrame addNewKeyFrame(Duration duration){
@@ -65,6 +58,7 @@ public class Controller implements Initializable {
             draw();
             gOL.genCounter++;
             generationLabel.setText(Integer.toString(gOL.genCounter));
+            aliveLabel.setText(Integer.toString(gOL.cellsAlive));
         });
     }
 
@@ -87,11 +81,6 @@ public class Controller implements Initializable {
         }
     }
 
-    /*public void setKeyframePerSecond(ActionEvent ae){
-        keyframePerSecond = 1000 / (int)speedSlider.getValue();
-        System.out.println(keyframePerSecond);
-    }
-    */
     public void trueCellColor(){
         currentCellColor = cellColorPicker.getValue();
         System.out.println(currentCellColor);
@@ -113,6 +102,7 @@ public class Controller implements Initializable {
 
     public void resetClick(ActionEvent actionEvent) {
         timeline.stop();
+        Platform.exit();
         gOL.genCounter = 0;
         generationLabel.setText(Integer.toString(gOL.genCounter));
         gOL.killAll();
@@ -120,7 +110,6 @@ public class Controller implements Initializable {
     }
 
     public void closeClick(ActionEvent ae) {
-        Platform.exit();
     }
 
     public void gridClick(ActionEvent ae) {
@@ -133,6 +122,4 @@ public class Controller implements Initializable {
         board.setCellSize(size);
         draw();
     }
-
-
 }
