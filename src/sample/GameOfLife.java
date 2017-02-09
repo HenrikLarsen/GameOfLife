@@ -13,7 +13,6 @@ public class GameOfLife {
         this.playBoard = board;
     }
 
-
     public void nextGeneration() {
         cellsAlive = 0;
         for (int x = 0; x < playBoard.boardGrid.length; x++) {
@@ -37,13 +36,10 @@ public class GameOfLife {
     }
 
     private void countNeighbours() {
-
     }
 
     private void checkCells() {
-
     }
-
 
     //For testing
     //public String toString(){}

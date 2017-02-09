@@ -44,7 +44,7 @@ Layout er konstruert ved bruk av scenebuilder.
                         <Font size="12.0" />
                     </font>
                 </Label>
-                <ColorPicker fx:id="cellColorPicker" onAction="#trueCellColor">
+                <ColorPicker fx:id="cellColorPicker" onAction="#chooseCellColor">
                     <VBox.margin>
                         <Insets right="10.0" />
                     </VBox.margin>
@@ -57,7 +57,7 @@ Layout er konstruert ved bruk av scenebuilder.
                         <Font size="12.0" />
                     </font>
                 </Label>
-                <ColorPicker fx:id="backgroundColorPicker" onAction="#trueBackgroundColor">
+                <ColorPicker fx:id="backgroundColorPicker" onAction="#chooseBackgroundColor">
                     <VBox.margin>
                         <Insets right="10.0" />
                     </VBox.margin>

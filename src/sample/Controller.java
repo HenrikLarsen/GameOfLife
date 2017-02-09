@@ -1,6 +1,5 @@
 package sample;
 
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -13,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 import javafx.util.Duration;
-
 
 public class Controller implements Initializable {
     @FXML private Button startButton;
@@ -35,25 +33,20 @@ public class Controller implements Initializable {
     private StaticBoard board = new StaticBoard();
     private GameOfLife gOL = new GameOfLife(board);
     private Timeline timeline;
-    private KeyFrame keyframe;
     private boolean grid = true;
-
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         draw();
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
-        Duration duration = Duration.millis(1000);
-        keyframe = addNewKeyFrame(duration);
+        KeyFrame keyframe = addNewKeyFrame();
         timeline = new Timeline(keyframe);
         timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.rateProperty().bindBidirectional(speedSlider.valueProperty());
-        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
-        });
+        timeline.setRate(speedSlider.getValue());
+        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {setFPS();});
     }
 
-    public KeyFrame addNewKeyFrame(Duration duration){
-        return new KeyFrame(duration, e -> {
+    public KeyFrame addNewKeyFrame(){
+        return new KeyFrame(Duration.millis(1000), e -> {
             gOL.nextGeneration();
             draw();
             gOL.genCounter++;
@@ -81,13 +74,18 @@ public class Controller implements Initializable {
         }
     }
 
-    public void trueCellColor(){
+    public void setFPS() {
+        fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
+        timeline.setRate(speedSlider.getValue());
+    }
+
+    public void chooseCellColor(){
         currentCellColor = cellColorPicker.getValue();
         System.out.println(currentCellColor);
         draw();
     }
 
-    public void trueBackgroundColor(){
+    public void chooseBackgroundColor(){
         currentBackgroundColor = backgroundColorPicker.getValue();
         System.out.println(currentBackgroundColor);
     }
@@ -102,7 +100,6 @@ public class Controller implements Initializable {
 
     public void resetClick(ActionEvent actionEvent) {
         timeline.stop();
-        Platform.exit();
         gOL.genCounter = 0;
         generationLabel.setText(Integer.toString(gOL.genCounter));
         gOL.killAll();
@@ -110,6 +107,7 @@ public class Controller implements Initializable {
     }
 
     public void closeClick(ActionEvent ae) {
+        Platform.exit();
     }
 
     public void gridClick(ActionEvent ae) {
