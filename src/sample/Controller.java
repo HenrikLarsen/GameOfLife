@@ -27,6 +27,7 @@ public class Controller implements Initializable {
     @FXML private MenuBar menuBar;
     @FXML private Canvas canvasArea;
     @FXML private Label generationLabel;
+    @FXML private Label fpsLabel;
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.WHITE;
@@ -35,18 +36,36 @@ public class Controller implements Initializable {
     private Timeline timeline;
     private KeyFrame keyframe;
     private boolean grid = true;
+    private int keyframePerSecond = 1000;
+
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         draw();
-        Duration duration = Duration.millis(200);
-        keyframe = new KeyFrame(duration, e -> {
+        fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
+
+        Duration duration = Duration.millis(keyframePerSecond);
+        keyframe = addNewKeyFrame(duration);
+        timeline = new Timeline(keyframe);
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.rateProperty().bind(speedSlider.valueProperty());
+
+       speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
+            /*Duration newDuration = Duration.millis(keyframePerSecond);
+            keyframe = addNewKeyFrame(newDuration);
+            timeline.getKeyFrames().removeAll();
+            timeline.getKeyFrames().add(keyframe);*/
+        });
+
+    }
+
+    public KeyFrame addNewKeyFrame(Duration duration){
+        return new KeyFrame(duration, e -> {
             gOL.nextGeneration();
             draw();
             gOL.genCounter++;
             generationLabel.setText(Integer.toString(gOL.genCounter));
         });
-        timeline = new Timeline(keyframe);
-        timeline.setCycleCount(Animation.INDEFINITE);
     }
 
     public void draw(){
@@ -68,6 +87,11 @@ public class Controller implements Initializable {
         }
     }
 
+    /*public void setKeyframePerSecond(ActionEvent ae){
+        keyframePerSecond = 1000 / (int)speedSlider.getValue();
+        System.out.println(keyframePerSecond);
+    }
+    */
     public void trueCellColor(){
         currentCellColor = cellColorPicker.getValue();
         System.out.println(currentCellColor);
@@ -109,4 +133,6 @@ public class Controller implements Initializable {
         board.setCellSize(size);
         draw();
     }
+
+
 }

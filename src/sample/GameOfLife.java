@@ -7,6 +7,7 @@ public class GameOfLife {
     public int genCounter = 0;
     public StaticBoard playBoard;
     public boolean isAlive;
+    public int cellsAlive = 0;
 
     public GameOfLife(StaticBoard board) {
         this.playBoard = board;
