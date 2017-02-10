@@ -27,12 +27,13 @@ public class GameOfLife {
         }
     }
 
-    public void killAll() {
+    public void resetBoard() {
         for (int x = 0; x < playBoard.boardGrid.length; x++) {
             for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
                 playBoard.boardGrid[x][y] = 0;
             }
         }
+        cellsAlive = 0;
     }
 
     private void countNeighbours() {

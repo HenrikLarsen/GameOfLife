@@ -53,7 +53,9 @@ public class Controller implements Initializable {
 
     public void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        gc.clearRect(0,0, 800, 800);
+       // gc.clearRect(0,0, 800, 800);
+        gc.setFill(currentBackgroundColor);
+        gc.fillRect(0,0,canvasArea.getWidth(), canvasArea.getHeight());
         gc.setFill(currentCellColor);
         gc.setStroke(Color.BLACK);
         for (int x = 0; x < board.boardGrid.length; x++) {
@@ -83,7 +85,7 @@ public class Controller implements Initializable {
 
     public void chooseBackgroundColor(){
         currentBackgroundColor = backgroundColorPicker.getValue();
-        System.out.println(currentBackgroundColor);
+        draw();
     }
 
     public void startClick(ActionEvent actionEvent) {
@@ -98,7 +100,8 @@ public class Controller implements Initializable {
         timeline.stop();
         gOL.genCounter = 0;
         generationLabel.setText(Integer.toString(gOL.genCounter));
-        gOL.killAll();
+        gOL.resetBoard();
+        aliveLabel.setText(Integer.toString(gOL.cellsAlive));
         draw();
     }
 
