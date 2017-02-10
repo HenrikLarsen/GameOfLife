@@ -25,13 +25,15 @@ public class Controller implements Initializable {
     @FXML private Label aliveLabel;
 
     private Color currentCellColor = Color.LIMEGREEN;
-    private Color currentBackgroundColor = Color.WHITE;
+    private Color currentBackgroundColor = Color.LIGHTGRAY;
     private StaticBoard board = new StaticBoard();
     private GameOfLife gOL = new GameOfLife(board);
     private Timeline timeline;
     private boolean gridToggle = true;
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+        cellColorPicker.setValue(currentCellColor);
+        backgroundColorPicker.setValue(currentBackgroundColor);
         draw();
         KeyFrame keyframe = addNewKeyFrame();
         timeline = new Timeline(keyframe);
@@ -53,7 +55,7 @@ public class Controller implements Initializable {
 
     public void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-       // gc.clearRect(0,0, 800, 800);
+        //gc.clearRect(0,0, 800, 800);
         gc.setFill(currentBackgroundColor);
         gc.fillRect(0,0,canvasArea.getWidth(), canvasArea.getHeight());
         gc.setFill(currentCellColor);
