@@ -9,6 +9,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 import javafx.util.Duration;
@@ -29,6 +32,8 @@ public class Controller implements Initializable {
     private GameOfLife gOL = new GameOfLife(board);
     private Timeline timeline;
     private boolean gridToggle = true;
+    private boolean[][] change = new boolean[board.boardGrid.length][board.boardGrid[0].length];
+    private boolean isAlive = true;
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         cellColorPicker.setValue(currentCellColor);
@@ -40,6 +45,7 @@ public class Controller implements Initializable {
         timeline.setRate(speedSlider.getValue());
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
         speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {setFPS();});
+
     }
 
     public KeyFrame addNewKeyFrame(){
@@ -117,5 +123,47 @@ public class Controller implements Initializable {
         int size = Integer.parseInt(sizeInputField.getText());
         board.setCellSize(size);
         draw();
+    }
+
+    public void mouseDrag(MouseEvent event) {
+        int x = (int)(event.getX()/board.cellSize);
+        int y = (int)(event.getY()/board.cellSize);
+
+        if (board.boardGrid[x][y] == 0) {
+            isAlive = false;
+        }
+        //  DENNE GJØR AT DE BYTTER PÅ
+        // else {isAlive = true;}
+
+
+        if (isAlive) {
+            if (!change[x][y]) {
+                if (board.boardGrid[x][y] == 1) {
+                    board.boardGrid[x][y] = 0;
+                    board.cellsAlive--;
+                    change[x][y] = true;
+                }
+            }
+        }
+
+        else if (!isAlive) {
+            if (!change[x][y]) {
+                if (board.boardGrid[x][y] == 0) {
+                    board.boardGrid[x][y] = 1;
+                    board.cellsAlive++;
+                    change[x][y] = true;
+                }
+            }
+        }
+        aliveLabel.setText(Integer.toString(board.cellsAlive));
+        draw();
+    }
+
+    public void mouseDragOver() {
+        for (int x = 0; x < change.length; x++) {
+            for (int y = 0; y < change[0].length; y++) {
+                change[x][y] = false;
+            }
+        }
     }
 }
