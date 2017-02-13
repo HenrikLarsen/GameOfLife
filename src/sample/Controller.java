@@ -48,7 +48,7 @@ public class Controller implements Initializable {
             draw();
             gOL.genCounter++;
             generationLabel.setText(Integer.toString(gOL.genCounter));
-            aliveLabel.setText(Integer.toString(gOL.cellsAlive));
+            aliveLabel.setText(Integer.toString(board.cellsAlive));
         });
     }
 
@@ -60,7 +60,6 @@ public class Controller implements Initializable {
         gc.setStroke(Color.BLACK);
         for (int x = 0; x < board.boardGrid.length; x++) {
             for (int y = 0; y < board.boardGrid[0].length; y++ ) {
-
                 if (board.boardGrid[x][y] == 1) {
                     gc.fillRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
                     if(gridToggle){
@@ -100,8 +99,8 @@ public class Controller implements Initializable {
         timeline.stop();
         gOL.genCounter = 0;
         generationLabel.setText(Integer.toString(gOL.genCounter));
-        gOL.resetBoard();
-        aliveLabel.setText(Integer.toString(gOL.cellsAlive));
+        board.resetBoard();
+        aliveLabel.setText(Integer.toString(board.cellsAlive));
         draw();
     }
 
