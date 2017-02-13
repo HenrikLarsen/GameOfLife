@@ -38,8 +38,8 @@ public class GameOfLife {
         int xMax = playBoard.boardGrid.length;
         int yMax = playBoard.boardGrid[0].length;
 
-        for (int x = 0; x < playBoard.boardGrid.length; x++) {
-            for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
+        for (int x = 0; x < xMax; x++) {
+            for (int y = 0; y < yMax; y++) {
 
                 //Sjekker om cellen er i live, og om den er det øker den antall naboer for alle cellene rundt.
                 //Klarer ikke jobbe med cellene ytterst i brettet.

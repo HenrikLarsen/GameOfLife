@@ -115,7 +115,7 @@ public class Controller implements Initializable {
     }
 
     public void cellSizeOnEnter(ActionEvent ae) {
-        double size = Double.parseDouble(sizeInputField.getText());
+        int size = Integer.parseInt(sizeInputField.getText());
         board.setCellSize(size);
         draw();
     }
