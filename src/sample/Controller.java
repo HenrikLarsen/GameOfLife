@@ -18,7 +18,6 @@ public class Controller implements Initializable {
     @FXML private ColorPicker cellColorPicker;
     @FXML private ColorPicker backgroundColorPicker;
     @FXML private TextField sizeInputField;
-    @FXML private MenuBar menuBar;
     @FXML private Canvas canvasArea;
     @FXML private Label generationLabel;
     @FXML private Label fpsLabel;
@@ -55,13 +54,13 @@ public class Controller implements Initializable {
 
     public void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        //gc.clearRect(0,0, 800, 800);
         gc.setFill(currentBackgroundColor);
         gc.fillRect(0,0,canvasArea.getWidth(), canvasArea.getHeight());
         gc.setFill(currentCellColor);
         gc.setStroke(Color.BLACK);
         for (int x = 0; x < board.boardGrid.length; x++) {
             for (int y = 0; y < board.boardGrid[0].length; y++ ) {
+
                 if (board.boardGrid[x][y] == 1) {
                     gc.fillRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
                     if(gridToggle){
@@ -81,7 +80,6 @@ public class Controller implements Initializable {
 
     public void chooseCellColor(){
         currentCellColor = cellColorPicker.getValue();
-        System.out.println(currentCellColor);
         draw();
     }
 
