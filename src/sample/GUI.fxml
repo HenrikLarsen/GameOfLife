@@ -27,7 +27,7 @@ Layout er konstruert ved bruk av scenebuilder.
         </MenuBar>
     </top>
     <center>
-        <Canvas fx:id="canvasArea" onMousePressed="#mouseDrag" onMouseDragged="#mouseDrag" onMouseReleased="#mouseDragOver" height="625.0" width="800.0" BorderPane.alignment="TOP_LEFT">
+        <Canvas fx:id="canvasArea" onMousePressed="#mousePressed" onMouseDragged="#mouseDragged"  height="625.0" width="800.0" BorderPane.alignment="TOP_LEFT">
             <BorderPane.margin>
                 <Insets />
             </BorderPane.margin>

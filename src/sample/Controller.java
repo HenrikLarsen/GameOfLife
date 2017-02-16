@@ -33,7 +33,8 @@ public class Controller implements Initializable {
     private Timeline timeline;
     private boolean gridToggle = true;
     private boolean[][] change = new boolean[board.boardGrid.length][board.boardGrid[0].length];
-    private boolean isAlive = true;
+    private boolean isAlive = false;
+    private static int[][] blocksAtStartOfDrag;
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         cellColorPicker.setValue(currentCellColor);
@@ -124,37 +125,24 @@ public class Controller implements Initializable {
         board.setCellSize(size);
         draw();
     }
-
+    /*
     public void mouseDrag(MouseEvent event) {
         int x = (int)(event.getX()/board.cellSize);
         int y = (int)(event.getY()/board.cellSize);
 
-        if (board.boardGrid[x][y] == 0) {
-            isAlive = false;
+        // Viske
+        if (!change[x][y] && board.boardGrid[x][y] == 1) {
+            board.boardGrid[x][y] = 0;
+            board.cellsAlive--;
+            change[x][y] = true;
         }
-        //  DENNE GJØR AT DE BYTTER PÅ
-        // else {isAlive = true;}
-
-
-        if (isAlive) {
-            if (!change[x][y]) {
-                if (board.boardGrid[x][y] == 1) {
-                    board.boardGrid[x][y] = 0;
-                    board.cellsAlive--;
-                    change[x][y] = true;
-                }
-            }
+        // Tegne
+        if (!change[x][y] && board.boardGrid[x][y] == 0) {
+            board.boardGrid[x][y] = 1;
+            board.cellsAlive++;
+            change[x][y] = true;
         }
 
-        else if (!isAlive) {
-            if (!change[x][y]) {
-                if (board.boardGrid[x][y] == 0) {
-                    board.boardGrid[x][y] = 1;
-                    board.cellsAlive++;
-                    change[x][y] = true;
-                }
-            }
-        }
         aliveLabel.setText(Integer.toString(board.cellsAlive));
         draw();
     }
@@ -165,5 +153,45 @@ public class Controller implements Initializable {
                 change[x][y] = false;
             }
         }
+    }
+    */
+
+    public void mouseDragged(MouseEvent e) {
+        int x = (int)(e.getX()/board.cellSize);
+        int y = (int)(e.getY()/board.cellSize);
+
+        if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
+            if (board.boardGrid[x][y] == blocksAtStartOfDrag[x][y]) {
+                if (board.boardGrid[x][y] == 0) {
+                    board.boardGrid[x][y] = 1;
+                } else {
+                    board.boardGrid[x][y] = 0;
+                }
+            }
+        }
+        draw();
+    }
+    //this happens when you click, or at the beginning of a drag
+    //whenever this happens it should reverse the block
+    public void mousePressed(MouseEvent e) {
+        int x = (int)(e.getX()/board.cellSize);
+        int y = (int)(e.getY()/board.cellSize);
+
+        blocksAtStartOfDrag = new int[board.boardGrid.length][board.boardGrid[0].length];
+
+        for (int i = 0; i < blocksAtStartOfDrag.length; i++) {
+            for (int j = 0; j < blocksAtStartOfDrag[i].length; j++) {
+                blocksAtStartOfDrag[i][j] = board.boardGrid[i][j];
+            }
+        }
+
+        if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
+            if (board.boardGrid[x][y] == 0) {
+                board.boardGrid[x][y] = 1;
+            } else {
+                board.boardGrid[x][y] = 0;
+            }
+        }
+        draw();
     }
 }
