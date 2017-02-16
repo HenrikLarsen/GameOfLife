@@ -46,20 +46,20 @@ public class Controller implements Initializable {
         timeline.setRate(speedSlider.getValue());
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
         speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {setFPS();});
-
     }
 
-    public KeyFrame addNewKeyFrame(){
+    private KeyFrame addNewKeyFrame(){
         return new KeyFrame(Duration.millis(1000), e -> {
             gOL.nextGeneration();
             draw();
             gOL.genCounter++;
             generationLabel.setText(Integer.toString(gOL.genCounter));
             aliveLabel.setText(Integer.toString(board.cellsAlive));
+            System.out.println(board.toString());
         });
     }
 
-    public void draw(){
+    private void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
         gc.setFill(currentBackgroundColor);
         gc.fillRect(0,0,canvasArea.getWidth(), canvasArea.getHeight());
@@ -79,7 +79,7 @@ public class Controller implements Initializable {
         }
     }
 
-    public void setFPS() {
+    private void setFPS() {
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
         timeline.setRate(speedSlider.getValue());
     }
@@ -121,7 +121,7 @@ public class Controller implements Initializable {
     }
 
     public void cellSizeOnEnter(ActionEvent ae) {
-        int size = Integer.parseInt(sizeInputField.getText());
+        double size = Double.parseDouble(sizeInputField.getText());
         board.setCellSize(size);
         draw();
     }
@@ -156,17 +156,23 @@ public class Controller implements Initializable {
     }
     */
 
+
     public void mouseDragged(MouseEvent e) {
         int x = (int)(e.getX()/board.cellSize);
         int y = (int)(e.getY()/board.cellSize);
 
         if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
             if (board.boardGrid[x][y] == blocksAtStartOfDrag[x][y]) {
-                if (board.boardGrid[x][y] == 0) {
+                if (isAlive) {
+                    board.boardGrid[x][y] = 0;
+                } else {
+                    board.boardGrid[x][y] = 1;
+                }
+                /*if (board.boardGrid[x][y] == 0) {
                     board.boardGrid[x][y] = 1;
                 } else {
                     board.boardGrid[x][y] = 0;
-                }
+                }*/
             }
         }
         draw();
@@ -174,8 +180,13 @@ public class Controller implements Initializable {
     //this happens when you click, or at the beginning of a drag
     //whenever this happens it should reverse the block
     public void mousePressed(MouseEvent e) {
+
         int x = (int)(e.getX()/board.cellSize);
         int y = (int)(e.getY()/board.cellSize);
+
+        if (board.boardGrid[x][y] == 1) {
+            isAlive = true;
+        }
 
         blocksAtStartOfDrag = new int[board.boardGrid.length][board.boardGrid[0].length];
 
@@ -193,5 +204,9 @@ public class Controller implements Initializable {
             }
         }
         draw();
+    }
+
+    public void mouseDragOver() {
+        isAlive = false;
     }
 }

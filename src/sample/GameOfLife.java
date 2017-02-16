@@ -21,12 +21,12 @@ public class GameOfLife {
     }
 
 
-    private void enforceRules() {
+    public void enforceRules() {
 
         //ny byte[][] hvor de nye cellene settes.
         newGenerationCells = new byte[playBoard.boardGrid.length][playBoard.boardGrid[0].length];
 
-        //sjekker om cellen er i live, og ser så på antall-naboer for å sette nye celler i newGeneratioNCells.
+        //sjekker om cellen er i live, og ser så på antall-naboer for å sette nye celler i newGenerationCells.
         for (int x = 0; x < playBoard.boardGrid.length; x++) {
             for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
 
