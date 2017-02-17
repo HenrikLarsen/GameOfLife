@@ -125,21 +125,6 @@ public class Controller implements Initializable {
         draw();
     }
 
-    public void mouseDragged(MouseEvent e) {
-        int x = (int)(e.getX()/board.cellSize);
-        int y = (int)(e.getY()/board.cellSize);
-
-        if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
-            if (board.boardGrid[x][y] == boardAtMousePressed[x][y]) {
-                if (isAlive) {
-                    board.boardGrid[x][y] = 0;
-                } else {
-                    board.boardGrid[x][y] = 1;
-                }
-            }
-        }
-        draw();
-    }
     //this happens when you click, or at the beginning of a drag
     //whenever this happens it should reverse the block
     public void mousePressed(MouseEvent e) {
@@ -164,6 +149,22 @@ public class Controller implements Initializable {
                 board.boardGrid[x][y] = 1;
             } else {
                 board.boardGrid[x][y] = 0;
+            }
+        }
+        draw();
+    }
+
+    public void mouseDragged(MouseEvent e) {
+        int x = (int)(e.getX()/board.cellSize);
+        int y = (int)(e.getY()/board.cellSize);
+
+        if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
+            if (board.boardGrid[x][y] == boardAtMousePressed[x][y]) {
+                if (isAlive) {
+                    board.boardGrid[x][y] = 0;
+                } else {
+                    board.boardGrid[x][y] = 1;
+                }
             }
         }
         draw();

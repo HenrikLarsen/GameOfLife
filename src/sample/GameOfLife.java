@@ -44,10 +44,10 @@ public class GameOfLife {
      */
     public void enforceRules() {
 
-        //Creates a new byte[][] with the same dimentions as the current board.
+        //Creates a new byte[][] with the same dimensions as the current board.
         newGenerationCells = new byte[playBoard.boardGrid.length][playBoard.boardGrid[0].length];
 
-        //Compares the current playboard with the neighbour count.
+        //Compares the current play board with the neighbour count.
         //Sets the values in newGenerationCells based on the rules of the Game of Life.
         for (int x = 0; x < playBoard.boardGrid.length; x++) {
             for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
