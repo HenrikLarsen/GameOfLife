@@ -28,7 +28,6 @@ public class GameOfLifeTest {
         enforceRulesTest3();
     }
 
-
     private void nextGenerationTest1 () {
         byte[][] testBoard = {
                 {0, 0, 0, 1, 0, 0, 0, 0},

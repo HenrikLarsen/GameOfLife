@@ -32,9 +32,8 @@ public class Controller implements Initializable {
     private GameOfLife gOL = new GameOfLife(board);
     private Timeline timeline;
     private boolean gridToggle = true;
-    private boolean[][] change = new boolean[board.boardGrid.length][board.boardGrid[0].length];
     private boolean isAlive = false;
-    private static int[][] blocksAtStartOfDrag;
+    private byte[][] boardAtMousePressed;
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         cellColorPicker.setValue(currentCellColor);
@@ -125,54 +124,18 @@ public class Controller implements Initializable {
         board.setCellSize(size);
         draw();
     }
-    /*
-    public void mouseDrag(MouseEvent event) {
-        int x = (int)(event.getX()/board.cellSize);
-        int y = (int)(event.getY()/board.cellSize);
-
-        // Viske
-        if (!change[x][y] && board.boardGrid[x][y] == 1) {
-            board.boardGrid[x][y] = 0;
-            board.cellsAlive--;
-            change[x][y] = true;
-        }
-        // Tegne
-        if (!change[x][y] && board.boardGrid[x][y] == 0) {
-            board.boardGrid[x][y] = 1;
-            board.cellsAlive++;
-            change[x][y] = true;
-        }
-
-        aliveLabel.setText(Integer.toString(board.cellsAlive));
-        draw();
-    }
-
-    public void mouseDragOver() {
-        for (int x = 0; x < change.length; x++) {
-            for (int y = 0; y < change[0].length; y++) {
-                change[x][y] = false;
-            }
-        }
-    }
-    */
-
 
     public void mouseDragged(MouseEvent e) {
         int x = (int)(e.getX()/board.cellSize);
         int y = (int)(e.getY()/board.cellSize);
 
         if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
-            if (board.boardGrid[x][y] == blocksAtStartOfDrag[x][y]) {
+            if (board.boardGrid[x][y] == boardAtMousePressed[x][y]) {
                 if (isAlive) {
                     board.boardGrid[x][y] = 0;
                 } else {
                     board.boardGrid[x][y] = 1;
                 }
-                /*if (board.boardGrid[x][y] == 0) {
-                    board.boardGrid[x][y] = 1;
-                } else {
-                    board.boardGrid[x][y] = 0;
-                }*/
             }
         }
         draw();
@@ -188,11 +151,11 @@ public class Controller implements Initializable {
             isAlive = true;
         }
 
-        blocksAtStartOfDrag = new int[board.boardGrid.length][board.boardGrid[0].length];
-
-        for (int i = 0; i < blocksAtStartOfDrag.length; i++) {
-            for (int j = 0; j < blocksAtStartOfDrag[i].length; j++) {
-                blocksAtStartOfDrag[i][j] = board.boardGrid[i][j];
+        //Makes a copy of the board at the time of mouseclick
+        boardAtMousePressed = new byte[board.boardGrid.length][board.boardGrid[0].length];
+        for (int i = 0; i < boardAtMousePressed.length; i++) {
+            for (int j = 0; j < boardAtMousePressed[i].length; j++) {
+                boardAtMousePressed[i][j] = board.boardGrid[i][j];
             }
         }
 
