@@ -21,11 +21,11 @@ public class GameOfLifeTest {
         nextGenerationTest4();
     }
 
-
     @Test
     public void enforceRules() throws Exception{
         enforceRulesTest1();
         enforceRulesTest2();
+        enforceRulesTest3();
     }
 
 
@@ -158,6 +158,26 @@ public class GameOfLifeTest {
         gol.enforceRules();
         board.setBoard(gol.newGenerationCells);
         String expectedOutput = "011111110101010101001010000000100000011111110101110001000000000100000001100000001010111000";
+
+        org.junit.Assert.assertEquals(expectedOutput, board.toString());
+    }
+
+    private void enforceRulesTest3() {
+        byte[][] testBoard = {
+                {0, 0, 1, 1, 1, 0, 0, 1},
+                {1, 0, 0, 0, 0, 1, 0, 0},
+                {1, 0, 1, 1, 0, 0, 0, 1},
+                {0, 0, 0, 1, 0, 0, 0, 1},
+                {0, 0, 0, 0, 1, 0, 1, 1},
+                {1, 0, 0, 0, 0, 1, 0, 0},
+                {1, 0, 0, 0, 0, 1, 0, 1},
+                {1, 0, 1, 1, 1, 0, 0, 0}};
+
+        board.setBoard(testBoard);
+        gol.neighbourCount = board.countNeighbours();
+        gol.enforceRules();
+        board.setBoard(gol.newGenerationCells);
+        String expectedOutput = "0000001000100001001100001011001110111101000011100110101000011100";
 
         org.junit.Assert.assertEquals(expectedOutput, board.toString());
     }
