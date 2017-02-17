@@ -52,21 +52,24 @@ public class GameOfLife {
         for (int x = 0; x < playBoard.boardGrid.length; x++) {
             for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
 
+                //Checks if the current cell is alive
                 if (playBoard.boardGrid[x][y] == 1) {
-                    if (neighbourCount[x][y] < 2) {
+
+                    //Checks if the live cell has less than two or more than three living neighbours.
+                    //If yes, the cell dies.
+                    if (neighbourCount[x][y] < 2 || neighbourCount[x][y] > 3) {
                         newGenerationCells[x][y] = 0;
                     }
 
-                    else if (neighbourCount[x][y] > 3) {
-                        newGenerationCells[x][y] = 0;
-                    }
-
+                    //Checks if the live cell has exactly two or three living neighbours.
+                    //If yes, the cell survives to the next generation.
                     else if (neighbourCount[x][y] == 2 || neighbourCount[x][y] == 3) {
                         newGenerationCells[x][y] = 1;
                         playBoard.cellsAlive++;
                     }
                 }
 
+                //If the current cell is dead and has exactly three living neighbours, it comes alive.
                 else if (playBoard.boardGrid[x][y] == 0) {
                     if (neighbourCount[x][y] == 3) {
                         newGenerationCells[x][y] = 1;
