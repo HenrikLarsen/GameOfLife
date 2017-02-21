@@ -7,7 +7,7 @@ package sample;
  *
  * @author Oscar Vladau-Husevold
  * @author Henrik Finnerud Larsen
- * @version 0.8
+ * @version 1.0
  */
 public class GameOfLife {
     public int genCounter = 0;
@@ -27,9 +27,9 @@ public class GameOfLife {
      * Sets the next generation of cells as the current play board.
      * Calls on Boards countNeighbours() and sets it as a nested byte array.
      * Calls on enforceRules() and finally sets the new generation as the current play board.
-     *
-     * @see StaticBoard#countNeighbours()
      * @see #enforceRules()
+     * @see StaticBoard#setBoard(byte[][])
+     * @see StaticBoard#countNeighbours()
      */
     public void nextGeneration() {
         playBoard.cellsAlive = 0;
@@ -41,6 +41,9 @@ public class GameOfLife {
     /**
      * Compares the current board with the neighbour count and enforces the
      * rules of the game, creating a new nested array to be the next generation's board.
+     * @see #newGenerationCells
+     * @see #neighbourCount
+     * @see StaticBoard#boardGrid
      */
     public void enforceRules() {
 
