@@ -18,11 +18,7 @@ public class FileHandler extends Reader {
     }
 
     public void readGameBoardFromDisk(File file) throws IOException {
-        try {
-            readGameBoard(new FileReader(file));
-        } catch (IOException io) {
-            System.out.println("Dilldalldolldalldelldall1");
-        }
+        readGameBoard(new FileReader(file));
     }
 
     private void readGameBoard(Reader reader) throws IOException{
