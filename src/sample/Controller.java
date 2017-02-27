@@ -14,6 +14,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * The Controller class handles all user-interaction within the application.
  * It contains the methods and parameters linked to the graphical user interface elements
@@ -43,6 +46,7 @@ public class Controller implements Initializable {
     private boolean gridToggle = true;
     private boolean erase = false;
     private byte[][] boardAtMousePressed;
+    private FileHandler fileHandler = new FileHandler();
 
     /**
      * A concrete implementation of the method in interface Initializable.
@@ -326,9 +330,21 @@ public class Controller implements Initializable {
         erase = false;
     }
 
+
     public void importClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
-        fileChooser.showOpenDialog(new Stage());
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            try {
+                fileHandler.readGameBoardFromDisk(file);
+            } catch (IOException ie) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error error error?");
+                alert.setContentText("This should never happen.");
+                alert.showAndWait();
+            }
+        }
     }
 }
