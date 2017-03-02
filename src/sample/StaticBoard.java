@@ -1,14 +1,23 @@
 package sample;
 
 /**
- * Created by Oscar Vladau on 30.01.2017.
+ * The StaticBoard class handles everything with the play board.
+ * It contains the methods and parameters linked to the board.
+ *
+ * @author Oscar Vladau-Husevold
+ * @author Henrik Finnerud Larsen
+ * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 10, HEIGHT = 10;
+    private final int WIDTH = 33, HEIGHT = 26;
     public byte[][] boardGrid;
     public int cellsAlive = 0;
 
-    //Constructor
+    /**
+     * Constructor of the class
+     * sets the parameter board as the current board.
+     * @param newBoard
+     */
     public StaticBoard(byte[][] newBoard){
         this.boardGrid = newBoard;
     }
@@ -17,13 +26,18 @@ public class StaticBoard extends Board {
         this.boardGrid = new byte[WIDTH][HEIGHT];
     }
 
+    /**
+     * Method that counts neighbours to every cell.
+     * Returns a byte[][] array with the count number to each cell.
+     */
     public byte[][] countNeighbours() {
-        //new byte[][] som setter antall naboer for hver celle.
-        byte[][] neighbourCount = new byte[boardGrid.length][boardGrid[0].length];
-
         int xMax = boardGrid.length;
         int yMax = boardGrid[0].length;
 
+        //new byte[][] that sets the number of neighbours to each cell.
+        byte[][] neighbourCount = new byte[xMax][yMax];
+
+        //Iterates through the boardgrid and counts neighbours to each cell.
         for (int x = 0; x < xMax; x++) {
             for (int y = 0; y < yMax; y++) {
 
@@ -68,10 +82,18 @@ public class StaticBoard extends Board {
         return neighbourCount;
     }
 
+    /**
+     * Method that takes a board as a parameter and sets it as the current board.
+     * @param newGrid - the new board to be set.
+     */
     public void setBoard(byte[][] newGrid) {
         this.boardGrid = newGrid;
     }
 
+    /**
+     * Method that resets the board by setting every cell to the dead state.
+     * Resets the cell counter to 0.
+     */
     public void resetBoard() {
         for (int x = 0; x < boardGrid.length; x++) {
             for (int y = 0; y < boardGrid[0].length; y++) {
@@ -95,5 +117,4 @@ public class StaticBoard extends Board {
         }
         return str;
     }
-
 }
