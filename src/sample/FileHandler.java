@@ -5,9 +5,13 @@ package sample;
  */
 
 import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.MULTILINE;
 
 public class FileHandler extends Reader {
-    //Gjør denne på et eller annet tidspunkt
+
     public int read(char[] input, int off, int max){
         // BARE TESTING AV Å LESE FILEN
         int charCount = 0;
@@ -33,17 +37,39 @@ public class FileHandler extends Reader {
     private void readGameBoard(Reader reader) throws IOException{
         String board = "";
         BufferedReader br = new BufferedReader(reader);
+        String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+), rule = b3/s23(.*)");
 
-        board = br.readLine();
-        while (br.readLine() != null) {
-            board = board + br.readLine();
+        Pattern rlePattern = Pattern.compile(regex,Pattern.MULTILINE| Pattern.DOTALL);
+
+        char[] a = new char[2000];
+        br.read(a);
+        board = new String(a);
+        Matcher rleMatcher = rlePattern.matcher(board);
+        rleMatcher.find();
+
+        int x = Integer.parseInt(rleMatcher.group(1));
+        int y = Integer.parseInt(rleMatcher.group(2));
+
+        System.out.println(x+" "+y);
+
+        String str = rleMatcher.group(3);
+        String rleString = str.replaceAll("[\r\n]+", "");
+
+        System.out.println(rleString);
+
+        String[] lines = rleString.split("[$]");
+
+        for (int i = 0; i < lines.length; i++) {
+            System.out.println(lines[i]);
         }
 
-        char[] input = board.toCharArray();
+        byte[][] newlyReadBoard = new byte[x][y];
 
-        read(input, 0,1000);
-        System.out.println(board);
-        System.out.println(input);
+    }
+
+    public void constructBoard(String newBoard) {
+
+
     }
 
     public void close(){
