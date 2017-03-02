@@ -31,10 +31,12 @@ public class FileHandler extends Reader {
     }
 
     public void readGameBoardFromDisk(File file) throws IOException {
-        readGameBoard(new FileReader(file));
+        try {
+            readGameBoard(new FileReader(file));
+        } catch (PatternFormatException pfe) {}
     }
 
-    private void readGameBoard(Reader reader) throws IOException{
+    private void readGameBoard(Reader reader) throws IOException, PatternFormatException{
         String board = "";
         BufferedReader br = new BufferedReader(reader);
         String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+), rule = b3/s23(.*)");
