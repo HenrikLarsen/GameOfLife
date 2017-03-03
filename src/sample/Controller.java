@@ -75,6 +75,7 @@ public class Controller implements Initializable {
         timeline.setRate(speedSlider.getValue());
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
         speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {setFPS();});
+        fileHandler.playBoard = board;
     }
 
     /**
