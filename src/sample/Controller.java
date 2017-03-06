@@ -371,8 +371,8 @@ public class Controller implements Initializable {
             } catch (PatternFormatException pfe) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
-                alert.setHeaderText("The format");
-                alert.setContentText("This should never happen.");
+                alert.setHeaderText("Corrupt or erroneous file");
+                alert.setContentText("It seems you did bad.");
                 alert.showAndWait();
             }
         }

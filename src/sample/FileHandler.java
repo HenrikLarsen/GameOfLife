@@ -31,8 +31,7 @@ public class FileHandler extends Reader {
         BufferedReader br = new BufferedReader(reader);
         //String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+), rule = b3/s23(.*)");
 
-        //FIX FIX FIX FIX                                                                           HER
-        String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+),(?: )rule(?: )=(?: )(\\S\\d+[/]\\S\\d+)(.*)");
+        String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+)(?:,(?: )rule(?: )=(?: )(\\S\\d+[/]\\S\\d+))?\n(.*)");
 
         //String regexrle = "([1-9]\\d*)?([bo$])";
 
@@ -43,7 +42,7 @@ public class FileHandler extends Reader {
 
         String line;
         while((line = br.readLine()) != null) {
-            stringBuilder.append(line);
+            stringBuilder.append(line).append("\n");
             if (line.startsWith("#")) {
                 metaDataRaw.append(line + "\n");
             }
@@ -56,12 +55,14 @@ public class FileHandler extends Reader {
         Matcher rleMatcher = rlePattern.matcher(stringBuilder);
         rleMatcher.find();
 
+
         int x = Integer.parseInt(rleMatcher.group(1));
         int y = Integer.parseInt(rleMatcher.group(2));
 
         System.out.println("x = " + x + " y = " + y);
 
-        System.out.println(rleMatcher.group(3));
+        String loadedRules = rleMatcher.group(3);
+        System.out.println(loadedRules);
         System.out.println(rleMatcher.group(4));
         String str = rleMatcher.group(4);
 
@@ -125,7 +126,7 @@ public class FileHandler extends Reader {
             } else if (t == '$') {
                 returnString += getRevisedString("$", leadingNumber);
                 leadingNumber = 0;
-            } else if (t == '!'){
+            } else if (t == '!') {
                 return returnString;
             }
         }
