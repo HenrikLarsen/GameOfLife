@@ -25,16 +25,9 @@ public class FileHandler extends Reader {
     }
 
     private void readGameBoard(Reader reader) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException{
-        String board = "";
         BufferedReader br = new BufferedReader(reader);
-        //String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+), rule = b3/s23(.*)");
-
         String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+)(?:,(?: )rule(?: )=(?: )(\\S\\d+[/]\\S\\d+))?\n(.*)");
-
-        //String regexrle = "([1-9]\\d*)?([bo$])";
-
         Pattern rlePattern = Pattern.compile(regex,Pattern.MULTILINE | Pattern.DOTALL);
-
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder metaDataRaw = new StringBuilder();
 
@@ -45,17 +38,15 @@ public class FileHandler extends Reader {
                 metaDataRaw.append(line + "\n");
             }
         }
-        System.out.println(metaDataRaw);
         stringBuilder.trimToSize();
-        System.out.println(stringBuilder);
 
+        System.out.println(metaDataRaw);
+        System.out.println(stringBuilder);
 
         Matcher rleMatcher = rlePattern.matcher(stringBuilder);
         if(!rleMatcher.find()){
-            System.out.println(12313123);
             throw new PatternFormatException();
         }
-
 
         int x = Integer.parseInt(rleMatcher.group(1));
         int y = Integer.parseInt(rleMatcher.group(2));
@@ -63,9 +54,10 @@ public class FileHandler extends Reader {
         System.out.println("x = " + x + " y = " + y);
 
         String loadedRules = rleMatcher.group(3);
+        String str = rleMatcher.group(4);
+
         System.out.println(loadedRules);
         System.out.println(rleMatcher.group(4));
-        String str = rleMatcher.group(4);
 
         String rleString = str.replaceAll("[\r\n]+", "");
 
@@ -74,15 +66,10 @@ public class FileHandler extends Reader {
         String revisedRleString = newBoard(rleString);
 
         //System.out.println(revisedRleString);
-        //System.out.println(revisedRleString);
 
         byte[][] newBoard = boardFromFile(revisedRleString, x, y);
 
-        String[] lines = rleString.split("[$]");
-
         String str2 = "";
-
-
         for (int t = 0; t < newBoard.length; t++) {
             for (int g = 0; g < newBoard[0].length; g++) {
                 if (newBoard[t][g] == 1) {
@@ -92,7 +79,6 @@ public class FileHandler extends Reader {
                 }
             }
         }
-
         //System.out.println(str2);
 
         if (newBoard.length > playBoard.boardGrid.length || newBoard[0].length > playBoard.boardGrid[0].length) {
@@ -103,8 +89,6 @@ public class FileHandler extends Reader {
 
         String metaData = formatMetadata(metaDataRaw);
         System.out.println(metaData);
-
-        //byte[][] newlyReadBoard = makeNewBoard(rleString, x, y);
     }
 
     public String newBoard(String rleString) throws PatternFormatException {
@@ -187,11 +171,6 @@ public class FileHandler extends Reader {
         }
         formatedMetaData = formatedMetaData.replaceAll("[#]\\S\\s","");
         return formatedMetaData;
-    }
-
-    public void constructBoard(String newBoard) {
-
-
     }
 
     public void close(){

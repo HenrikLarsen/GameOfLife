@@ -124,6 +124,9 @@ public class StaticBoard extends Board {
         for (int x = 0; x < importedBoard.length; x++) {
             for (int y = 0; y < importedBoard[0].length; y++) {
                 boardGrid[x][y] = importedBoard[x][y];
+                if(boardGrid[x][y] == 1){
+                    cellsAlive++;
+                }
 
             }
         }

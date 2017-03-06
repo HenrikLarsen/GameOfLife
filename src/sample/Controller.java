@@ -284,9 +284,12 @@ public class Controller implements Initializable {
         if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
             if (board.boardGrid[x][y] == 0) {
                 board.boardGrid[x][y] = 1;
+                board.cellsAlive++;
             } else {
                 board.boardGrid[x][y] = 0;
+                board.cellsAlive--;
             }
+            aliveLabel.setText(Integer.toString(board.cellsAlive));
         }
         draw();
     }
@@ -316,9 +319,13 @@ public class Controller implements Initializable {
                 //If boolean erase is true, it sets the cell to 0. Else, sets the cell to 1.
                 if (erase) {
                     board.boardGrid[x][y] = 0;
+                    board.cellsAlive--;
                 } else {
                     board.boardGrid[x][y] = 1;
+                    board.cellsAlive++;
+
                 }
+                aliveLabel.setText(Integer.toString(board.cellsAlive));
             }
         }
         draw();
@@ -340,8 +347,12 @@ public class Controller implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Run-length encoding", "*.rle"));
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
+            timeline.stop();
+            gOL.genCounter = 0;
+            generationLabel.setText(Integer.toString(gOL.genCounter));
             try {
                 fileHandler.readGameBoardFromDisk(file);
+                aliveLabel.setText(Integer.toString(board.cellsAlive));
             } catch (IOException ie) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -372,8 +383,12 @@ public class Controller implements Initializable {
         textInputDialog.showAndWait();
         String url = textInputDialog.getResult();
         if (url != null) {
+            timeline.stop();
+            gOL.genCounter = 0;
+            generationLabel.setText(Integer.toString(gOL.genCounter));
             try {
                 fileHandler.readGameBoardFromURL(url);
+                aliveLabel.setText(Integer.toString(board.cellsAlive));
             } catch (IOException ie) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
