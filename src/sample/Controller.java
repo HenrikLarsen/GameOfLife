@@ -348,6 +348,18 @@ public class Controller implements Initializable {
                 alert.setHeaderText("File not found!");
                 alert.setContentText("The file may be corrupt or not exist. Try another file.");
                 alert.showAndWait();
+            } catch (PatternFormatException pfe) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Corrupt or erroneous file");
+                alert.setContentText("It seems you did bad.");
+                alert.showAndWait();
+            } catch (ArrayIndexOutOfBoundsException aiobe) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Out of bounds!");
+                alert.setContentText("The pattern you are trying to load is too big.");
+                alert.showAndWait();
             }
         }
         draw();
@@ -373,6 +385,12 @@ public class Controller implements Initializable {
                 alert.setTitle("Error");
                 alert.setHeaderText("Corrupt or erroneous file");
                 alert.setContentText("It seems you did bad.");
+                alert.showAndWait();
+            } catch (ArrayIndexOutOfBoundsException aiobe) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Out of bounds!");
+                alert.setContentText("The pattern you are trying to load is too big.");
                 alert.showAndWait();
             }
         }

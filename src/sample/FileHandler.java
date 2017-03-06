@@ -20,13 +20,11 @@ public class FileHandler extends Reader {
         return 5;
     }
 
-    public void readGameBoardFromDisk(File file) throws IOException {
-        try {
-            readGameBoard(new FileReader(file));
-        } catch (PatternFormatException pfe) {}
+    public void readGameBoardFromDisk(File file) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException {
+        readGameBoard(new FileReader(file));
     }
 
-    private void readGameBoard(Reader reader) throws IOException, PatternFormatException{
+    private void readGameBoard(Reader reader) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException{
         String board = "";
         BufferedReader br = new BufferedReader(reader);
         //String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+), rule = b3/s23(.*)");
@@ -53,7 +51,10 @@ public class FileHandler extends Reader {
 
 
         Matcher rleMatcher = rlePattern.matcher(stringBuilder);
-        rleMatcher.find();
+        if(!rleMatcher.find()){
+            System.out.println(12313123);
+            throw new PatternFormatException();
+        }
 
 
         int x = Integer.parseInt(rleMatcher.group(1));
@@ -71,6 +72,7 @@ public class FileHandler extends Reader {
         //System.out.println(rleString);
 
         String revisedRleString = newBoard(rleString);
+
         //System.out.println(revisedRleString);
         //System.out.println(revisedRleString);
 
@@ -94,11 +96,7 @@ public class FileHandler extends Reader {
         //System.out.println(str2);
 
         if (newBoard.length > playBoard.boardGrid.length || newBoard[0].length > playBoard.boardGrid[0].length) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("Out of bounds!");
-            alert.setContentText("The pattern you are trying to load is too big.");
-            alert.showAndWait();
+            throw new ArrayIndexOutOfBoundsException();
         } else {
             playBoard.setBoardFromRLE(newBoard);
         }
@@ -109,7 +107,7 @@ public class FileHandler extends Reader {
         //byte[][] newlyReadBoard = makeNewBoard(rleString, x, y);
     }
 
-    public String newBoard(String rleString) {
+    public String newBoard(String rleString) throws PatternFormatException {
         int leadingNumber = 0;
         String returnString = "";
         for(int i = 0; i < rleString.length(); i++) {
@@ -128,6 +126,8 @@ public class FileHandler extends Reader {
                 leadingNumber = 0;
             } else if (t == '!') {
                 return returnString;
+            } else {
+                throw new PatternFormatException();
             }
         }
         return null;
