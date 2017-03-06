@@ -9,7 +9,7 @@ package sample;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 33, HEIGHT = 26;
+    private final int WIDTH = 65, HEIGHT = 51;
     public byte[][] boardGrid;
     public int cellsAlive = 0;
 
@@ -116,5 +116,16 @@ public class StaticBoard extends Board {
             }
         }
         return str;
+    }
+
+
+    public void setBoardFromRLE (byte[][] importedBoard) {
+        resetBoard();
+        for (int x = 0; x < importedBoard.length; x++) {
+            for (int y = 0; y < importedBoard[0].length; y++) {
+                boardGrid[x][y] = importedBoard[x][y];
+
+            }
+        }
     }
 }

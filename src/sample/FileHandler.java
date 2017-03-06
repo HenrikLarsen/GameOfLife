@@ -4,7 +4,11 @@ package sample;
  * Created by henriklarsen on 27.02.2017.
  */
 
+import javafx.scene.control.Alert;
+
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,21 +29,31 @@ public class FileHandler extends Reader {
     private void readGameBoard(Reader reader) throws IOException, PatternFormatException{
         String board = "";
         BufferedReader br = new BufferedReader(reader);
-        String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+), rule = b3/s23(.*)");
+        //String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+), rule = b3/s23(.*)");
+
+        //FIX FIX FIX FIX                                                                           HER
+        String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+),(?: )rule(?: )=(?: )(\\S\\d+[/]\\S\\d+)(.*)");
+
         //String regexrle = "([1-9]\\d*)?([bo$])";
 
-        Pattern rlePattern = Pattern.compile(regex,Pattern.MULTILINE| Pattern.DOTALL);
+        Pattern rlePattern = Pattern.compile(regex,Pattern.MULTILINE | Pattern.DOTALL);
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder metaDataRaw = new StringBuilder();
+
         String line;
         while((line = br.readLine()) != null) {
-                sb.append(line);
+            stringBuilder.append(line);
+            if (line.startsWith("#")) {
+                metaDataRaw.append(line + "\n");
+            }
         }
-        sb.trimToSize();
+        System.out.println(metaDataRaw);
+        stringBuilder.trimToSize();
+        System.out.println(stringBuilder);
 
-        System.out.println(sb);
 
-        Matcher rleMatcher = rlePattern.matcher(sb);
+        Matcher rleMatcher = rlePattern.matcher(stringBuilder);
         rleMatcher.find();
 
         int x = Integer.parseInt(rleMatcher.group(1));
@@ -47,20 +61,23 @@ public class FileHandler extends Reader {
 
         System.out.println("x = " + x + " y = " + y);
 
-        String str = rleMatcher.group(3);
+        System.out.println(rleMatcher.group(3));
+        System.out.println(rleMatcher.group(4));
+        String str = rleMatcher.group(4);
+
         String rleString = str.replaceAll("[\r\n]+", "");
 
-        System.out.println(rleString);
+        //System.out.println(rleString);
 
         String revisedRleString = newBoard(rleString);
-        System.out.println(revisedRleString);
+        //System.out.println(revisedRleString);
+        //System.out.println(revisedRleString);
 
         byte[][] newBoard = boardFromFile(revisedRleString, x, y);
 
         String[] lines = rleString.split("[$]");
 
         String str2 = "";
-
 
 
         for (int t = 0; t < newBoard.length; t++) {
@@ -73,19 +90,22 @@ public class FileHandler extends Reader {
             }
         }
 
-        System.out.println(str2);
+        //System.out.println(str2);
 
-        playBoard.setBoard(newBoard);
+        if (newBoard.length > playBoard.boardGrid.length || newBoard[0].length > playBoard.boardGrid[0].length) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Out of bounds!");
+            alert.setContentText("The pattern you are trying to load is too big.");
+            alert.showAndWait();
+        } else {
+            playBoard.setBoardFromRLE(newBoard);
+        }
 
-
-
-
-
+        String metaData = formatMetadata(metaDataRaw);
+        System.out.println(metaData);
 
         //byte[][] newlyReadBoard = makeNewBoard(rleString, x, y);
-
-
-
     }
 
     public String newBoard(String rleString) {
@@ -116,7 +136,7 @@ public class FileHandler extends Reader {
         if (i == 0) {
             i = 1;
         }
-        System.out.println(i);
+
         String deadOrAlive = "";
         for (int x = 0; x < i; x++) {
             deadOrAlive += s;
@@ -125,73 +145,48 @@ public class FileHandler extends Reader {
     }
 
     public byte[][] boardFromFile(String s, int x, int y){
-        byte[][] loadedBoard = new byte[y][x];
+        byte[][] loadedBoard = new byte[x][y];
 
-        int row = 0, column = 0;
+        int column = 0, row = 0;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if (c == '0') {
-                loadedBoard[row][column++] = 0;
+                loadedBoard[column++][row] = 0;
             } else if (c == '1') {
-                loadedBoard[row][column++] = 1;
+                loadedBoard[column++][row] = 1;
             } else if (c == '$') {
-                row++;
                 column = 0;
+                row++;
             }
         }
-
-
-        /*
-        int xAxis = 0;
-        int yAxis = 0;
-        for(int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c == '0' || c == '1'){
-                loadedBoard[xAxis][yAxis] = (byte)c;
-                xAxis++;
-            } else if (c == '$'){
-                yAxis++;
-                xAxis = 0;
-            }
-        }*/
         return loadedBoard;
     }
 
+    public void readGameBoardFromURL(String url) throws IOException, PatternFormatException {
+        URL destination = new URL(url);
+        URLConnection conn = destination.openConnection();
+        readGameBoard(new InputStreamReader(conn.getInputStream()));
+    }
 
-
-    /*
-    public byte[][] makeNewBoard(String rleString, int x, int y){
-        int antall = 0;
-        byte[][] newlyReadBoard = new byte[x][y];
-        for (int i = 0; i < newlyReadBoard[0].length; i++) {
-            for (int j = 0; j < newlyReadBoard.length; j++) {
-                newlyReadBoard[i][j]= 0;
+    public String formatMetadata(StringBuilder meta) {
+        String formatedMetaData = "";
+        String[] lines = meta.toString().split("\\n");
+        for (int x = 0; x < lines.length; x++) {
+            if (lines[x].startsWith("#N")) {
+                formatedMetaData += "Name: " + lines[x] + "\n";
+            } else if (lines[x].startsWith("#O")) {
+                formatedMetaData += "Author: " + lines[x] + "\n";
+            } else if (lines[x].startsWith("#c") || lines[x].startsWith("#C")) {
+                formatedMetaData += lines[x] + "\n";
+            } else if (lines[x].startsWith("#r")) {
+                formatedMetaData += "Rule-set: " + lines[x] + "\n";
+            } else if (lines[x].startsWith("#R") || lines[x].startsWith("#P")) {
+                formatedMetaData += "Starts at: " + lines[x] + "\n";
             }
         }
-        int from = 0;
-        int m = 0;
-
-        for(int i = 0; i < rleString.length(); i++){
-            char t = rleString.charAt(i);
-            if(Character.isDigit(t)) {
-                antall = (10*antall) + (int) (t - '0');
-            }else if(t == 'o') {
-                Arrays.fill(newlyReadBoard[m], from, Math.min(x, from+Math.max(1, antall)), (byte) 1);
-                from += Math.max(1, antall);
-                antall = 0;
-            }else if(t == 'b') {
-                from += Math.max(1, antall);
-                antall = 0;
-            }else if(t == '$') {
-                m += Math.max(1, antall);
-                from = 0;
-                antall = 0;
-            }else if(t == '!'){
-                return newlyReadBoard;
-            }
-        }
-        return null;
-    }*/
+        formatedMetaData = formatedMetaData.replaceAll("[#]\\S\\s","");
+        return formatedMetaData;
+    }
 
     public void constructBoard(String newBoard) {
 

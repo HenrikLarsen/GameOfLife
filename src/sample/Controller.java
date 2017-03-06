@@ -16,6 +16,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * The Controller class handles all user-interaction within the application.
@@ -332,9 +333,11 @@ public class Controller implements Initializable {
     }
 
 
-    public void importClick(ActionEvent actionEvent) {
+    public void importFileClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir"/* + "/rleFiles"*/)));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Run-length encoding", "*.rle"));
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             try {
@@ -342,11 +345,38 @@ public class Controller implements Initializable {
             } catch (IOException ie) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
-                alert.setHeaderText("Error error error?");
+                alert.setHeaderText("File not found!");
+                alert.setContentText("The file may be corrupt or not exist. Try another file.");
+                alert.showAndWait();
+            }
+        }
+        draw();
+    }
+
+    public void importURLClick(ActionEvent actionEvent) {
+        TextInputDialog textInputDialog = new TextInputDialog();
+        textInputDialog.setHeaderText("Import RLE from URL");
+        textInputDialog.setContentText("Enter URL");
+        textInputDialog.showAndWait();
+        String url = textInputDialog.getResult();
+        if (url != null) {
+            try {
+                fileHandler.readGameBoardFromURL(url);
+            } catch (IOException ie) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid URL!");
+                alert.setContentText("This URL does not contain an RLE file!");
+                alert.showAndWait();
+            } catch (PatternFormatException pfe) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("The format");
                 alert.setContentText("This should never happen.");
                 alert.showAndWait();
             }
         }
         draw();
     }
+
 }
