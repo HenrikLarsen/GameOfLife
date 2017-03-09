@@ -1,5 +1,11 @@
 package sample;
 
+import javafx.scene.control.Alert;
+import org.junit.Rule;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * The GameOfLife class represents the logic behind this implementation of Conway's Game of Life. <br><br>
  * A GameOfLife object keeps track of the number of generations and decides the values of
@@ -86,8 +92,20 @@ public class GameOfLife {
         }
     }*/
 
-    public void setRuleSet(String rules){
+    public void setRuleSet(String rules) throws RulesFormatException{
         System.out.println();
+
+        Pattern rulePattern = Pattern.compile("[^sSbB012345678/]",Pattern.MULTILINE | Pattern.DOTALL);
+        Pattern formatPattern = Pattern.compile("^[bB][0-8]*/[sS][0-8]*$");
+
+        //Pattern rulePattern = Pattern.compile("[sbSB]{1}[0-8]*/[sbSB]{1}[0-8]*",Pattern.MULTILINE | Pattern.DOTALL);
+        Matcher ruleMatcher = rulePattern.matcher(rules);
+        Matcher formatMatcher = formatPattern.matcher(rules);
+
+        if(ruleMatcher.find() || !formatMatcher.find()){
+            throw new RulesFormatException();
+        }
+
         String[] bothRules = rules.split("[/]");
         System.out.println(bothRules.length);
         for (int i = 0; i < bothRules.length; i++) {

@@ -21,11 +21,11 @@ public class FileHandler extends Reader {
         return 5;
     }
 
-    public void readGameBoardFromDisk(File file) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException {
+    public void readGameBoardFromDisk(File file) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException, RulesFormatException{
         readGameBoard(new FileReader(file));
     }
 
-    private void readGameBoard(Reader reader) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException{
+    private void readGameBoard(Reader reader) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException, RulesFormatException{
         BufferedReader br = new BufferedReader(reader);
         String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+)(?:,(?: )rule(?: )=(?: )(\\S\\d+[/]\\S\\d+))?\n(.*)");
         Pattern rlePattern = Pattern.compile(regex,Pattern.MULTILINE | Pattern.DOTALL);
@@ -55,7 +55,9 @@ public class FileHandler extends Reader {
         System.out.println("x = " + x + " y = " + y);
 
         String loadedRules = rleMatcher.group(3);
+
         gameOfLife.setRuleSet(loadedRules);
+
         String str = rleMatcher.group(4);
 
         System.out.println(loadedRules);
@@ -149,7 +151,7 @@ public class FileHandler extends Reader {
         return loadedBoard;
     }
 
-    public void readGameBoardFromURL(String url) throws IOException, PatternFormatException {
+    public void readGameBoardFromURL(String url) throws IOException, PatternFormatException, RulesFormatException {
         URL destination = new URL(url);
         URLConnection conn = destination.openConnection();
         readGameBoard(new InputStreamReader(conn.getInputStream()));

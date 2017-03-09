@@ -81,6 +81,11 @@ public class Controller implements Initializable {
         speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {setFPS();});
         fileHandler.playBoard = board;
         fileHandler.gameOfLife = gOL;
+        TextFormatter<String> formatter = new TextFormatter<String>( change -> {
+            change.setText(change.getText().replaceAll("[^sSbB012345678/]", ""));
+            return change;
+        });
+        ruleInputField.setTextFormatter(formatter);
     }
 
     /**
@@ -388,6 +393,12 @@ public class Controller implements Initializable {
                 alert.setHeaderText("Out of bounds!");
                 alert.setContentText("The pattern you are trying to load is too big.");
                 alert.showAndWait();
+            } catch (RulesFormatException rfe) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Out of bounds!");
+                alert.setContentText("The pattern you are trying to load is too big.");
+                alert.showAndWait();
             }
         }
         draw();
@@ -425,17 +436,32 @@ public class Controller implements Initializable {
                 alert.setHeaderText("Out of bounds!");
                 alert.setContentText("The pattern you are trying to load is too big.");
                 alert.showAndWait();
+            } catch (RulesFormatException rfe) {
+                Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
+                rulesAlert.setTitle("Error");
+                rulesAlert.setHeaderText("Invalid rules");
+                rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
+                rulesAlert.showAndWait();
             }
         }
         draw();
     }
 
     public void rulesOnEnter(ActionEvent actionEvent) {
-        gOL.setRuleSet(ruleInputField.getText());
-        System.out.println(gOL.ruleString);
-        System.out.println("Survives : " + gOL.surviveRules);
-        System.out.println("Born : " + gOL.bornRules);
-        ruleLabel.setText(gOL.ruleString.toUpperCase());
+        try {
+            String ruleString = ruleInputField.getText();
+            gOL.setRuleSet(ruleString);
+            System.out.println(gOL.ruleString);
+            System.out.println("Survives : " + gOL.surviveRules);
+            System.out.println("Born : " + gOL.bornRules);
+            ruleLabel.setText(gOL.ruleString.toUpperCase());
+        } catch (RulesFormatException rfe) {
+            Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
+            rulesAlert.setTitle("Error");
+            rulesAlert.setHeaderText("Invalid rules");
+            rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
+            rulesAlert.showAndWait();
+        }
     }
 
 }
