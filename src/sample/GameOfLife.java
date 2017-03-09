@@ -14,6 +14,9 @@ public class GameOfLife {
     public StaticBoard playBoard;
     public byte[][] neighbourCount;
     public byte[][] newGenerationCells;
+    public String ruleString = "B3/S23";
+    public String bornRules = "3";
+    public String surviveRules = "23";
 
     /**
      * Sole constructor, sets the parameter board as the current board.
@@ -45,7 +48,7 @@ public class GameOfLife {
      * @see #neighbourCount
      * @see StaticBoard#boardGrid
      */
-    public void enforceRules() {
+    /*public void enforceRules() {
 
         //Creates a new byte[][] with the same dimensions as the current board.
         newGenerationCells = new byte[playBoard.boardGrid.length][playBoard.boardGrid[0].length];
@@ -75,6 +78,57 @@ public class GameOfLife {
                 //If the current cell is dead and has exactly three living neighbours, it comes alive.
                 else if (playBoard.boardGrid[x][y] == 0) {
                     if (neighbourCount[x][y] == 3) {
+                        newGenerationCells[x][y] = 1;
+                        playBoard.cellsAlive++;
+                    }
+                }
+            }
+        }
+    }*/
+
+    public void setRuleSet(String rules){
+        System.out.println();
+        String[] bothRules = rules.split("[/]");
+        System.out.println(bothRules.length);
+        for (int i = 0; i < bothRules.length; i++) {
+            bothRules[i] = bothRules[i].toUpperCase();
+            if (bothRules[i].startsWith("S")) {
+                surviveRules = bothRules[i].replaceFirst("S", "");
+            } else if (bothRules[i].startsWith("B")) {
+                bornRules = bothRules[i].replaceFirst("B", "");
+            }
+        }
+        ruleString = "B" + bornRules + "/S" + surviveRules;
+    }
+
+    public void enforceRules() {
+
+        //Creates a new byte[][] with the same dimensions as the current board.
+        newGenerationCells = new byte[playBoard.boardGrid.length][playBoard.boardGrid[0].length];
+
+        //Compares the current play board with the neighbour count.
+        //Sets the values in newGenerationCells based on the rules of the Game of Life.
+        for (int x = 0; x < playBoard.boardGrid.length; x++) {
+            for (int y = 0; y < playBoard.boardGrid[0].length; y++) {
+                String neighbours = ""+neighbourCount[x][y];
+
+
+                //Checks if the current cell is alive
+                if (playBoard.boardGrid[x][y] == 1) {
+
+                    //Checks if the live cell has less than two or more than three living neighbours.
+                    //If yes, the cell dies.
+                    if (surviveRules.contains(neighbours)) {
+                        newGenerationCells[x][y] = 1;
+                        playBoard.cellsAlive++;
+                    } else {
+                        newGenerationCells[x][y] = 0;
+                    }
+                }
+
+                //If the current cell is dead and has exactly three living neighbours, it comes alive.
+                else if (playBoard.boardGrid[x][y] == 0) {
+                    if (bornRules.contains(neighbours)) {
                         newGenerationCells[x][y] = 1;
                         playBoard.cellsAlive++;
                     }

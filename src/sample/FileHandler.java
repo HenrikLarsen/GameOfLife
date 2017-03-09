@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 public class FileHandler extends Reader {
 
     public StaticBoard playBoard;
+    public GameOfLife gameOfLife;
 
     public int read(char[] input, int off, int max){
         return 5;
@@ -54,6 +55,7 @@ public class FileHandler extends Reader {
         System.out.println("x = " + x + " y = " + y);
 
         String loadedRules = rleMatcher.group(3);
+        gameOfLife.setRuleSet(loadedRules);
         String str = rleMatcher.group(4);
 
         System.out.println(loadedRules);
@@ -158,7 +160,7 @@ public class FileHandler extends Reader {
         String[] lines = meta.toString().split("\\n");
         for (int x = 0; x < lines.length; x++) {
             if (lines[x].startsWith("#N")) {
-                formatedMetaData += "Name: " + lines[x] + "\n";
+                formatedMetaData += "Title: " + lines[x] + "\n";
             } else if (lines[x].startsWith("#O")) {
                 formatedMetaData += "Author: " + lines[x] + "\n";
             } else if (lines[x].startsWith("#c") || lines[x].startsWith("#C")) {

@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.*;
@@ -34,10 +35,12 @@ public class Controller implements Initializable {
     @FXML private ColorPicker cellColorPicker;
     @FXML private ColorPicker backgroundColorPicker;
     @FXML private TextField sizeInputField;
+    @FXML private TextField ruleInputField;
     @FXML private Canvas canvasArea;
     @FXML private Label generationLabel;
     @FXML private Label fpsLabel;
     @FXML private Label aliveLabel;
+    @FXML private Label ruleLabel;
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
@@ -77,6 +80,7 @@ public class Controller implements Initializable {
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
         speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {setFPS();});
         fileHandler.playBoard = board;
+        fileHandler.gameOfLife = gOL;
     }
 
     /**
@@ -122,6 +126,9 @@ public class Controller implements Initializable {
         //Sets the fill back to the current cell color.
         gc.setFill(currentCellColor);
         gc.setStroke(Color.BLACK);
+
+        //double xOffset = (canvasArea.getWidth() - (board.cellSize*board.boardGrid.length))/2;
+        //double yOffset = (canvasArea.getHeight() - (board.cellSize*board.boardGrid[0].length))/2;
 
         //Iterates through the current board and draws live cells. If gridToggle is true, draws a stroke around
         //every cell, dead or alive, to create a grid.
@@ -245,9 +252,11 @@ public class Controller implements Initializable {
      * @param actionEvent - The event where the user presses enter when within the Textfield box.
      */
     public void cellSizeOnEnter(ActionEvent actionEvent) {
-        double size = Double.parseDouble(sizeInputField.getText());
-        board.setCellSize(size);
-        draw();
+        if (!sizeInputField.getText().isEmpty()) {
+            double size = Double.parseDouble(sizeInputField.getText());
+            board.setCellSize(size);
+            draw();
+        }
     }
 
     /**
@@ -283,11 +292,15 @@ public class Controller implements Initializable {
         //Checks that the user is within the playing board during click, and changes the cells if yes.
         if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
             if (board.boardGrid[x][y] == 0) {
+                if (board.boardGrid[x][y] != 1) {
+                    board.cellsAlive++;
+                }
                 board.boardGrid[x][y] = 1;
-                board.cellsAlive++;
             } else {
+                if (board.cellsAlive > 0 && board.boardGrid[x][y] == 1) {
+                    board.cellsAlive--;
+                }
                 board.boardGrid[x][y] = 0;
-                board.cellsAlive--;
             }
             aliveLabel.setText(Integer.toString(board.cellsAlive));
         }
@@ -318,12 +331,15 @@ public class Controller implements Initializable {
 
                 //If boolean erase is true, it sets the cell to 0. Else, sets the cell to 1.
                 if (erase) {
+                    if (board.cellsAlive > 0 && board.boardGrid[x][y] == 1) {
+                        board.cellsAlive--;
+                    }
                     board.boardGrid[x][y] = 0;
-                    board.cellsAlive--;
                 } else {
+                    if (board.boardGrid[x][y] != 1) {
+                        board.cellsAlive++;
+                    }
                     board.boardGrid[x][y] = 1;
-                    board.cellsAlive++;
-
                 }
                 aliveLabel.setText(Integer.toString(board.cellsAlive));
             }
@@ -353,6 +369,7 @@ public class Controller implements Initializable {
             try {
                 fileHandler.readGameBoardFromDisk(file);
                 aliveLabel.setText(Integer.toString(board.cellsAlive));
+                ruleLabel.setText(gOL.ruleString.toUpperCase());
             } catch (IOException ie) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -389,6 +406,7 @@ public class Controller implements Initializable {
             try {
                 fileHandler.readGameBoardFromURL(url);
                 aliveLabel.setText(Integer.toString(board.cellsAlive));
+                ruleLabel.setText(gOL.ruleString.toUpperCase());
             } catch (IOException ie) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -410,6 +428,14 @@ public class Controller implements Initializable {
             }
         }
         draw();
+    }
+
+    public void rulesOnEnter(ActionEvent actionEvent) {
+        gOL.setRuleSet(ruleInputField.getText());
+        System.out.println(gOL.ruleString);
+        System.out.println("Survives : " + gOL.surviveRules);
+        System.out.println("Born : " + gOL.bornRules);
+        ruleLabel.setText(gOL.ruleString.toUpperCase());
     }
 
 }
