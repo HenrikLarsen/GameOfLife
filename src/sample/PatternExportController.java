@@ -62,7 +62,8 @@ public class PatternExportController implements Initializable {
     }
 
     public void closeClick(ActionEvent actionEvent) {
-
+        Stage currentStage = (Stage) editorCanvas.getScene().getWindow();
+        currentStage.close();
     }
 
     public void setExportBoard(StaticBoard board) {
