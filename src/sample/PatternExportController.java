@@ -39,7 +39,7 @@ public class PatternExportController implements Initializable {
 
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
-        drawEditorBoard();
+        //drawEditorBoard();
     }
 
     public void drawEditorBoard() {
@@ -47,7 +47,7 @@ public class PatternExportController implements Initializable {
         graphicsContext.setFill(currentBackgroundColor);
         graphicsContext.fillRect(0,0,editorCanvas.getWidth(), editorCanvas.getHeight());
         graphicsContext.setFill(currentCellColor);
-        if (exportBoard != null) {
+        //if (exportBoard != null) {
             cellSize = editorCanvas.getWidth() / exportBoard.boardGrid.length;
 
 
@@ -58,7 +58,7 @@ public class PatternExportController implements Initializable {
                     }
                 }
             }
-        }
+        //}
     }
 
     public void closeClick(ActionEvent actionEvent) {
