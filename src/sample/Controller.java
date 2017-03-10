@@ -291,12 +291,6 @@ public class Controller implements Initializable {
         int x = (int)(mouseEvent.getX()/board.cellSize);
         int y = (int)(mouseEvent.getY()/board.cellSize);
 
-        //Sets global variable erase to true if the first clicked cell was alive.
-        //If true, drag and click will only erase until the mouse is released. If false, method will only draw.
-        if (board.boardGrid[x][y] == 1) {
-            erase = true;
-        }
-
         //Makes a copy of the board when the mouse button is pressed, stores as a global variable.
         boardAtMousePressed = new byte[board.boardGrid.length][board.boardGrid[0].length];
         for (int i = 0; i < boardAtMousePressed.length; i++) {
@@ -307,6 +301,13 @@ public class Controller implements Initializable {
 
         //Checks that the user is within the playing board during click, and changes the cells if yes.
         if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
+
+            //Sets global variable erase to true if the first clicked cell was alive.
+            //If true, drag and click will only erase until the mouse is released. If false, method will only draw.
+            if (board.boardGrid[x][y] == 1) {
+                erase = true;
+            }
+
             if (board.boardGrid[x][y] == 0) {
                 if (board.boardGrid[x][y] != 1) {
                     board.cellsAlive++;
