@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.PatternExportController">
+    <bottom>
+        <VBox prefHeight="200.0" prefWidth="800.0">
+            <children>
+                <ScrollPane prefHeight="216.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#drawEditorBoard" prefWidth="90.0" text="Update Strip">
+                            <HBox.margin>
+                                <Insets left="14.0" top="9.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Button layoutX="24.0" layoutY="19.0" mnemonicParsing="false" onAction="#closeClick" prefWidth="90.0" text="Close">
+                            <HBox.margin>
+                                <Insets left="10.0" top="9.0" />
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </bottom>
+    <left>
+        <AnchorPane maxHeight="360.0" maxWidth="360.0" minHeight="360.0" minWidth="360.0" prefHeight="360.0" prefWidth="360.0" style="-fx-background-color: darkgrey;">
+            <children>
+                <Canvas fx:id="editorCanvas" height="354.0" onMouseDragged="#mouseDragged" onMousePressed="#mousePressed" onMouseReleased="#mouseDragOver" width="354.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0" BorderPane.alignment="CENTER_LEFT">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="7.0" right="10.0" top="10.0" />
+                    </BorderPane.margin>
+                </Canvas>
+            </children>
+            <BorderPane.margin>
+                <Insets left="20.0" top="20.0" />
+            </BorderPane.margin>
+        </AnchorPane>
+    </left>
+</BorderPane>

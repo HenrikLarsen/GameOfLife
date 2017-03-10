@@ -6,7 +6,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.*;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.*;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
@@ -14,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -50,11 +54,14 @@ public class Controller implements Initializable {
     private StaticBoard board = new StaticBoard();
     private GameOfLife gOL = new GameOfLife(board);
     private Timeline timeline;
-    private boolean gridToggle = true;
+    private boolean gridToggle = false;
     private boolean erase = false;
     private byte[][] boardAtMousePressed;
     private FileHandler fileHandler = new FileHandler();
+    private Stage exportStage;
+    private PatternExportController exportController;
     private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds", "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
+
 
     /**
      * A concrete implementation of the method in interface Initializable.
@@ -74,9 +81,6 @@ public class Controller implements Initializable {
      * @param resources The resources used to localize the root object, or null if the root object was not localized.
      */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
-        cellColorPicker.setValue(currentCellColor);
-        backgroundColorPicker.setValue(currentBackgroundColor);
-        draw();
         KeyFrame keyframe = addNewKeyFrame();
         timeline = new Timeline(keyframe);
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -493,4 +497,23 @@ public class Controller implements Initializable {
         alert.setContentText("RLE rule format: " + gOL.ruleString + "\n\n" + gOL.ruleDescription);
         alert.showAndWait();
     }
+
+    public void exportButtonClick(ActionEvent actionEvent) throws Exception{
+        timeline.pause();
+        exportStage = new Stage();
+        exportStage.initModality(Modality.WINDOW_MODAL);
+        exportStage.initOwner(canvasArea.getScene().getWindow());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("PatternExport.fxml"));
+        Parent root = loader.load();
+        exportController = loader.getController();
+        exportController.setExportBoard(board);
+
+        exportStage.setTitle("GameOfLife");
+        exportStage.setScene(new Scene(root, 800, 600));
+
+        exportStage.showAndWait();
+        draw();
+
+    }
+
 }
