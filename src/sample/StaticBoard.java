@@ -131,4 +131,30 @@ public class StaticBoard extends Board {
             }
         }
     }
+
+    private int[] getBoundingBox() {
+        int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
+        boundingBox[0] = boardGrid.length;
+        boundingBox[1] = 0;
+        boundingBox[2] = boardGrid[0].length;
+        boundingBox[3] = 0;
+        for(int i = 0; i < boardGrid.length; i++) {
+            for(int j = 0; j < boardGrid[i].length; j++) {
+                if(boardGrid[i][j] == 0) continue;
+                if(i < boundingBox[0]) {
+                    boundingBox[0] = i;
+                }
+                if(i > boundingBox[1]) {
+                    boundingBox[1] = i;
+                }
+                if(j < boundingBox[2]) {
+                    boundingBox[2] = j;
+                }
+                if(j > boundingBox[3]) {
+                    boundingBox[3] = j;
+                }
+            }
+        }
+        return boundingBox;
+    }
 }
