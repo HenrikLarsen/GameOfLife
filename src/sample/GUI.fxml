@@ -24,6 +24,11 @@ Layout er konstruert ved bruk av scenebuilder.
                         <MenuItem mnemonicParsing="false" onAction="#closeClick" text="Close" />
                     </items>
                 </Menu>
+                <Menu mnemonicParsing="false" text="View">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showRuleDescription" text="Show rules description" />
+                    </items>
+                </Menu>
             </menus>
         </MenuBar>
     </top>
@@ -89,17 +94,23 @@ Layout er konstruert ved bruk av scenebuilder.
                         <Insets top="30.0" />
                     </VBox.margin>
                 </Label>
-                <TextField fx:id="ruleInputField" promptText="B****/S****" onAction="#rulesOnEnter" prefHeight="27.0" prefWidth="90.0">
+                <TextField fx:id="ruleInputField" onAction="#rulesOnEnter" prefHeight="27.0" prefWidth="90.0" promptText="B****/S****">
                     <VBox.margin>
                         <Insets right="10.0" />
                     </VBox.margin>
                 </TextField>
+            <Label text="Rules">
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
+            </Label>
+            <ChoiceBox fx:id="chooseRulesBox" onAction="#chooseRulesClick" prefHeight="27.0" prefWidth="81.0" />
             <Label text="Rules:">
                <font>
                   <Font size="12.0" />
                </font>
                <VBox.margin>
-                  <Insets top="150.0" />
+                  <Insets top="80.0" />
                </VBox.margin>
             </Label>
             <Label fx:id="ruleLabel" prefHeight="15.0" prefWidth="76.0" text="B3/S23">

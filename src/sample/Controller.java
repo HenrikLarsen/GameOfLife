@@ -3,6 +3,8 @@ package sample;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.*;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.*;
@@ -41,6 +43,7 @@ public class Controller implements Initializable {
     @FXML private Label fpsLabel;
     @FXML private Label aliveLabel;
     @FXML private Label ruleLabel;
+    @FXML private ChoiceBox chooseRulesBox;
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
@@ -51,6 +54,7 @@ public class Controller implements Initializable {
     private boolean erase = false;
     private byte[][] boardAtMousePressed;
     private FileHandler fileHandler = new FileHandler();
+    private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds", "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
 
     /**
      * A concrete implementation of the method in interface Initializable.
@@ -86,6 +90,9 @@ public class Controller implements Initializable {
             return change;
         });
         ruleInputField.setTextFormatter(formatter);
+
+        chooseRulesBox.setItems(chooseRulesList);
+        chooseRulesBox.getSelectionModel().selectFirst();
     }
 
     /**
@@ -449,12 +456,13 @@ public class Controller implements Initializable {
 
     public void rulesOnEnter(ActionEvent actionEvent) {
         try {
-            String ruleString = ruleInputField.getText();
-            gOL.setRuleSet(ruleString);
-            System.out.println(gOL.ruleString);
-            System.out.println("Survives : " + gOL.surviveRules);
-            System.out.println("Born : " + gOL.bornRules);
+            String ruleString = ruleInputField.getText().toUpperCase();
+            gOL.setRuleString(ruleString);
+            //System.out.println(gOL.ruleString);
+            //System.out.println("Survives : " + gOL.surviveRules);
+            //System.out.println("Born : " + gOL.bornRules);
             ruleLabel.setText(gOL.ruleString.toUpperCase());
+            ruleInputField.setText("");
         } catch (RulesFormatException rfe) {
             Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
             rulesAlert.setTitle("Error");
@@ -464,4 +472,25 @@ public class Controller implements Initializable {
         }
     }
 
+    public void chooseRulesClick(ActionEvent actionEvent){
+        String rules = (String)chooseRulesBox.getValue();
+        try{
+            gOL.setRuleString(rules);
+        }catch (RulesFormatException rfee) {
+            Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
+            rulesAlert.setTitle("Error2");
+            rulesAlert.setHeaderText("Invalid rules");
+            rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
+            rulesAlert.showAndWait();
+        }
+        ruleLabel.setText(gOL.ruleString.toUpperCase());
+    }
+
+    public void showRuleDescription(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Rule description");
+        alert.setHeaderText("Title: " + gOL.ruleName);
+        alert.setContentText("RLE rule format: " + gOL.ruleString + "\n\n" + gOL.ruleDescription);
+        alert.showAndWait();
+    }
 }
