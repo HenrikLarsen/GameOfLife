@@ -46,6 +46,8 @@ public class PatternExportController implements Initializable {
     TextField commentField;
     @FXML
     CheckBox dateCheckBox;
+    @FXML
+    ColorPicker cellColorPicker;
 
 
     private StaticBoard exportBoard;
@@ -55,6 +57,7 @@ public class PatternExportController implements Initializable {
     private Color currentBackgroundColor = Color.LIGHTGRAY;
     private boolean erase = false;
     private byte[][] boardAtMousePressed;
+    private boolean grid = false;
 
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
@@ -66,23 +69,34 @@ public class PatternExportController implements Initializable {
         graphicsContext.setFill(currentBackgroundColor);
         graphicsContext.fillRect(0,0,editorCanvas.getWidth(), editorCanvas.getHeight());
         graphicsContext.setFill(currentCellColor);
-        //if (exportBoard != null) {
-            cellSize = editorCanvas.getWidth() / exportBoard.boardGrid.length;
+        cellSize = editorCanvas.getWidth() / exportBoard.boardGrid.length;
 
 
-            for (int x = 0; x < exportBoard.boardGrid.length; x++) {
-                for (int y = 0; y < exportBoard.boardGrid[0].length; y++) {
-                    if (exportBoard.boardGrid[x][y] == 1) {
+        for (int x = 0; x < exportBoard.boardGrid.length; x++) {
+            for (int y = 0; y < exportBoard.boardGrid[0].length; y++) {
+                if (exportBoard.boardGrid[x][y] == 1) {
                         graphicsContext.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize, cellSize);
-                    }
                 }
             }
-        //}
+        }
+
+        if (grid) {
+            for (int x = 0; x < exportBoard.boardGrid.length; x++) {
+                for (int y = 0; y < exportBoard.boardGrid[0].length; y++) {
+                    graphicsContext.strokeRect(x * cellSize + 1, y * cellSize + 1, cellSize, cellSize);
+                }
+            }
+        }
     }
 
     public void closeClick(ActionEvent actionEvent) {
         Stage currentStage = (Stage) editorCanvas.getScene().getWindow();
         currentStage.close();
+    }
+
+    public void chooseCellColor(ActionEvent actionEvent) {
+        currentCellColor = cellColorPicker.getValue();
+        drawEditorBoard();
     }
 
     public void setExportBoard(StaticBoard board) {
@@ -162,6 +176,20 @@ public class PatternExportController implements Initializable {
         erase = false;
     }
 
+    public void clearBoardClick() {
+        exportBoard.resetBoard();
+        drawEditorBoard();
+    }
+
+    public void toggleGridClick() {
+        if (grid) {
+            grid = false;
+        } else {
+            grid = true;
+        }
+        drawEditorBoard();
+    }
+
 
     public void saveRLEClick() {
         int[] boundingbox = exportBoard.getBoundingBox();
@@ -174,34 +202,37 @@ public class PatternExportController implements Initializable {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         Date date = new Date();
 
-        if (file != null) {
-            try {
-                PrintWriter printWriter = new PrintWriter(file);
-                if (titleField.getText() != null)
-                    printWriter.println("#N "+titleField.getText()+".");
-                if (authorField.getText() != null) {
-                    if (dateCheckBox.isSelected()) {
-                        printWriter.println("#O "+authorField.getText()+". Created "+ dateFormat.format(date) + ".");
-                    } else {
-                        printWriter.println("#O "+authorField.getText()+".");
-                    }
-                } else if (authorField.getText() == null && dateCheckBox.isSelected()){
-                    printWriter.println("#O Created "+ dateFormat.format(date) + ".");
-                }
-                if (commentField.getText() != null) {
-                    printWriter.println("#C "+commentField.getText());
-                }
-                printWriter.print("x = "+x+", y = "+y+", rule = "+gameOfLife.getRuleString());
-                printWriter.close();
-            } catch (IOException ioe) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Error");
-                alert.setHeaderText("Could not save file.");
-                alert.setContentText("Your rle file was not saved. Please try again.");
-                alert.showAndWait();
-            }
-
+        if (file == null) {
+            return;
         }
+
+        try {
+            PrintWriter printWriter = new PrintWriter(file);
+            if (!titleField.getText().equals(""))
+                printWriter.println("#N "+titleField.getText()+".");
+            if (!authorField.getText().equals("")) {
+                if (dateCheckBox.isSelected()) {
+                    printWriter.println("#O "+authorField.getText()+". Created "+ dateFormat.format(date) + ".");
+                } else {
+                    printWriter.println("#O "+authorField.getText()+".");
+                }
+            } else if (authorField.getText().equals("") && dateCheckBox.isSelected()){
+                printWriter.println("#O Created "+ dateFormat.format(date) + ".");
+            }
+            if (!commentField.getText().equals("")) {
+                printWriter.println("#C "+commentField.getText());
+            }
+            printWriter.println("x = "+x+", y = "+y+", rule = "+gameOfLife.getRuleString());
+            printWriter.println(exportBoard.getBoundingBoxPattern());
+            printWriter.close();
+        } catch (IOException ioe) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Could not save file.");
+            alert.setContentText("Your rle file was not saved. Please try again.");
+            alert.showAndWait();
+        }
+
         System.out.println(file.toString());
     }
 

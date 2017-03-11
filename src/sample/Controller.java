@@ -514,7 +514,7 @@ public class Controller implements Initializable {
         exportStage.setTitle("GameOfLife");
         exportStage.setScene(new Scene(root, 800, 600));
 
-        exportStage.show();
+        exportStage.showAndWait();
         draw();
     }
 }
