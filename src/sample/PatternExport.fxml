@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
@@ -13,17 +14,45 @@
     <bottom>
         <VBox prefHeight="200.0" prefWidth="800.0">
             <children>
-                <ScrollPane prefHeight="216.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
+                <ScrollPane prefHeight="197.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Button mnemonicParsing="false" onAction="#drawEditorBoard" prefWidth="90.0" text="Update Strip">
                             <HBox.margin>
-                                <Insets left="14.0" top="9.0" />
+                                <Insets left="14.0" right="10.0" top="17.0" />
                             </HBox.margin>
                         </Button>
+                  <VBox>
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="102.0" text="Set frames" />
+                        <TextField alignment="TOP_LEFT" maxWidth="180.0" prefHeight="7.0" prefWidth="103.0" promptText="1-40">
+                           <HBox.margin>
+                              <Insets top="12.0" />
+                           </HBox.margin>
+                           <VBox.margin>
+                              <Insets right="10.0" />
+                           </VBox.margin>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="102.0" text="Set FPS" />
+                        <TextField alignment="TOP_LEFT" maxWidth="180.0" prefHeight="7.0" prefWidth="103.0" promptText="1-30">
+                           <HBox.margin>
+                              <Insets top="12.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <Button mnemonicParsing="false" prefWidth="90.0" text="Save GIF">
+                     <HBox.margin>
+                        <Insets left="10.0" top="17.0" />
+                     </HBox.margin>
+                  </Button>
                         <Button layoutX="24.0" layoutY="19.0" mnemonicParsing="false" onAction="#closeClick" prefWidth="90.0" text="Close">
                             <HBox.margin>
-                                <Insets left="10.0" top="9.0" />
+                                <Insets left="270.0" right="10.0" top="17.0" />
                             </HBox.margin>
                         </Button>
                     </children>
@@ -48,11 +77,11 @@
    <right>
       <VBox>
          <children>
-            <HBox prefHeight="81.0" prefWidth="394.0" BorderPane.alignment="CENTER">
+            <HBox prefHeight="40.0" prefWidth="400.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label alignment="CENTER" prefHeight="91.0" prefWidth="394.0" text="Metadata">
+                  <Label alignment="CENTER" prefHeight="28.0" prefWidth="400.0" text="Metadata" textOverrun="WORD_ELLIPSIS" underline="true">
                      <font>
-                        <Font size="48.0" />
+                        <Font size="28.0" />
                      </font>
                      <HBox.margin>
                         <Insets />
@@ -60,21 +89,118 @@
                   </Label>
                </children>
             </HBox>
-            <HBox prefHeight="300.0" prefWidth="400.0">
+            <HBox prefHeight="69.0" prefWidth="400.0">
                <children>
-                  <VBox prefHeight="200.0" prefWidth="200.0">
+                  <VBox prefHeight="109.0" prefWidth="200.0">
                      <children>
-                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="206.0" text="Title" />
-                        <TextField />
-                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="206.0" text="Author" />
-                        <TextField />
-                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="206.0" text="Comments" />
-                        <TextField prefHeight="91.0" prefWidth="200.0" />
+                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="256.0" text="Pattern Title">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField alignment="TOP_LEFT" maxWidth="180.0" prefHeight="25.0" prefWidth="180.0">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </VBox.margin>
+                        </TextField>
                      </children>
                   </VBox>
-                  <VBox prefHeight="200.0" prefWidth="200.0" />
+                  <VBox prefHeight="248.0" prefWidth="199.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="240.0" text="Author">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField prefHeight="25.0" prefWidth="182.0">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </VBox.margin>
+                        </TextField>
+                     </children>
+                  </VBox>
                </children>
             </HBox>
+            <VBox prefHeight="144.0" prefWidth="400.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="28.0" prefWidth="399.0" text="Comments">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField prefHeight="73.0" prefWidth="400.0">
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <HBox prefHeight="50.0" prefWidth="400.0">
+                     <children>
+                        <CheckBox mnemonicParsing="false" prefHeight="64.0" prefWidth="114.0" text="Include date">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </CheckBox>
+                        <Button mnemonicParsing="false" onAction="#saveRLEClick" prefWidth="90.0" text="Save RLE">
+                           <HBox.margin>
+                              <Insets left="170.0" right="10.0" top="12.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Line endX="290.0" fill="BLACK" opacity="0.45" startX="-90.0">
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </Line>
+            <VBox prefHeight="123.0" prefWidth="401.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="24.0" prefWidth="400.0" text="Editor" textOverrun="WORD_ELLIPSIS" underline="true">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+                  <HBox prefHeight="87.0" prefWidth="401.0">
+                     <children>
+                        <VBox prefHeight="109.0" prefWidth="200.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="35.0" prefWidth="256.0" text="Board size">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <TextField alignment="TOP_LEFT" maxWidth="180.0" prefHeight="25.0" prefWidth="180.0">
+                                 <VBox.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </VBox.margin>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="248.0" prefWidth="199.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="35.0" prefWidth="240.0" text="Rules">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <TextField prefHeight="25.0" prefWidth="182.0">
+                                 <VBox.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </VBox.margin>
+                              </TextField>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </VBox>
          </children>
       </VBox>
    </right>

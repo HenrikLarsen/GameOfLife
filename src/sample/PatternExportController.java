@@ -140,4 +140,8 @@ public class PatternExportController implements Initializable {
     }
 
 
+    public void saveRLEClick() {
+        System.out.println(exportBoard.getBoundingBoxPattern());
+    }
+
 }

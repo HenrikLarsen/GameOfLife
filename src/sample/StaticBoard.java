@@ -132,6 +132,22 @@ public class StaticBoard extends Board {
         }
     }
 
+    public String getBoundingBoxPattern() {
+        if(boardGrid.length == 0) return "";
+        int[] boundingBox = getBoundingBox();
+        String str = "";
+        for(int i = boundingBox[0]; i <= boundingBox[1]; i++) {
+            for(int j = boundingBox[2]; j <= boundingBox[3]; j++) {
+                if(boardGrid[i][j] == 1) {
+                    str = str + "1";
+                } else {
+                    str = str + "0";
+                }
+            }
+        }
+        return str;
+    }
+
     private int[] getBoundingBox() {
         int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
         boundingBox[0] = boardGrid.length;
