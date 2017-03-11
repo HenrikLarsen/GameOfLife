@@ -36,14 +36,13 @@ public class PatternExportController implements Initializable {
     @FXML
     TextField authorField;
     @FXML
-    TextField commentField;
+    TextArea commentField;
     @FXML
     TextField ruleInputField;
     @FXML
     CheckBox dateCheckBox;
     @FXML
     ColorPicker cellColorPicker;
-
 
 
     private StaticBoard exportBoard;
@@ -64,6 +63,7 @@ public class PatternExportController implements Initializable {
             return change;
         });
         ruleInputField.setTextFormatter(formatter);
+
     }
 
     public void drawEditorBoard() {
@@ -194,10 +194,16 @@ public class PatternExportController implements Initializable {
 
     public void saveRLEClick() {
         int[] boundingbox = exportBoard.getBoundingBox();
-        int x = Math.abs(boundingbox[1]-boundingbox[0]);
-        int y = Math.abs(boundingbox[3]-boundingbox[2]);
+        int x = Math.abs(boundingbox[1]-boundingbox[0]+1);
+        int y = Math.abs(boundingbox[3]-boundingbox[2]+1);
         String rules = gameOfLife.getRuleString();
-        System.out.println(exportBoard.getBoundingBoxPattern());
+
+        String rawString = patternToString();
+        String encodedString = encodeStringToRLE(rawString);
+
+        //Adds a new line for every 70 characters
+        String splitString = encodedString.replaceAll("(.{70})", "$1\n");
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Run-length encoding", "*.rle"));
         File file = fileChooser.showSaveDialog(new Stage());
@@ -222,16 +228,17 @@ public class PatternExportController implements Initializable {
                 printWriter.println("#O Created "+ dateFormat.format(date) + ".");
             }
             if (!commentField.getText().equals("")) {
-                printWriter.println("#C "+commentField.getText());
+                String commentText = commentField.getText().replaceAll("(.{67})", "$1\n").replaceAll("\n", "\n#C ");
+                printWriter.println("#C " + commentText);
             }
             printWriter.println("x = "+x+", y = "+y+", rule = "+rules);
-            printWriter.println(exportBoard.getBoundingBoxPattern());
+            printWriter.println(splitString);
             printWriter.close();
         } catch (IOException ioe) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("Could not save file.");
-            alert.setContentText("Your rle file was not saved. Please try again.");
+            alert.setContentText("Your pattern was not saved. Please try again.");
             alert.showAndWait();
         }
 
@@ -251,4 +258,72 @@ public class PatternExportController implements Initializable {
             rulesAlert.showAndWait();
         }
     }
+
+    /*public byte[][] trim() {
+        int[] boundingBox = exportBoard.getBoundingBox();
+        byte[][] trimmedBoard = new byte[boundingBox[1]-boundingBox[0]+1][boundingBox[3]-boundingBox[2]+1];
+        for(int i = boundingBox[2]; i <= boundingBox[3]; i++) {
+            for (int j = boundingBox[0]; j <= boundingBox[1]; j++) {
+                trimmedBoard[i][j] = exportBoard.boardGrid[j][i];
+            }
+        }
+        return trimmedBoard;
+    }*/
+
+    public String patternToString () {
+        StringBuffer patternString = new StringBuffer();
+        if (exportBoard.boardGrid.length == 0) {
+            return "";
+        }
+
+        int[] boundingBox = exportBoard.getBoundingBox();
+        for (int i = boundingBox[2]; i <= boundingBox[3]; i++) {
+            for (int j = boundingBox[0]; j <= boundingBox[1]; j++) {
+                if (exportBoard.boardGrid[j][i] == 1) {
+                    patternString.append("o");
+                } else if (exportBoard.boardGrid[j][i] == 0) {
+                    patternString.append("b");
+                }
+            }
+            if (i < boundingBox[3]) {
+                patternString.append("$");
+            } else {
+                patternString.append("!");
+            }
+        }
+        return patternString.toString();
+    }
+
+
+
+
+    //triks litt med denne:
+    public String encodeStringToRLE(String rawString) {
+        StringBuffer encodedString = new StringBuffer();
+
+        for (int i = 0; i < rawString.length(); i++) {
+            int repetitions = 1;
+
+            while ((i+1 < rawString.length()) && (rawString.charAt(i) == rawString.charAt(i+1))) {
+                i++;
+                repetitions++;
+            }
+
+            if (repetitions > 1) {
+                encodedString.append(repetitions).append(rawString.charAt(i));
+            } else {
+                encodedString.append(rawString.charAt(i));
+            }
+        }
+        return encodedString.toString();
+    }
+
+
+    //TODO: Prøv å lage en trim() metode som i oppgavesettet.
+    //TODO: Prøv å limiter antallet man kan skrive per linje i comments til 67.
+    //TODO: Implementer "The Strip"
+    //TODO: Implementer lagring til GIF.
+
+    //TODO: HØR ANG FLYTTING AV METODER TIL ANDRE KLASSER. SPESIFIKT DET SOM RELATERER TIL SKRIVING AV FIL OG DUPLIKATKODE FRA CONTROLLER.JAVA
+
 }

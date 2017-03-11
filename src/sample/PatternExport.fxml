@@ -128,14 +128,14 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="commentField" prefHeight="73.0" prefWidth="400.0">
+                  <TextArea fx:id="commentField" prefHeight="73.0" prefWidth="400.0">
                      <VBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </VBox.margin>
-                  </TextField>
+                  </TextArea>
                   <HBox prefHeight="50.0" prefWidth="400.0">
                      <children>
-                        <CheckBox fx:id="dateCheckBox" mnemonicParsing="false" prefHeight="64.0" prefWidth="114.0" text="Include date">
+                        <CheckBox fx:id="dateCheckBox" mnemonicParsing="false" prefHeight="48.0" prefWidth="222.0" text="Include date and time">
                            <HBox.margin>
                               <Insets left="20.0" />
                            </HBox.margin>
@@ -145,7 +145,7 @@
                         </CheckBox>
                         <Button mnemonicParsing="false" onAction="#saveRLEClick" prefWidth="90.0" text="Save RLE">
                            <HBox.margin>
-                              <Insets left="170.0" right="10.0" top="12.0" />
+                              <Insets left="60.0" right="10.0" top="12.0" />
                            </HBox.margin>
                         </Button>
                      </children>
@@ -221,7 +221,7 @@
                                     <Insets top="20.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="ruleInputField" promptText="B****/S****" onAction="#setRules" prefHeight="25.0" prefWidth="182.0">
+                              <TextField fx:id="ruleInputField" onAction="#setRules" prefHeight="25.0" prefWidth="182.0" promptText="B****/S****">
                                  <VBox.margin>
                                     <Insets left="10.0" right="10.0" />
                                  </VBox.margin>
