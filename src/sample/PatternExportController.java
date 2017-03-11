@@ -10,13 +10,22 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.control.TextField;
+import javafx.scene.control.CheckBox;
 
-import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -29,8 +38,18 @@ public class PatternExportController implements Initializable {
 
     @FXML
     Canvas editorCanvas;
+    @FXML
+    TextField titleField;
+    @FXML
+    TextField authorField;
+    @FXML
+    TextField commentField;
+    @FXML
+    CheckBox dateCheckBox;
+
 
     private StaticBoard exportBoard;
+    private GameOfLife gameOfLife;
     public double cellSize;
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
@@ -68,6 +87,10 @@ public class PatternExportController implements Initializable {
 
     public void setExportBoard(StaticBoard board) {
         this.exportBoard = board;
+    }
+
+    public void setGameOfLife(GameOfLife gOL) {
+        this.gameOfLife = gOL;
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
@@ -141,7 +164,45 @@ public class PatternExportController implements Initializable {
 
 
     public void saveRLEClick() {
+        int[] boundingbox = exportBoard.getBoundingBox();
+        int x = Math.abs(boundingbox[1]-boundingbox[0]);
+        int y = Math.abs(boundingbox[3]-boundingbox[2]);
         System.out.println(exportBoard.getBoundingBoxPattern());
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Run-length encoding", "*.rle"));
+        File file = fileChooser.showSaveDialog(new Stage());
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        Date date = new Date();
+
+        if (file != null) {
+            try {
+                PrintWriter printWriter = new PrintWriter(file);
+                if (titleField.getText() != null)
+                    printWriter.println("#N "+titleField.getText()+".");
+                if (authorField.getText() != null) {
+                    if (dateCheckBox.isSelected()) {
+                        printWriter.println("#O "+authorField.getText()+". Created "+ dateFormat.format(date) + ".");
+                    } else {
+                        printWriter.println("#O "+authorField.getText()+".");
+                    }
+                } else if (authorField.getText() == null && dateCheckBox.isSelected()){
+                    printWriter.println("#O Created "+ dateFormat.format(date) + ".");
+                }
+                if (commentField.getText() != null) {
+                    printWriter.println("#C "+commentField.getText());
+                }
+                printWriter.print("x = "+x+", y = "+y+", rule = "+gameOfLife.getRuleString());
+                printWriter.close();
+            } catch (IOException ioe) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Could not save file.");
+                alert.setContentText("Your rle file was not saved. Please try again.");
+                alert.showAndWait();
+            }
+
+        }
+        System.out.println(file.toString());
     }
 
 }

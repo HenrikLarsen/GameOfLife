@@ -213,4 +213,8 @@ public class GameOfLife {
             }
         }
     }
+
+    public String getRuleString(){
+        return ruleString;
+    }
 }

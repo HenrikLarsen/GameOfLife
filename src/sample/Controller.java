@@ -508,12 +508,13 @@ public class Controller implements Initializable {
         Parent root = loader.load();
         exportController = loader.getController();
         exportController.setExportBoard(board);
+        exportController.setGameOfLife(gOL);
         exportController.drawEditorBoard();
 
         exportStage.setTitle("GameOfLife");
         exportStage.setScene(new Scene(root, 800, 600));
 
-        exportStage.showAndWait();
+        exportStage.show();
         draw();
     }
 }

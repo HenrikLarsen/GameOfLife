@@ -148,7 +148,7 @@ public class StaticBoard extends Board {
         return str;
     }
 
-    private int[] getBoundingBox() {
+    public int[] getBoundingBox() {
         int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
         boundingBox[0] = boardGrid.length;
         boundingBox[1] = 0;
