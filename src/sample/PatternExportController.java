@@ -1,25 +1,18 @@
 package sample;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,9 +38,12 @@ public class PatternExportController implements Initializable {
     @FXML
     TextField commentField;
     @FXML
+    TextField ruleInputField;
+    @FXML
     CheckBox dateCheckBox;
     @FXML
     ColorPicker cellColorPicker;
+
 
 
     private StaticBoard exportBoard;
@@ -62,6 +58,12 @@ public class PatternExportController implements Initializable {
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         //drawEditorBoard();
+        cellColorPicker.setValue(Color.LIMEGREEN);
+        TextFormatter<String> formatter = new TextFormatter<String>( change -> {
+            change.setText(change.getText().replaceAll("[^sSbB012345678/]", ""));
+            return change;
+        });
+        ruleInputField.setTextFormatter(formatter);
     }
 
     public void drawEditorBoard() {
@@ -70,7 +72,6 @@ public class PatternExportController implements Initializable {
         graphicsContext.fillRect(0,0,editorCanvas.getWidth(), editorCanvas.getHeight());
         graphicsContext.setFill(currentCellColor);
         cellSize = editorCanvas.getWidth() / exportBoard.boardGrid.length;
-
 
         for (int x = 0; x < exportBoard.boardGrid.length; x++) {
             for (int y = 0; y < exportBoard.boardGrid[0].length; y++) {
@@ -195,6 +196,7 @@ public class PatternExportController implements Initializable {
         int[] boundingbox = exportBoard.getBoundingBox();
         int x = Math.abs(boundingbox[1]-boundingbox[0]);
         int y = Math.abs(boundingbox[3]-boundingbox[2]);
+        String rules = gameOfLife.getRuleString();
         System.out.println(exportBoard.getBoundingBoxPattern());
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Run-length encoding", "*.rle"));
@@ -222,7 +224,7 @@ public class PatternExportController implements Initializable {
             if (!commentField.getText().equals("")) {
                 printWriter.println("#C "+commentField.getText());
             }
-            printWriter.println("x = "+x+", y = "+y+", rule = "+gameOfLife.getRuleString());
+            printWriter.println("x = "+x+", y = "+y+", rule = "+rules);
             printWriter.println(exportBoard.getBoundingBoxPattern());
             printWriter.close();
         } catch (IOException ioe) {
@@ -236,4 +238,17 @@ public class PatternExportController implements Initializable {
         System.out.println(file.toString());
     }
 
+    public void setRules(ActionEvent actionEvent) {
+        try {
+            String ruleString = ruleInputField.getText().toUpperCase();
+            gameOfLife.setRuleString(ruleString);
+            System.out.println(gameOfLife.getRuleString());
+        } catch (RulesFormatException rfe) {
+            Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
+            rulesAlert.setTitle("Error");
+            rulesAlert.setHeaderText("Invalid rules");
+            rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
+            rulesAlert.showAndWait();
+        }
+    }
 }

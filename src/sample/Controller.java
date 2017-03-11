@@ -516,5 +516,6 @@ public class Controller implements Initializable {
 
         exportStage.showAndWait();
         draw();
+        ruleLabel.setText(gOL.ruleString.toUpperCase());
     }
 }
