@@ -14,7 +14,10 @@
     <bottom>
         <VBox prefHeight="200.0" prefWidth="800.0">
             <children>
-                <ScrollPane prefHeight="197.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
+                <ScrollPane prefHeight="197.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+               <content>
+                  <Canvas height="147.0" width="785.0" />
+               </content></ScrollPane>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Button mnemonicParsing="false" onAction="#drawEditorBoard" prefWidth="90.0" text="Update Strip">
@@ -128,7 +131,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextArea fx:id="commentField" prefHeight="73.0" prefWidth="400.0">
+                  <TextArea fx:id="commentField" prefHeight="73.0" prefWidth="400.0" wrapText="true">
                      <VBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </VBox.margin>

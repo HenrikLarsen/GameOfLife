@@ -58,12 +58,11 @@ public class PatternExportController implements Initializable {
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         //drawEditorBoard();
         cellColorPicker.setValue(Color.LIMEGREEN);
-        TextFormatter<String> formatter = new TextFormatter<String>( change -> {
+        TextFormatter<String> ruleFormatter = new TextFormatter<String>( change -> {
             change.setText(change.getText().replaceAll("[^sSbB012345678/]", ""));
             return change;
         });
-        ruleInputField.setTextFormatter(formatter);
-
+        ruleInputField.setTextFormatter(ruleFormatter);
     }
 
     public void drawEditorBoard() {
@@ -198,7 +197,10 @@ public class PatternExportController implements Initializable {
         int y = Math.abs(boundingbox[3]-boundingbox[2]+1);
         String rules = gameOfLife.getRuleString();
 
-        String rawString = patternToString();
+        byte[][] trimmedPattern = trim();
+
+        String rawString = patternToString(trimmedPattern);
+        System.out.println(rawString);
         String encodedString = encodeStringToRLE(rawString);
 
         //Adds a new line for every 70 characters
@@ -259,23 +261,58 @@ public class PatternExportController implements Initializable {
         }
     }
 
-    /*public byte[][] trim() {
+    public byte[][] trim() {
         int[] boundingBox = exportBoard.getBoundingBox();
-        byte[][] trimmedBoard = new byte[boundingBox[1]-boundingBox[0]+1][boundingBox[3]-boundingBox[2]+1];
-        for(int i = boundingBox[2]; i <= boundingBox[3]; i++) {
-            for (int j = boundingBox[0]; j <= boundingBox[1]; j++) {
-                trimmedBoard[i][j] = exportBoard.boardGrid[j][i];
-            }
-        }
-        return trimmedBoard;
-    }*/
+        int x = Math.abs(boundingBox[1] - boundingBox[0] + 1);
+        int y = Math.abs(boundingBox[3] - boundingBox[2] + 1);
 
-    public String patternToString () {
+        byte[][] trimmedBoard = new byte[x][y];
+
+        int newX = 0;
+        int newY = 0;
+
+        System.out.println(trimmedBoard.length);
+        System.out.println(trimmedBoard[0].length);
+
+        for (int i = boundingBox[0]; i <= boundingBox[1]; i++) {
+            for (int j = boundingBox[2]; j <= boundingBox[3]; j++) {
+                if (exportBoard.boardGrid[i][j] == 1) {
+                    trimmedBoard[newX][newY] = 1;
+                }
+                newY++;
+            }
+            newX++;
+            newY = 0;
+        }
+
+        return trimmedBoard;
+    }
+
+
+    public String patternToString (byte[][] pattern) {
         StringBuffer patternString = new StringBuffer();
-        if (exportBoard.boardGrid.length == 0) {
+        if (pattern.length == 0) {
             return "";
         }
 
+        for (int i = 0; i < pattern[0].length; i++) {
+            for (int j = 0; j < pattern.length; j++) {
+                if (pattern[j][i] == 1) {
+                    patternString.append("o");
+                } else if (pattern[j][i] == 0) {
+                    patternString.append("b");
+                }
+            }
+            if (i < pattern[0].length-1) {
+                patternString.append("$");
+            } else {
+                patternString.append("!");
+            }
+        }
+
+        return patternString.toString();
+
+        /*
         int[] boundingBox = exportBoard.getBoundingBox();
         for (int i = boundingBox[2]; i <= boundingBox[3]; i++) {
             for (int j = boundingBox[0]; j <= boundingBox[1]; j++) {
@@ -291,7 +328,8 @@ public class PatternExportController implements Initializable {
                 patternString.append("!");
             }
         }
-        return patternString.toString();
+
+        return patternString.toString(); */
     }
 
 
@@ -318,9 +356,28 @@ public class PatternExportController implements Initializable {
         return encodedString.toString();
     }
 
+    /*
+    public void drawStrip() {
+        GraphicsContext gc = strip.getGraphicsContext2D();
+        gc.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
+        Affine xform = new Affine();
+        double tx = xpadding;
+        < start strip loop>
+                xform.setTx(tx);
+                gc.setTransform(xform);
+                <next generation call>
+                <draw game board call>
+                tx += <width of game board + xpadding>
+        <end strip loop>
 
-    //TODO: Prøv å lage en trim() metode som i oppgavesettet.
-    //TODO: Prøv å limiter antallet man kan skrive per linje i comments til 67.
+        //reset transform
+        xform.setTx(0.0);
+        gc.setTransform(xform);
+    }*/
+
+
+    //TODO: Prøv å lage en trim() metode som i oppgavesettet.  OK! DONE
+    //TODO: Prøv å limiter antallet man kan skrive per linje i comments til 67. (UMULIG uten ganske hard koding)
     //TODO: Implementer "The Strip"
     //TODO: Implementer lagring til GIF.
 
