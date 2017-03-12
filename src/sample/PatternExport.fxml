@@ -16,11 +16,11 @@
             <children>
                 <ScrollPane prefHeight="197.0" prefWidth="800.0" BorderPane.alignment="CENTER">
                <content>
-                  <Canvas height="147.0" width="785.0" />
+                  <Canvas fx:id="strip" height="136.0" width="887.0" />
                </content></ScrollPane>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <Button mnemonicParsing="false" onAction="#drawEditorBoard" prefWidth="90.0" text="Update Strip">
+                        <Button mnemonicParsing="false" onAction="#updateStripClick" prefWidth="90.0" text="Update Strip">
                             <HBox.margin>
                                 <Insets left="14.0" right="10.0" top="17.0" />
                             </HBox.margin>

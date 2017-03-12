@@ -9,6 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Affine;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
@@ -43,6 +44,8 @@ public class PatternExportController implements Initializable {
     CheckBox dateCheckBox;
     @FXML
     ColorPicker cellColorPicker;
+    @FXML
+    Canvas strip;
 
 
     private StaticBoard exportBoard;
@@ -356,25 +359,37 @@ public class PatternExportController implements Initializable {
         return encodedString.toString();
     }
 
-    /*
+    public void updateStripClick(ActionEvent actionEvent) {
+        drawStrip();
+    }
+
     public void drawStrip() {
+        cellSize = (strip.getHeight()*0.9)/exportBoard.boardGrid.length;
         GraphicsContext gc = strip.getGraphicsContext2D();
         gc.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
-        Affine xform = new Affine();
+        Affine padding = new Affine();
+        double xpadding = 20;
+        double ty = (strip.getHeight()*0.1)/2;
         double tx = xpadding;
-        < start strip loop>
-                xform.setTx(tx);
-                gc.setTransform(xform);
-                <next generation call>
-                <draw game board call>
-                tx += <width of game board + xpadding>
-        <end strip loop>
+        padding.setTy(ty);
+        for (int i = 0; i < 20; i++) {
+            padding.setTx(tx);
+            gc.setTransform(padding);
+            gameOfLife.nextGeneration();
+            for (int x = 0; x < exportBoard.boardGrid.length; x++) {
+                for (int y = 0; y < exportBoard.boardGrid[0].length; y++) {
+                    if (exportBoard.boardGrid[x][y] == 1) {
+                        gc.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize, cellSize);
+                    }
+                }
+            }
+            tx += strip.getHeight() + xpadding;
+        }
 
         //reset transform
-        xform.setTx(0.0);
-        gc.setTransform(xform);
-    }*/
-
+        padding.setTx(0.0);
+        gc.setTransform(padding);
+    }
 
     //TODO: Prøv å lage en trim() metode som i oppgavesettet.  OK! DONE
     //TODO: Prøv å limiter antallet man kan skrive per linje i comments til 67. (UMULIG uten ganske hard koding)
