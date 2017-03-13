@@ -117,6 +117,14 @@ public class PatternExportController implements Initializable {
         int x = (int)(mouseEvent.getX()/cellSize);
         int y = (int)(mouseEvent.getY()/cellSize);
 
+        //Makes a copy of the board when the mouse button is pressed, stores as a global variable.
+        boardAtMousePressed = new byte[exportBoard.boardGrid.length][exportBoard.boardGrid[0].length];
+        for (int i = 0; i < boardAtMousePressed.length; i++) {
+            for (int j = 0; j < boardAtMousePressed[i].length; j++) {
+                boardAtMousePressed[i][j] = exportBoard.boardGrid[i][j];
+            }
+        }
+
         //Checks that the user is within the playing board during click, and changes the cells if yes.
         if ((x < exportBoard.boardGrid.length) && (y < exportBoard.boardGrid[0].length) && x >= 0 && y >= 0) {
 
@@ -124,14 +132,6 @@ public class PatternExportController implements Initializable {
             //If true, drag and click will only erase until the mouse is released. If false, method will only draw.
             if (exportBoard.boardGrid[x][y] == 1) {
                 erase = true;
-            }
-
-            //Makes a copy of the board when the mouse button is pressed, stores as a global variable.
-            boardAtMousePressed = new byte[exportBoard.boardGrid.length][exportBoard.boardGrid[0].length];
-            for (int i = 0; i < boardAtMousePressed.length; i++) {
-                for (int j = 0; j < boardAtMousePressed[i].length; j++) {
-                    boardAtMousePressed[i][j] = exportBoard.boardGrid[i][j];
-                }
             }
 
             if (exportBoard.boardGrid[x][y] == 0) {
@@ -266,8 +266,8 @@ public class PatternExportController implements Initializable {
         }
     }
 
-    public byte[][] trim(StaticBoard staticBoard) {
-        int[] boundingBox = staticBoard.getBoundingBox();
+    public byte[][] trim(StaticBoard boardTrim) {
+        int[] boundingBox = boardTrim.getBoundingBox();
         int x = Math.abs(boundingBox[1] - boundingBox[0] + 1);
         int y = Math.abs(boundingBox[3] - boundingBox[2] + 1);
 
@@ -276,12 +276,9 @@ public class PatternExportController implements Initializable {
         int newX = 0;
         int newY = 0;
 
-        System.out.println(trimmedBoard.length);
-        System.out.println(trimmedBoard[0].length);
-
         for (int i = boundingBox[0]; i <= boundingBox[1]; i++) {
             for (int j = boundingBox[2]; j <= boundingBox[3]; j++) {
-                if (staticBoard.boardGrid[i][j] == 1) {
+                if (boardTrim.boardGrid[i][j] == 1) {
                     trimmedBoard[newX][newY] = 1;
                 }
                 newY++;
@@ -368,21 +365,21 @@ public class PatternExportController implements Initializable {
     public void drawStrip() {
         stripGol = (GameOfLife)gameOfLife.clone();
         stripBoard = stripGol.playBoard;
-        cellSize = (strip.getHeight()*0.9)/stripBoard.boardGrid.length;
+        double stripCellSize;
         GraphicsContext gc = strip.getGraphicsContext2D();
         gc.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
+        gc.setFill(currentCellColor);
         Affine padding = new Affine();
         double xpadding = 20;
-        double ty = (strip.getHeight()*0.1)/2;
+        double ty = (strip.getHeight()*0.1);
         double tx = xpadding;
         padding.setTy(ty);
         for (int i = 0; i < 20; i++) {
-            int[] boundingBox = stripBoard.getBoundingBox();
             byte[][] trimmedBoard = trim(stripBoard);
             if (trimmedBoard.length >= trimmedBoard[0].length) {
-                cellSize = (strip.getHeight()*0.9/trimmedBoard.length);
+                stripCellSize = (strip.getHeight()*0.85/trimmedBoard.length);
             } else {
-                cellSize = (strip.getHeight()*0.9/trimmedBoard[0].length);
+                stripCellSize = (strip.getHeight()*0.85/trimmedBoard[0].length);
             }
 
 
@@ -392,19 +389,11 @@ public class PatternExportController implements Initializable {
             for(int x = 0; x < trimmedBoard.length; x++) {
                 for (int y = 0; y < trimmedBoard[0].length; y++) {
                     if (trimmedBoard[x][y] == 1) {
-                        gc.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize, cellSize);
+                        gc.fillRect(x * stripCellSize + 1, y * stripCellSize + 1, stripCellSize, stripCellSize);
                     }
                 }
             }
 
-            /*
-            for (int x = 0; x < stripBoard.boardGrid.length; x++) {
-                for (int y = 0; y < stripBoard.boardGrid[0].length; y++) {
-                    if (stripBoard.boardGrid[x][y] == 1) {
-                        gc.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize, cellSize);
-                    }
-                }
-            }*/
             stripGol.nextGeneration();
             tx += strip.getHeight() + xpadding;
         }
@@ -414,9 +403,7 @@ public class PatternExportController implements Initializable {
         gc.setTransform(padding);
     }
 
-    //TODO: Prøv å lage en trim() metode som i oppgavesettet.  OK! DONE
-    //TODO: Prøv å limiter antallet man kan skrive per linje i comments til 67. (UMULIG uten ganske hard koding)
-    //TODO: Implementer "The Strip"
+    //TODO: Implementer "The Strip" (Ha et skille mellom hvert bilde)
     //TODO: Implementer lagring til GIF.
 
     //TODO: HØR ANG FLYTTING AV METODER TIL ANDRE KLASSER. SPESIFIKT DET SOM RELATERER TIL SKRIVING AV FIL OG DUPLIKATKODE FRA CONTROLLER.JAVA

@@ -510,6 +510,7 @@ public class Controller implements Initializable {
         exportController.setExportBoard(board);
         exportController.setGameOfLife(gOL);
         exportController.drawEditorBoard();
+        exportController.drawStrip();
 
         exportStage.setTitle("GameOfLife");
         exportStage.setScene(new Scene(root, 800, 600));
