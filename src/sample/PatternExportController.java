@@ -49,7 +49,9 @@ public class PatternExportController implements Initializable {
 
 
     private StaticBoard exportBoard;
+    private StaticBoard stripBoard;
     private GameOfLife gameOfLife;
+    private GameOfLife stripGol;
     public double cellSize;
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
@@ -200,7 +202,7 @@ public class PatternExportController implements Initializable {
         int y = Math.abs(boundingbox[3]-boundingbox[2]+1);
         String rules = gameOfLife.getRuleString();
 
-        byte[][] trimmedPattern = trim();
+        byte[][] trimmedPattern = trim(exportBoard);
 
         String rawString = patternToString(trimmedPattern);
         System.out.println(rawString);
@@ -264,8 +266,8 @@ public class PatternExportController implements Initializable {
         }
     }
 
-    public byte[][] trim() {
-        int[] boundingBox = exportBoard.getBoundingBox();
+    public byte[][] trim(StaticBoard staticBoard) {
+        int[] boundingBox = staticBoard.getBoundingBox();
         int x = Math.abs(boundingBox[1] - boundingBox[0] + 1);
         int y = Math.abs(boundingBox[3] - boundingBox[2] + 1);
 
@@ -279,7 +281,7 @@ public class PatternExportController implements Initializable {
 
         for (int i = boundingBox[0]; i <= boundingBox[1]; i++) {
             for (int j = boundingBox[2]; j <= boundingBox[3]; j++) {
-                if (exportBoard.boardGrid[i][j] == 1) {
+                if (staticBoard.boardGrid[i][j] == 1) {
                     trimmedBoard[newX][newY] = 1;
                 }
                 newY++;
@@ -364,7 +366,9 @@ public class PatternExportController implements Initializable {
     }
 
     public void drawStrip() {
-        cellSize = (strip.getHeight()*0.9)/exportBoard.boardGrid.length;
+        stripGol = (GameOfLife)gameOfLife.clone();
+        stripBoard = stripGol.playBoard;
+        cellSize = (strip.getHeight()*0.9)/stripBoard.boardGrid.length;
         GraphicsContext gc = strip.getGraphicsContext2D();
         gc.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
         Affine padding = new Affine();
@@ -373,16 +377,35 @@ public class PatternExportController implements Initializable {
         double tx = xpadding;
         padding.setTy(ty);
         for (int i = 0; i < 20; i++) {
+            int[] boundingBox = stripBoard.getBoundingBox();
+            byte[][] trimmedBoard = trim(stripBoard);
+            if (trimmedBoard.length >= trimmedBoard[0].length) {
+                cellSize = (strip.getHeight()*0.9/trimmedBoard.length);
+            } else {
+                cellSize = (strip.getHeight()*0.9/trimmedBoard[0].length);
+            }
+
+
             padding.setTx(tx);
             gc.setTransform(padding);
-            gameOfLife.nextGeneration();
-            for (int x = 0; x < exportBoard.boardGrid.length; x++) {
-                for (int y = 0; y < exportBoard.boardGrid[0].length; y++) {
-                    if (exportBoard.boardGrid[x][y] == 1) {
+
+            for(int x = 0; x < trimmedBoard.length; x++) {
+                for (int y = 0; y < trimmedBoard[0].length; y++) {
+                    if (trimmedBoard[x][y] == 1) {
                         gc.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize, cellSize);
                     }
                 }
             }
+
+            /*
+            for (int x = 0; x < stripBoard.boardGrid.length; x++) {
+                for (int y = 0; y < stripBoard.boardGrid[0].length; y++) {
+                    if (stripBoard.boardGrid[x][y] == 1) {
+                        gc.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize, cellSize);
+                    }
+                }
+            }*/
+            stripGol.nextGeneration();
             tx += strip.getHeight() + xpadding;
         }
 

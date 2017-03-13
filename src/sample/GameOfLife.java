@@ -217,4 +217,10 @@ public class GameOfLife {
     public String getRuleString(){
         return ruleString;
     }
+
+    @Override
+    public Object clone(){
+        GameOfLife golClone = new GameOfLife((StaticBoard)playBoard.clone());
+        return golClone;
+    }
 }

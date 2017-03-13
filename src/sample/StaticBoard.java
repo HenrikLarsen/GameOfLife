@@ -173,4 +173,15 @@ public class StaticBoard extends Board {
         }
         return boundingBox;
     }
+
+    public Object clone(){
+        byte[][] cellGrid = new byte[boardGrid.length][boardGrid[0].length];
+        for (int i = 0; i < boardGrid.length; i++) {
+            for (int j = 0; j < boardGrid[0].length; j++) {
+                cellGrid[i][j] = boardGrid[i][j];
+            }
+        }
+        StaticBoard staticBoardClone = new StaticBoard(cellGrid);
+        return staticBoardClone;
+    }
 }
