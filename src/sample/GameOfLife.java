@@ -221,6 +221,9 @@ public class GameOfLife {
     @Override
     public Object clone(){
         GameOfLife golClone = new GameOfLife((StaticBoard)playBoard.clone());
+        golClone.bornRules = bornRules;
+        golClone.surviveRules = surviveRules;
+        golClone.ruleString = ruleString;
         return golClone;
     }
 }

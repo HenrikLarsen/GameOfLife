@@ -258,6 +258,7 @@ public class PatternExportController implements Initializable {
             String ruleString = ruleInputField.getText().toUpperCase();
             gameOfLife.setRuleString(ruleString);
             System.out.println(gameOfLife.getRuleString());
+            ruleInputField.setPromptText(gameOfLife.getRuleString());
         } catch (RulesFormatException rfe) {
             Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
             rulesAlert.setTitle("Error");
