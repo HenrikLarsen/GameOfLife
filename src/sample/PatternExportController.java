@@ -179,6 +179,7 @@ public class PatternExportController implements Initializable {
 
     public void mouseDragOver() {
         erase = false;
+        drawStrip();
     }
 
     public void clearBoardClick() {
@@ -370,10 +371,11 @@ public class PatternExportController implements Initializable {
         gc.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
         gc.setFill(currentCellColor);
         Affine padding = new Affine();
-        double xpadding = 20;
+        double xPadding = 8;
         double ty = (strip.getHeight()*0.1);
-        double tx = xpadding;
+        double tx = xPadding;
         padding.setTy(ty);
+        gc.setLineWidth(1);
         for (int i = 0; i < 20; i++) {
             byte[][] trimmedBoard = trim(stripBoard);
             if (trimmedBoard.length >= trimmedBoard[0].length) {
@@ -381,7 +383,6 @@ public class PatternExportController implements Initializable {
             } else {
                 stripCellSize = (strip.getHeight()*0.85/trimmedBoard[0].length);
             }
-
 
             padding.setTx(tx);
             gc.setTransform(padding);
@@ -394,8 +395,12 @@ public class PatternExportController implements Initializable {
                 }
             }
 
+            if (i > 0) {
+                gc.strokeLine(0, 0, 0, strip.getHeight());
+            }
+            //tx += xPadding;
             stripGol.nextGeneration();
-            tx += strip.getHeight() + xpadding;
+            tx += strip.getHeight() + xPadding;
         }
 
         //reset transform
@@ -404,6 +409,7 @@ public class PatternExportController implements Initializable {
     }
 
     //TODO: Implementer "The Strip" (Ha et skille mellom hvert bilde)
+    //TODO: Fiks skillet mellom hvert bilde.
     //TODO: Implementer lagring til GIF.
 
     //TODO: HØR ANG FLYTTING AV METODER TIL ANDRE KLASSER. SPESIFIKT DET SOM RELATERER TIL SKRIVING AV FIL OG DUPLIKATKODE FRA CONTROLLER.JAVA
