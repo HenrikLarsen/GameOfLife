@@ -123,8 +123,14 @@ public class StaticBoard extends Board {
         resetBoard();
 
         //These two makes the RLE in the middle bro. remove Start X from for-loop to revert.
-        int startX = (boardGrid.length - importedBoard.length) / 2;
-        int startY = (boardGrid[0].length - importedBoard[0].length) / 2;
+        int startX = 0;
+        int startY = 0;
+        if (importedBoard.length < boardGrid.length) {
+            startX = (boardGrid.length - importedBoard.length) / 2;
+        }
+        if (importedBoard[0].length < boardGrid[0].length) {
+            startY = (boardGrid[0].length - importedBoard[0].length) / 2;
+        }
 
 
         for (int x = 0; x < importedBoard.length; x++) {
