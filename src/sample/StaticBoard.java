@@ -121,10 +121,16 @@ public class StaticBoard extends Board {
 
     public void setBoardFromRLE (byte[][] importedBoard) {
         resetBoard();
+
+        //These two makes the RLE in the middle bro. remove Start X from for-loop to revert.
+        int startX = (boardGrid.length - importedBoard.length) / 2;
+        int startY = (boardGrid[0].length - importedBoard[0].length) / 2;
+
+
         for (int x = 0; x < importedBoard.length; x++) {
             for (int y = 0; y < importedBoard[0].length; y++) {
-                boardGrid[x][y] = importedBoard[x][y];
-                if(boardGrid[x][y] == 1){
+                boardGrid[startX+x][startY+y] = importedBoard[x][y];
+                if(boardGrid[startX+x][startY+y] == 1){
                     cellsAlive++;
                 }
 
