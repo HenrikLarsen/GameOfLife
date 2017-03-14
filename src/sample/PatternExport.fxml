@@ -16,7 +16,7 @@
             <children>
                 <ScrollPane prefHeight="197.0" prefWidth="800.0" BorderPane.alignment="CENTER" VBox.vgrow="NEVER">
                <content>
-                  <Canvas fx:id="strip" height="130.0" width="3020.0" />
+                  <Canvas fx:id="strip" height="130.0" width="2800.0" />
                </content></ScrollPane>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>

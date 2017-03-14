@@ -97,6 +97,8 @@ public class Controller implements Initializable {
 
         chooseRulesBox.setItems(chooseRulesList);
         chooseRulesBox.getSelectionModel().selectFirst();
+        cellColorPicker.setValue(currentCellColor);
+        backgroundColorPicker.setValue(currentBackgroundColor);
     }
 
     /**

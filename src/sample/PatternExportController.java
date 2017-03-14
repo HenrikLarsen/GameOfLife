@@ -372,7 +372,7 @@ public class PatternExportController implements Initializable {
         gc.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
         gc.setFill(currentCellColor);
         Affine padding = new Affine();
-        double xPadding = 8;
+        double xPadding = 10;
         double ty = (strip.getHeight()*0.1);
         double tx = xPadding;
         padding.setTy(ty);
@@ -396,6 +396,9 @@ public class PatternExportController implements Initializable {
                 }
             }
 
+            padding.setTx(tx-13);
+            gc.setTransform(padding);
+
             if (i > 0) {
                 gc.strokeLine(0, 0, 0, strip.getHeight());
             }
@@ -409,7 +412,6 @@ public class PatternExportController implements Initializable {
         gc.setTransform(padding);
     }
 
-    //TODO: Implementer "The Strip" (Ha et skille mellom hvert bilde)
     //TODO: Fiks skillet mellom hvert bilde.
     //TODO: Implementer lagring til GIF.
 
