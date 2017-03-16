@@ -27,7 +27,7 @@ public class FileHandler extends Reader {
 
     private void readGameBoard(Reader reader) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException, RulesFormatException{
         BufferedReader br = new BufferedReader(reader);
-        String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+)(?:,(?: )rule(?: )=(?: )(\\S\\d+[/]\\S\\d+))?\n(.*)");
+        String regex = ("x(?: )=(?: )(\\d+),(?: )y(?: )=(?: )(\\d+)(?:,(?: )rule(?: )=(?: )(\\S\\d*[/]\\S\\d*))?\n(.*)");
         Pattern rlePattern = Pattern.compile(regex,Pattern.MULTILINE | Pattern.DOTALL);
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder metaDataRaw = new StringBuilder();

@@ -14,6 +14,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
+import lieng.GIFWriter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -50,20 +52,24 @@ public class PatternExportController implements Initializable {
 
     private StaticBoard exportBoard;
     private StaticBoard stripBoard;
+    private StaticBoard gifBoard;
     private GameOfLife gameOfLife;
     private GameOfLife stripGol;
+    private GameOfLife gifGol;
     public double cellSize;
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
     private boolean erase = false;
     private byte[][] boardAtMousePressed;
     private boolean grid = false;
+    private GIFWriter gifWriter;
+    private double gifCellSize;
 
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         //drawEditorBoard();
         cellColorPicker.setValue(Color.LIMEGREEN);
-        TextFormatter<String> ruleFormatter = new TextFormatter<String>( change -> {
+        TextFormatter<String> ruleFormatter = new TextFormatter<String>(change -> {
             change.setText(change.getText().replaceAll("[^sSbB012345678/]", ""));
             return change;
         });
@@ -73,14 +79,14 @@ public class PatternExportController implements Initializable {
     public void drawEditorBoard() {
         GraphicsContext graphicsContext = editorCanvas.getGraphicsContext2D();
         graphicsContext.setFill(currentBackgroundColor);
-        graphicsContext.fillRect(0,0,editorCanvas.getWidth(), editorCanvas.getHeight());
+        graphicsContext.fillRect(0, 0, editorCanvas.getWidth(), editorCanvas.getHeight());
         graphicsContext.setFill(currentCellColor);
         cellSize = editorCanvas.getWidth() / exportBoard.boardGrid.length;
 
         for (int x = 0; x < exportBoard.boardGrid.length; x++) {
             for (int y = 0; y < exportBoard.boardGrid[0].length; y++) {
                 if (exportBoard.boardGrid[x][y] == 1) {
-                        graphicsContext.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize, cellSize);
+                    graphicsContext.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
                 }
             }
         }
@@ -114,8 +120,8 @@ public class PatternExportController implements Initializable {
 
     public void mousePressed(MouseEvent mouseEvent) {
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
-        int x = (int)(mouseEvent.getX()/cellSize);
-        int y = (int)(mouseEvent.getY()/cellSize);
+        int x = (int) (mouseEvent.getX() / cellSize);
+        int y = (int) (mouseEvent.getY() / cellSize);
 
         //Makes a copy of the board when the mouse button is pressed, stores as a global variable.
         boardAtMousePressed = new byte[exportBoard.boardGrid.length][exportBoard.boardGrid[0].length];
@@ -199,8 +205,8 @@ public class PatternExportController implements Initializable {
 
     public void saveRLEClick() {
         int[] boundingbox = exportBoard.getBoundingBox();
-        int x = Math.abs(boundingbox[1]-boundingbox[0]+1);
-        int y = Math.abs(boundingbox[3]-boundingbox[2]+1);
+        int x = Math.abs(boundingbox[1] - boundingbox[0] + 1);
+        int y = Math.abs(boundingbox[3] - boundingbox[2] + 1);
         String rules = gameOfLife.getRuleString();
 
         byte[][] trimmedPattern = trim(exportBoard);
@@ -225,21 +231,21 @@ public class PatternExportController implements Initializable {
         try {
             PrintWriter printWriter = new PrintWriter(file);
             if (!titleField.getText().equals(""))
-                printWriter.println("#N "+titleField.getText()+".");
+                printWriter.println("#N " + titleField.getText() + ".");
             if (!authorField.getText().equals("")) {
                 if (dateCheckBox.isSelected()) {
-                    printWriter.println("#O "+authorField.getText()+". Created "+ dateFormat.format(date) + ".");
+                    printWriter.println("#O " + authorField.getText() + ". Created " + dateFormat.format(date) + ".");
                 } else {
-                    printWriter.println("#O "+authorField.getText()+".");
+                    printWriter.println("#O " + authorField.getText() + ".");
                 }
-            } else if (authorField.getText().equals("") && dateCheckBox.isSelected()){
-                printWriter.println("#O Created "+ dateFormat.format(date) + ".");
+            } else if (authorField.getText().equals("") && dateCheckBox.isSelected()) {
+                printWriter.println("#O Created " + dateFormat.format(date) + ".");
             }
             if (!commentField.getText().equals("")) {
                 String commentText = commentField.getText().replaceAll("(.{67})", "$1\n").replaceAll("\n", "\n#C ");
                 printWriter.println("#C " + commentText);
             }
-            printWriter.println("x = "+x+", y = "+y+", rule = "+rules);
+            printWriter.println("x = " + x + ", y = " + y + ", rule = " + rules);
             printWriter.println(splitString);
             printWriter.close();
         } catch (IOException ioe) {
@@ -293,7 +299,7 @@ public class PatternExportController implements Initializable {
     }
 
 
-    public String patternToString (byte[][] pattern) {
+    public String patternToString(byte[][] pattern) {
         StringBuffer patternString = new StringBuffer();
         if (pattern.length == 0) {
             return "";
@@ -307,7 +313,7 @@ public class PatternExportController implements Initializable {
                     patternString.append("b");
                 }
             }
-            if (i < pattern[0].length-1) {
+            if (i < pattern[0].length - 1) {
                 patternString.append("$");
             } else {
                 patternString.append("!");
@@ -337,16 +343,14 @@ public class PatternExportController implements Initializable {
     }
 
 
-
-
     //triks litt med denne:
     public String encodeStringToRLE(String rawString) {
-        StringBuffer encodedString = new StringBuffer();
+        StringBuilder encodedString = new StringBuilder();
 
         for (int i = 0; i < rawString.length(); i++) {
             int repetitions = 1;
 
-            while ((i+1 < rawString.length()) && (rawString.charAt(i) == rawString.charAt(i+1))) {
+            while ((i + 1 < rawString.length()) && (rawString.charAt(i) == rawString.charAt(i + 1))) {
                 i++;
                 repetitions++;
             }
@@ -365,7 +369,7 @@ public class PatternExportController implements Initializable {
     }
 
     public void drawStrip() {
-        stripGol = (GameOfLife)gameOfLife.clone();
+        stripGol = (GameOfLife) gameOfLife.clone();
         stripBoard = stripGol.playBoard;
         double stripCellSize;
         GraphicsContext gc = strip.getGraphicsContext2D();
@@ -373,22 +377,22 @@ public class PatternExportController implements Initializable {
         gc.setFill(currentCellColor);
         Affine padding = new Affine();
         double xPadding = 10;
-        double ty = (strip.getHeight()*0.1);
+        double ty = (strip.getHeight() * 0.1);
         double tx = xPadding;
         padding.setTy(ty);
         gc.setLineWidth(1);
         for (int i = 0; i < 20; i++) {
             byte[][] trimmedBoard = trim(stripBoard);
             if (trimmedBoard.length >= trimmedBoard[0].length) {
-                stripCellSize = (strip.getHeight()*0.85/trimmedBoard.length);
+                stripCellSize = (strip.getHeight() * 0.85 / trimmedBoard.length);
             } else {
-                stripCellSize = (strip.getHeight()*0.85/trimmedBoard[0].length);
+                stripCellSize = (strip.getHeight() * 0.85 / trimmedBoard[0].length);
             }
 
             padding.setTx(tx);
             gc.setTransform(padding);
 
-            for(int x = 0; x < trimmedBoard.length; x++) {
+            for (int x = 0; x < trimmedBoard.length; x++) {
                 for (int y = 0; y < trimmedBoard[0].length; y++) {
                     if (trimmedBoard[x][y] == 1) {
                         gc.fillRect(x * stripCellSize + 1, y * stripCellSize + 1, stripCellSize, stripCellSize);
@@ -396,7 +400,7 @@ public class PatternExportController implements Initializable {
                 }
             }
 
-            padding.setTx(tx-13);
+            padding.setTx(tx - 13);
             gc.setTransform(padding);
 
             if (i > 0) {
@@ -412,9 +416,77 @@ public class PatternExportController implements Initializable {
         gc.setTransform(padding);
     }
 
-    //TODO: Fiks skillet mellom hvert bilde.
-    //TODO: Implementer lagring til GIF.
 
-    //TODO: HØR ANG FLYTTING AV METODER TIL ANDRE KLASSER. SPESIFIKT DET SOM RELATERER TIL SKRIVING AV FIL OG DUPLIKATKODE FRA CONTROLLER.JAVA
+    public void exportGif() {
+        gifGol = (GameOfLife) gameOfLife.clone();
+        gifBoard = gifGol.playBoard;
+        int counter = 100;
+        int width = 800;
+        int height = 800;
+        int fps = 50;
 
+        float red = (float) currentBackgroundColor.getRed();
+        float green = (float) currentBackgroundColor.getGreen();
+        float blue = (float) currentBackgroundColor.getBlue();
+        float opacity = (float) currentBackgroundColor.getOpacity();
+
+        java.awt.Color backgroundColor = new java.awt.Color(red, green, blue, opacity);
+
+        gifCellSize = width/gifBoard.boardGrid.length;
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Graphics Interchange Forma", "*.gif"));
+        File file = fileChooser.showSaveDialog(new Stage());
+
+        if (file != null) {
+            String filePath = file.getPath();
+            try {
+                gifWriter = new GIFWriter(width, height, filePath, fps);
+                gifWriter.setBackgroundColor(backgroundColor);
+                writeGoLSequenceToGIF(gifWriter, gifGol, counter);
+            } catch (IOException ioe) {
+                System.out.println("dildo");
+            }
+        }
+    }
+
+    public void drawGifBoard(GIFWriter writer) {
+        float red = (float) currentCellColor.getRed();
+        float green = (float) currentCellColor.getGreen();
+        float blue = (float) currentCellColor.getBlue();
+        float opacity = (float) currentCellColor.getOpacity();
+
+        java.awt.Color cellColor = new java.awt.Color(red, green, blue, opacity);
+
+        int size = (int)gifCellSize-1;
+        int offset = (800-(size*gifBoard.boardGrid.length))/2;
+        for (int x = 1; x <= gifBoard.boardGrid.length; x++) {
+            for (int y = 1; y <= gifBoard.boardGrid[0].length; y++) {
+                if (gifBoard.boardGrid[x-1][y-1] == 1) {
+                    writer.fillRect((x * size)-size + offset, (x*size) + offset,
+                            (y* size)- size + offset, (y* size)+offset, cellColor);
+                }
+            }
+        }
+    }
+
+    void writeGoLSequenceToGIF(GIFWriter writer, GameOfLife game, int counter) throws IOException {
+        if (counter == 0) {
+            writer.close();
+            System.out.println("DONE!");
+        }
+        else {
+            writer.createNextImage();
+            drawGifBoard(writer);
+            writer.insertCurrentImage();
+            game.nextGeneration();
+            writeGoLSequenceToGIF(writer, game, counter-1);
+        }
+
+    }
+
+        //TODO: Implementer lagring til GIF.
+        //TODO: Fiks GUI-elementer for GIF
+        //TODO: Fiks slik at man ikke kan velge en størrelse som gjør at ting føkker seg GIF.
+        //TODO: Trix med metoden
 }

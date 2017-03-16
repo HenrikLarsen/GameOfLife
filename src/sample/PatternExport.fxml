@@ -48,7 +48,7 @@
                         </TextField>
                      </children>
                   </VBox>
-                  <Button mnemonicParsing="false" prefWidth="90.0" text="Save GIF">
+                  <Button mnemonicParsing="false" onAction="#exportGif" prefWidth="90.0" text="Save GIF">
                      <HBox.margin>
                         <Insets left="10.0" top="17.0" />
                      </HBox.margin>
