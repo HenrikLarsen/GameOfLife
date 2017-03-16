@@ -423,7 +423,7 @@ public class PatternExportController implements Initializable {
         int counter = 100;
         int width = 800;
         int height = 800;
-        int fps = 50;
+        int milliseconds = 100;
 
         float red = (float) currentBackgroundColor.getRed();
         float green = (float) currentBackgroundColor.getGreen();
@@ -441,7 +441,7 @@ public class PatternExportController implements Initializable {
         if (file != null) {
             String filePath = file.getPath();
             try {
-                gifWriter = new GIFWriter(width, height, filePath, fps);
+                gifWriter = new GIFWriter(width, height, filePath, milliseconds);
                 gifWriter.setBackgroundColor(backgroundColor);
                 writeGoLSequenceToGIF(gifWriter, gifGol, counter);
             } catch (IOException ioe) {
@@ -480,6 +480,7 @@ public class PatternExportController implements Initializable {
             drawGifBoard(writer);
             writer.insertCurrentImage();
             game.nextGeneration();
+            System.out.println(counter);
             writeGoLSequenceToGIF(writer, game, counter-1);
         }
 
