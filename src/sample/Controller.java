@@ -302,25 +302,25 @@ public class Controller implements Initializable {
                 aliveLabel.setText(Integer.toString(board.cellsAlive));
                 ruleLabel.setText(gOL.ruleString.toUpperCase());
             } catch (IOException ie) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("File not found!");
                 alert.setContentText("The file may be corrupt or not exist. Try another file.");
                 alert.showAndWait();
             } catch (PatternFormatException pfe) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Corrupt or erroneous file");
                 alert.setContentText("It seems you did bad.");
                 alert.showAndWait();
             } catch (ArrayIndexOutOfBoundsException aiobe) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Out of bounds!");
                 alert.setContentText("The pattern you are trying to load is too big.");
                 alert.showAndWait();
             } catch (RulesFormatException rfe) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Out of bounds!");
                 alert.setContentText("The pattern you are trying to load is too big.");
@@ -345,25 +345,25 @@ public class Controller implements Initializable {
                 aliveLabel.setText(Integer.toString(board.cellsAlive));
                 ruleLabel.setText(gOL.ruleString.toUpperCase());
             } catch (IOException ie) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid URL!");
                 alert.setContentText("This URL does not contain an RLE file!");
                 alert.showAndWait();
             } catch (PatternFormatException pfe) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Corrupt or erroneous file");
                 alert.setContentText("It seems you did bad.");
                 alert.showAndWait();
             } catch (ArrayIndexOutOfBoundsException aiobe) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Out of bounds!");
                 alert.setContentText("The pattern you are trying to load is too big.");
                 alert.showAndWait();
             } catch (RulesFormatException rfe) {
-                Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
+                Alert rulesAlert = new Alert(Alert.AlertType.WARNING);
                 rulesAlert.setTitle("Error");
                 rulesAlert.setHeaderText("Invalid rules");
                 rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
