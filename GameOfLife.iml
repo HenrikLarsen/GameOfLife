@@ -20,11 +20,12 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/externalLibaries/GIFLib.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/externalLibraries/GIFLib.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="externalLibraries" level="project" />
   </component>
 </module>
