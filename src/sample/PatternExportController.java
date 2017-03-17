@@ -79,7 +79,6 @@ public class PatternExportController implements Initializable {
 
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
-        //drawEditorBoard();
         cellColorPicker.setValue(Color.LIMEGREEN);
         TextFormatter<String> ruleFormatter = new TextFormatter<String>(change -> {
             change.setText(change.getText().replaceAll("[^sSbB012345678/]", ""));
@@ -596,8 +595,6 @@ public class PatternExportController implements Initializable {
         return newColor;
     }
 
-        //TODO: Implementer lagring til GIF.
-        //TODO: Fiks slik at man ikke kan velge en størrelse som gjør at ting føkker seg GIF.
-        //TODO: Trix med metoden
+        //TODO: Trix
 }
 
