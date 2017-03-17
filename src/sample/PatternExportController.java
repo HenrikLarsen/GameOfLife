@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,11 +44,19 @@ public class PatternExportController implements Initializable {
     @FXML
     TextField ruleInputField;
     @FXML
+    TextField fpsInputField;
+    @FXML
+    TextField numFramesInputField;
+    @FXML
     CheckBox dateCheckBox;
     @FXML
     ColorPicker cellColorPicker;
     @FXML
     Canvas strip;
+    @FXML
+    ChoiceBox chooseSizeBox;
+    @FXML
+    ChoiceBox chooseDrawBox;
 
 
     private StaticBoard exportBoard;
@@ -63,6 +73,11 @@ public class PatternExportController implements Initializable {
     private boolean grid = false;
     private GIFWriter gifWriter;
     private double gifCellSize;
+    private ObservableList<String> chooseSizeList = FXCollections.observableArrayList("640x640", "800x800", "1024x1024", "1200x1200", "1600x1600", "1920x1920");
+    private ObservableList<String> chooseDrawList = FXCollections.observableArrayList("Entire Board", "Pattern Only");
+    private int gifSize;
+    private boolean drawEntireBoard = true;
+
 
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
@@ -73,6 +88,22 @@ public class PatternExportController implements Initializable {
             return change;
         });
         ruleInputField.setTextFormatter(ruleFormatter);
+        TextFormatter<String> fpsFormatter = new TextFormatter<String>( change -> {
+            change.setText(change.getText().replaceAll("[^\\d]", ""));
+            return change;
+        });
+        fpsInputField.setTextFormatter(fpsFormatter);
+        TextFormatter<String> numFramesFormatter = new TextFormatter<String>( change -> {
+            change.setText(change.getText().replaceAll("[^\\d]", ""));
+            return change;
+        });
+        numFramesInputField.setTextFormatter(numFramesFormatter);
+
+
+        chooseSizeBox.setItems(chooseSizeList);
+        chooseSizeBox.getSelectionModel().select(2);
+        chooseDrawBox.setItems(chooseDrawList);
+        chooseDrawBox.getSelectionModel().selectFirst();
     }
 
     public void drawEditorBoard() {
@@ -271,6 +302,7 @@ public class PatternExportController implements Initializable {
             rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
             rulesAlert.showAndWait();
         }
+        drawStrip();
     }
 
     public byte[][] trim(StaticBoard boardTrim) {
@@ -320,25 +352,6 @@ public class PatternExportController implements Initializable {
         }
 
         return patternString.toString();
-
-        /*
-        int[] boundingBox = exportBoard.getBoundingBox();
-        for (int i = boundingBox[2]; i <= boundingBox[3]; i++) {
-            for (int j = boundingBox[0]; j <= boundingBox[1]; j++) {
-                if (exportBoard.boardGrid[j][i] == 1) {
-                    patternString.append("o");
-                } else if (exportBoard.boardGrid[j][i] == 0) {
-                    patternString.append("b");
-                }
-            }
-            if (i < boundingBox[3]) {
-                patternString.append("$");
-            } else {
-                patternString.append("!");
-            }
-        }
-
-        return patternString.toString(); */
     }
 
 
@@ -361,10 +374,6 @@ public class PatternExportController implements Initializable {
             }
         }
         return encodedString.toString();
-    }
-
-    public void updateStripClick(ActionEvent actionEvent) {
-        drawStrip();
     }
 
     public void drawStrip() {
@@ -419,10 +428,37 @@ public class PatternExportController implements Initializable {
     public void exportGif() {
         gifGol = (GameOfLife) gameOfLife.clone();
         gifBoard = gifGol.playBoard;
-        int counter = 100;
-        int width = 800;
-        int height = 800;
-        int milliseconds = 100;
+        int counter = 20;
+
+        if (!numFramesInputField.getText().isEmpty()) {
+            counter = Integer.parseInt(numFramesInputField.getText());
+            if (counter < 1 || counter > 400) {
+                Alert counterAlert = new Alert(Alert.AlertType.INFORMATION);
+                counterAlert.setTitle("Error");
+                counterAlert.setHeaderText("Number of frames is to high");
+                counterAlert.setContentText("The number of frames you have entered is too high. Please keep it between 1 and 400");
+                counterAlert.showAndWait();
+                return;
+            }
+        }
+        System.out.println(counter);
+
+        int fps = 30;
+
+        if (!fpsInputField.getText().isEmpty()) {
+            fps = Integer.parseInt(fpsInputField.getText());
+            if (fps < 1 || fps > 60) {
+                Alert fpsAlert = new Alert(Alert.AlertType.INFORMATION);
+                fpsAlert.setTitle("Error");
+                fpsAlert.setHeaderText("FPS too high");
+                fpsAlert.setContentText("You're going too fast! Please keep your FPS input between 1 and 60");
+                fpsAlert.showAndWait();
+                return;
+            }
+        }
+        System.out.println(fps);
+
+        int milliseconds = 1000/fps;
 
         float red = (float) currentBackgroundColor.getRed();
         float green = (float) currentBackgroundColor.getGreen();
@@ -431,7 +467,7 @@ public class PatternExportController implements Initializable {
 
         java.awt.Color backgroundColor = new java.awt.Color(red, green, blue, opacity);
 
-        gifCellSize = width/gifBoard.boardGrid.length;
+        gifCellSize = gifSize/gifBoard.boardGrid.length;
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Graphics Interchange Forma", "*.gif"));
@@ -440,7 +476,7 @@ public class PatternExportController implements Initializable {
         if (file != null) {
             String filePath = file.getPath();
             try {
-                gifWriter = new GIFWriter(width, height, filePath, milliseconds);
+                gifWriter = new GIFWriter(gifSize, gifSize, filePath, milliseconds);
                 gifWriter.setBackgroundColor(backgroundColor);
                 writeGoLSequenceToGIF(gifWriter, gifGol, counter);
             } catch (IOException ioe) {
@@ -458,7 +494,7 @@ public class PatternExportController implements Initializable {
         java.awt.Color cellColor = new java.awt.Color(red, green, blue, opacity);
 
         int size = (int)gifCellSize-1;
-        int offset = (800-(size*gifBoard.boardGrid.length))/2;
+        int offset = (gifSize-(size*gifBoard.boardGrid.length))/2;
         for (int x = 1; x <= gifBoard.boardGrid.length; x++) {
             for (int y = 1; y <= gifBoard.boardGrid[0].length; y++) {
                 if (gifBoard.boardGrid[x-1][y-1] == 1) {
@@ -485,8 +521,44 @@ public class PatternExportController implements Initializable {
 
     }
 
+    public void chooseSizeClick(ActionEvent actionEvent) {
+        String size = (String) chooseSizeBox.getValue();
+
+        switch (size) {
+            case "640x640": gifSize = 640;
+                break;
+            case "800x800":  gifSize = 800;
+                break;
+            case "1024x1024": gifSize = 1024;
+                break;
+            case "1200x1200": gifSize = 1200;
+                break;
+            case "1600x1600": gifSize = 1600;
+                break;
+            case "1920x1920": gifSize = 1920;
+                break;
+            default: gifSize = 800;
+                break;
+        }
+
+        System.out.println(gifSize);
+
+    }
+
+    public void chooseDrawClick (ActionEvent actionEvent) {
+        String draw = (String) chooseDrawBox.getValue();
+
+        if (draw.equals("Entire Board")) {
+            System.out.println("ENTIRE FUCKING BOARD!");
+            drawEntireBoard = true;
+        } else if (draw.equals("Pattern Only")) {
+            System.out.println("FUCKING PATTERN ONLY!!");
+            drawEntireBoard = false;
+        }
+    }
+
+
         //TODO: Implementer lagring til GIF.
-        //TODO: Fiks GUI-elementer for GIF
         //TODO: Fiks slik at man ikke kan velge en størrelse som gjør at ting føkker seg GIF.
         //TODO: Trix med metoden
 }

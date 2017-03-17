@@ -9,7 +9,7 @@ package sample;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 64, HEIGHT = 64;
+    private final int WIDTH = 100, HEIGHT = 100;
     public byte[][] boardGrid;
     public int cellsAlive = 0;
 

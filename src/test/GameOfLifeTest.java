@@ -4,8 +4,6 @@ import org.junit.Test;
 import sample.GameOfLife;
 import sample.StaticBoard;
 
-import static org.junit.Assert.*;
-
 /**
  * The GameOfLifeTest class is a JUnit class, doing unit testing of methods in the GameOfLife class. <br>
  * Its main purpose is to test and verify that the functionality of the GameOfLife class works as intended

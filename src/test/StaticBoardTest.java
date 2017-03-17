@@ -1,10 +1,7 @@
 package test;
 
 import org.junit.Test;
-import sample.GameOfLife;
 import sample.StaticBoard;
-
-import static org.junit.Assert.*;
 
 /**
  * The StaticBoardTest class is a JUnit class, doing unit testing of methods in the StaticBoard class.
