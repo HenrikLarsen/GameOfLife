@@ -490,3 +490,4 @@ public class PatternExportController implements Initializable {
         //TODO: Fiks slik at man ikke kan velge en størrelse som gjør at ting føkker seg GIF.
         //TODO: Trix med metoden
 }
+
