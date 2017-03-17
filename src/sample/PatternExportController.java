@@ -30,9 +30,7 @@ import java.util.Date;
  */
 
 
-
 public class PatternExportController implements Initializable {
-
     @FXML
     Canvas editorCanvas;
     @FXML
@@ -92,13 +90,13 @@ public class PatternExportController implements Initializable {
             change.setText(change.getText().replaceAll("[^\\d]", ""));
             return change;
         });
-        fpsInputField.setTextFormatter(fpsFormatter);
-        TextFormatter<String> numFramesFormatter = new TextFormatter<String>( change -> {
+        TextFormatter<String> numFramesFormater = new TextFormatter<String>( change -> {
             change.setText(change.getText().replaceAll("[^\\d]", ""));
             return change;
         });
-        numFramesInputField.setTextFormatter(numFramesFormatter);
 
+        fpsInputField.setTextFormatter(fpsFormatter);
+        numFramesInputField.setTextFormatter(numFramesFormater);
 
         chooseSizeBox.setItems(chooseSizeList);
         chooseSizeBox.getSelectionModel().select(2);
@@ -430,6 +428,17 @@ public class PatternExportController implements Initializable {
         gifBoard = gifGol.playBoard;
         int counter = 20;
 
+
+        if (gifSize/2 < exportBoard.boardGrid.length) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Warning!");
+            alert.setHeaderText("Board is too big");
+            alert.setContentText("Your current board contains more cells than can be drawn! \nAs a result," +
+                    " your gif might not show anything. \n\nTry increasing the gif size, decreasing board size" +
+                    " or choosing the option to draw only the pattern to fix this!");
+            alert.showAndWait();
+        }
+
         if (!numFramesInputField.getText().isEmpty()) {
             counter = Integer.parseInt(numFramesInputField.getText());
             if (counter < 1 || counter > 400) {
@@ -443,7 +452,7 @@ public class PatternExportController implements Initializable {
         }
         System.out.println(counter);
 
-        int fps = 30;
+        int fps = 5;
 
         if (!fpsInputField.getText().isEmpty()) {
             fps = Integer.parseInt(fpsInputField.getText());
@@ -460,14 +469,8 @@ public class PatternExportController implements Initializable {
 
         int milliseconds = 1000/fps;
 
-        float red = (float) currentBackgroundColor.getRed();
-        float green = (float) currentBackgroundColor.getGreen();
-        float blue = (float) currentBackgroundColor.getBlue();
-        float opacity = (float) currentBackgroundColor.getOpacity();
-
-        java.awt.Color backgroundColor = new java.awt.Color(red, green, blue, opacity);
-
-        gifCellSize = gifSize/gifBoard.boardGrid.length;
+        java.awt.Color backgroundColor = convertToawtColor(currentBackgroundColor);
+        java.awt.Color cellColor = convertToawtColor(currentCellColor);
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Graphics Interchange Forma", "*.gif"));
@@ -478,45 +481,70 @@ public class PatternExportController implements Initializable {
             try {
                 gifWriter = new GIFWriter(gifSize, gifSize, filePath, milliseconds);
                 gifWriter.setBackgroundColor(backgroundColor);
-                writeGoLSequenceToGIF(gifWriter, gifGol, counter);
+                writeGoLSequenceToGIF(gifWriter, gifGol, counter, cellColor);
             } catch (IOException ioe) {
                 System.out.println("dildo");
             }
         }
     }
 
-    public void drawGifBoard(GIFWriter writer) {
-        float red = (float) currentCellColor.getRed();
-        float green = (float) currentCellColor.getGreen();
-        float blue = (float) currentCellColor.getBlue();
-        float opacity = (float) currentCellColor.getOpacity();
 
-        java.awt.Color cellColor = new java.awt.Color(red, green, blue, opacity);
-
-        int size = (int)gifCellSize-1;
-        int offset = (gifSize-(size*gifBoard.boardGrid.length))/2;
+    public void drawGifEntireBoard(GIFWriter writer, java.awt.Color cellColor) {
+        gifCellSize = gifSize/gifBoard.boardGrid.length;
+        int cellDrawSize = (int) gifCellSize - 1;
+        int offset = (gifSize - (cellDrawSize * gifBoard.boardGrid.length)) / 2;
         for (int x = 1; x <= gifBoard.boardGrid.length; x++) {
             for (int y = 1; y <= gifBoard.boardGrid[0].length; y++) {
-                if (gifBoard.boardGrid[x-1][y-1] == 1) {
-                    writer.fillRect((x * size)-size + offset, (x*size) + offset,
-                            (y* size)- size + offset, (y* size)+offset, cellColor);
+                if (gifBoard.boardGrid[x - 1][y - 1] == 1) {
+                    writer.fillRect((x * cellDrawSize) - cellDrawSize + offset, (x * cellDrawSize) + offset,
+                            (y * cellDrawSize) - cellDrawSize + offset, (y * cellDrawSize) + offset, cellColor);
                 }
             }
         }
     }
 
-    void writeGoLSequenceToGIF(GIFWriter writer, GameOfLife game, int counter) throws IOException {
+    public void drawGifPatternOnly(GIFWriter writer, java.awt.Color cellColor) {
+        byte[][] trimmed = trim(gifBoard);
+        int cellDrawSize;
+
+        if (trimmed.length >= trimmed[0].length) {
+            gifCellSize = gifSize/trimmed.length;
+            cellDrawSize = (int) gifCellSize - 1;
+        } else {
+            gifCellSize = gifSize/trimmed[0].length;
+            cellDrawSize = (int) gifCellSize - 1;
+        }
+
+        int offsetX = (gifSize - (cellDrawSize * trimmed.length)) / 2;
+        int offsetY = (gifSize - (cellDrawSize * trimmed[0].length)) / 2;
+
+        for (int x = 1; x <= trimmed.length; x++) {
+            for (int y = 1; y <= trimmed[0].length; y++) {
+                if (trimmed[x - 1][y - 1] == 1) {
+                    writer.fillRect((x * cellDrawSize) - cellDrawSize + offsetX, (x * cellDrawSize) + offsetX,
+                            (y * cellDrawSize) - cellDrawSize + offsetY, (y * cellDrawSize) + offsetY, cellColor);
+                }
+            }
+        }
+    }
+
+
+    void writeGoLSequenceToGIF(GIFWriter writer, GameOfLife game, int counter, java.awt.Color cellColor) throws IOException {
         if (counter == 0) {
             writer.close();
             System.out.println("DONE!");
         }
         else {
             writer.createNextImage();
-            drawGifBoard(writer);
+            if (drawEntireBoard) {
+                drawGifEntireBoard(writer, cellColor);
+            } else if (!drawEntireBoard) {
+                drawGifPatternOnly(writer, cellColor);
+            }
             writer.insertCurrentImage();
             game.nextGeneration();
             System.out.println(counter);
-            writeGoLSequenceToGIF(writer, game, counter-1);
+            writeGoLSequenceToGIF(writer, game, counter-1, cellColor);
         }
 
     }
@@ -557,6 +585,16 @@ public class PatternExportController implements Initializable {
         }
     }
 
+    public java.awt.Color convertToawtColor (Color color) {
+        float red = (float) color.getRed();
+        float green = (float) color.getGreen();
+        float blue = (float) color.getBlue();
+        float opacity = (float) color.getOpacity();
+
+        java.awt.Color newColor = new java.awt.Color(red, green, blue, opacity);
+
+        return newColor;
+    }
 
         //TODO: Implementer lagring til GIF.
         //TODO: Fiks slik at man ikke kan velge en størrelse som gjør at ting føkker seg GIF.
