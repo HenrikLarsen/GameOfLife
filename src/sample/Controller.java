@@ -53,10 +53,9 @@ public class Controller implements Initializable {
     private Color currentBackgroundColor = Color.LIGHTGRAY;
     private StaticBoard board = new StaticBoard();
     private GameOfLife gOL = new GameOfLife(board);
+    private CanvasDrawer canvasDrawer = new CanvasDrawer();
     private Timeline timeline;
     private boolean gridToggle = false;
-    private boolean erase = false;
-    private byte[][] boardAtMousePressed;
     private FileHandler fileHandler = new FileHandler();
     private Stage exportStage;
     private PatternExportController exportController;
@@ -136,32 +135,7 @@ public class Controller implements Initializable {
      */
     private void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-
-        //Fills the entire canvas with the current background color
-        gc.setFill(currentBackgroundColor);
-        gc.fillRect(0,0,canvasArea.getWidth(), canvasArea.getHeight());
-
-        //Sets the fill back to the current cell color.
-        gc.setFill(currentCellColor);
-        gc.setStroke(Color.BLACK);
-
-        //double xOffset = (canvasArea.getWidth() - (board.cellSize*board.boardGrid.length))/2;
-        //double yOffset = (canvasArea.getHeight() - (board.cellSize*board.boardGrid[0].length))/2;
-
-        //Iterates through the current board and draws live cells. If gridToggle is true, draws a stroke around
-        //every cell, dead or alive, to create a grid.
-        for (int x = 0; x < board.boardGrid.length; x++) {
-            for (int y = 0; y < board.boardGrid[0].length; y++ ) {
-                if (board.boardGrid[x][y] == 1) {
-                    gc.fillRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
-                    if(gridToggle){
-                        gc.strokeRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
-                    }
-                }else if(gridToggle){
-                    gc.strokeRect(x * board.cellSize + 1, y * board.cellSize + 1, board.cellSize, board.cellSize);
-                }
-            }
-        }
+        canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor, board.cellSize, board.boardGrid, gridToggle);
     }
 
     /**
@@ -236,6 +210,7 @@ public class Controller implements Initializable {
         generationLabel.setText(Integer.toString(gOL.genCounter));
         board.resetBoard();
         aliveLabel.setText(Integer.toString(board.cellsAlive));
+        fileHandler.resetMetaData();
         draw();
     }
 
@@ -280,49 +255,13 @@ public class Controller implements Initializable {
     /**
      * Method that lets the user "draw" on the canvas by clicking on the canvas, inverting the clicked cell. Is called
      * when the user click the left mouse button on the canvas.
-     * @see #erase
-     * @see #boardAtMousePressed
      * @see #draw()
      * @see Board#cellSize
      * @see StaticBoard#boardGrid
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mousePressed(MouseEvent mouseEvent) {
-
-        //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
-        int x = (int)(mouseEvent.getX()/board.cellSize);
-        int y = (int)(mouseEvent.getY()/board.cellSize);
-
-        //Makes a copy of the board when the mouse button is pressed, stores as a global variable.
-        boardAtMousePressed = new byte[board.boardGrid.length][board.boardGrid[0].length];
-        for (int i = 0; i < boardAtMousePressed.length; i++) {
-            for (int j = 0; j < boardAtMousePressed[i].length; j++) {
-                boardAtMousePressed[i][j] = board.boardGrid[i][j];
-            }
-        }
-
-        //Checks that the user is within the playing board during click, and changes the cells if yes.
-        if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
-
-            //Sets global variable erase to true if the first clicked cell was alive.
-            //If true, drag and click will only erase until the mouse is released. If false, method will only draw.
-            if (board.boardGrid[x][y] == 1) {
-                erase = true;
-            }
-
-            if (board.boardGrid[x][y] == 0) {
-                if (board.boardGrid[x][y] != 1) {
-                    board.cellsAlive++;
-                }
-                board.boardGrid[x][y] = 1;
-            } else {
-                if (board.cellsAlive > 0 && board.boardGrid[x][y] == 1) {
-                    board.cellsAlive--;
-                }
-                board.boardGrid[x][y] = 0;
-            }
-            aliveLabel.setText(Integer.toString(board.cellsAlive));
-        }
+        canvasDrawer.drawPressed(board.boardGrid, board.cellSize, mouseEvent, board);
         draw();
     }
 
@@ -330,48 +269,21 @@ public class Controller implements Initializable {
      * Method that lets the user "draw" on the canvas by dragging the mouse on the canvas. Is an "extension" of the
      * mousePressed() method, and continues from that if the mouse is dragged. Is called when the user drags
      * the mouse while holding mouse button clicked on the canvas.
-     * @see #erase
-     * @see #boardAtMousePressed
      * @see #draw()
      * @see Board#cellSize
      * @see StaticBoard#boardGrid
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mouseDragged(MouseEvent mouseEvent) {
-        //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
-        int x = (int)(mouseEvent.getX()/board.cellSize);
-        int y = (int)(mouseEvent.getY()/board.cellSize);
-
-        //Checks that the user is drawing within the borders of the board.
-        if ((x < board.boardGrid.length) && (y < board.boardGrid[0].length) && x >= 0 && y >= 0) {
-
-            //Checks whether the current cell has been changed since the mouse button was pressed.
-            if (board.boardGrid[x][y] == boardAtMousePressed[x][y]) {
-
-                //If boolean erase is true, it sets the cell to 0. Else, sets the cell to 1.
-                if (erase) {
-                    if (board.cellsAlive > 0 && board.boardGrid[x][y] == 1) {
-                        board.cellsAlive--;
-                    }
-                    board.boardGrid[x][y] = 0;
-                } else {
-                    if (board.boardGrid[x][y] != 1) {
-                        board.cellsAlive++;
-                    }
-                    board.boardGrid[x][y] = 1;
-                }
-                aliveLabel.setText(Integer.toString(board.cellsAlive));
-            }
-        }
+        canvasDrawer.drawDragged(board.boardGrid, board.cellSize, mouseEvent, board);
         draw();
     }
 
     /**
      * Method that is called when the user releases the left mouse button. Sets global variable erase back to false.
-     * @see #erase
      */
     public void mouseDragOver() {
-        erase = false;
+        canvasDrawer.setEraseFalse();
     }
 
 
@@ -501,6 +413,23 @@ public class Controller implements Initializable {
         alert.showAndWait();
     }
 
+    public void showMetadata(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Pattern Metadata");
+        if (fileHandler.metaTitle.equals("")) {
+            alert.setHeaderText("No title");
+        } else {
+            alert.setHeaderText(fileHandler.metaTitle);
+        }
+
+        if (fileHandler.metaData.equals("")) {
+            alert.setContentText("No description avaliable. Try loading an RLE-file!");
+        } else {
+            alert.setContentText(fileHandler.metaData);
+        }
+        alert.showAndWait();
+    }
+
     public void exportButtonClick(ActionEvent actionEvent) throws Exception{
         timeline.pause();
         exportStage = new Stage();
@@ -511,6 +440,7 @@ public class Controller implements Initializable {
         exportController = loader.getController();
         exportController.setExportBoard(board);
         exportController.setGameOfLife(gOL);
+        exportController.setCanvasDrawer(canvasDrawer);
         exportController.drawEditorBoard();
         exportController.drawStrip();
 

@@ -4,8 +4,6 @@ package sample;
  * Created by henriklarsen on 27.02.2017.
  */
 
-import javafx.scene.control.Alert;
-
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -16,6 +14,8 @@ public class FileHandler extends Reader {
 
     public StaticBoard playBoard;
     public GameOfLife gameOfLife;
+    public String metaTitle = "";
+    public String metaData = "";
 
     public int read(char[] input, int off, int max){
         return 5;
@@ -35,7 +35,7 @@ public class FileHandler extends Reader {
         String line;
         while((line = br.readLine()) != null) {
             stringBuilder.append(line).append("\n");
-            if (line.startsWith("#")) {
+            if (line.startsWith("#") || line.startsWith("x")) {
                 metaDataRaw.append(line + "\n");
             }
         }
@@ -91,8 +91,8 @@ public class FileHandler extends Reader {
             playBoard.setBoardFromRLE(newBoard);
         }
 
-        String metaData = formatMetadata(metaDataRaw);
-        System.out.println(metaData);
+        formatMetadata(metaDataRaw);
+
     }
 
     public String newBoard(String rleString) throws PatternFormatException {
@@ -157,24 +157,36 @@ public class FileHandler extends Reader {
         readGameBoard(new InputStreamReader(conn.getInputStream()));
     }
 
-    public String formatMetadata(StringBuilder meta) {
-        String formatedMetaData = "";
+    public void formatMetadata(StringBuilder meta) {
+        StringBuilder metaData = new StringBuilder();
+        StringBuilder metaDataTitle = new StringBuilder();
         String[] lines = meta.toString().split("\\n");
         for (int x = 0; x < lines.length; x++) {
             if (lines[x].startsWith("#N")) {
-                formatedMetaData += "Title: " + lines[x] + "\n";
+                metaDataTitle.append("Title: " + lines[x]);
             } else if (lines[x].startsWith("#O")) {
-                formatedMetaData += "Author: " + lines[x] + "\n";
+                metaData.append("Author: " + lines[x] + "\n\n");
             } else if (lines[x].startsWith("#c") || lines[x].startsWith("#C")) {
-                formatedMetaData += lines[x] + "\n";
+                metaData.append(lines[x] + " ");
             } else if (lines[x].startsWith("#r")) {
-                formatedMetaData += "Rule-set: " + lines[x] + "\n";
+                metaData.append("Rule-set: " + lines[x] + "\n");
             } else if (lines[x].startsWith("#R") || lines[x].startsWith("#P")) {
-                formatedMetaData += "Starts at: " + lines[x] + "\n";
+                metaData.append("Starts at: " + lines[x] + "\n");
+            } else if (lines[x].startsWith("x")) {
+                metaData.append("\n\n"+lines[x]);
             }
         }
-        formatedMetaData = formatedMetaData.replaceAll("[#]\\S\\s","");
-        return formatedMetaData;
+        String metaDataString = metaData.toString();
+        String metaTitleString = metaDataTitle.toString();
+        String formatedMetaTitle = metaTitleString.replaceAll("[#]\\S\\s","");
+        String formatedMetadata = metaDataString.replaceAll("[#]\\S\\s","");
+        this.metaTitle = formatedMetaTitle;
+        this.metaData = formatedMetadata;
+    }
+
+    public void resetMetaData() {
+        metaTitle = "";
+        metaData = "";
     }
 
     public void close(){

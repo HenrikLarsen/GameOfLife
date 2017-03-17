@@ -27,6 +27,7 @@ Layout er konstruert ved bruk av scenebuilder.
                 <Menu mnemonicParsing="false" text="View">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#showRuleDescription" text="Show rules description" />
+                        <MenuItem mnemonicParsing="false" onAction="#showMetadata" text="Show pattern metadata" />
                     </items>
                 </Menu>
             </menus>
