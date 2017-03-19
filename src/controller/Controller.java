@@ -136,7 +136,7 @@ public class Controller implements Initializable {
     private void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
         canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor, board.cellSize,
-                board.cellGrid, gridToggle);
+                board.getCellGrid(), gridToggle);
     }
 
     /**
@@ -262,7 +262,7 @@ public class Controller implements Initializable {
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mousePressed(MouseEvent mouseEvent) {
-        canvasDrawer.drawPressed(board.cellGrid, board.cellSize, mouseEvent, board);
+        canvasDrawer.drawPressed(board.cellSize, mouseEvent, board);
         draw();
     }
 
@@ -276,7 +276,7 @@ public class Controller implements Initializable {
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mouseDragged(MouseEvent mouseEvent) {
-        canvasDrawer.drawDragged(board.cellGrid, board.cellSize, mouseEvent, board);
+        canvasDrawer.drawDragged(board.cellSize, mouseEvent, board);
         draw();
     }
 

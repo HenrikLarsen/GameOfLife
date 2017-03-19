@@ -35,7 +35,9 @@ public class CanvasDrawer {
         }
     }
 
-    protected void drawPressed(byte[][] cellGrid, double cellSize, MouseEvent mouseEvent, StaticBoard board) {
+    protected void drawPressed(double cellSize, MouseEvent mouseEvent, StaticBoard board) {
+        byte[][] cellGrid = board.getCellGrid();
+
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
         int x = (int)(mouseEvent.getX()/cellSize);
         int y = (int)(mouseEvent.getY()/cellSize);
@@ -71,7 +73,9 @@ public class CanvasDrawer {
         }
     }
 
-    protected void drawDragged(byte[][] cellGrid, double cellSize, MouseEvent mouseEvent, StaticBoard board) {
+    protected void drawDragged(double cellSize, MouseEvent mouseEvent, StaticBoard board) {
+        byte[][] cellGrid = board.getCellGrid();
+
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
         int x = (int) (mouseEvent.getX() / cellSize);
         int y = (int) (mouseEvent.getY() / cellSize);

@@ -9,8 +9,8 @@ package model;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 64, HEIGHT = 64;
-    public byte[][] cellGrid;
+    private final int WIDTH = 200, HEIGHT = 200;
+    private byte[][] cellGrid;
     public int cellsAlive = 0;
 
     /**
@@ -220,5 +220,19 @@ public class StaticBoard extends Board {
         }
 
         return trimmedBoard;
+    }
+
+    public byte[][] getCellGrid() {
+        return cellGrid;
+    }
+
+    public void setCellState(int x, int y, byte state) {
+        if (state == 1 || state == 0) {
+            cellGrid[x][y] = state;
+        }
+    }
+
+    public byte getCellState(int x, int y) {
+        return cellGrid[x][y];
     }
 }

@@ -95,9 +95,9 @@ public class EditorController implements Initializable {
 
     public void drawEditorBoard() {
         GraphicsContext graphicsContext = editorCanvas.getGraphicsContext2D();
-        cellSize = editorCanvas.getWidth() / exportBoard.cellGrid.length;
+        cellSize = editorCanvas.getWidth() / exportBoard.getCellGrid().length;
         canvasDrawer.drawBoard(editorCanvas, graphicsContext, currentCellColor, currentBackgroundColor, cellSize,
-                exportBoard.cellGrid, grid);
+                exportBoard.getCellGrid(), grid);
     }
 
     public void closeClick(ActionEvent actionEvent) {
@@ -123,12 +123,12 @@ public class EditorController implements Initializable {
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
-        canvasDrawer.drawPressed(exportBoard.cellGrid, cellSize, mouseEvent, exportBoard);
+        canvasDrawer.drawPressed(cellSize, mouseEvent, exportBoard);
         drawEditorBoard();
     }
 
     public void mouseDragged(MouseEvent mouseEvent) {
-        canvasDrawer.drawDragged(exportBoard.cellGrid, cellSize, mouseEvent, exportBoard);
+        canvasDrawer.drawDragged(cellSize, mouseEvent, exportBoard);
         drawEditorBoard();
     }
 
@@ -240,7 +240,7 @@ public class EditorController implements Initializable {
     public void exportGif() {
         gifGol = (GameOfLife) gameOfLife.clone();
         gifBoard = gifGol.playBoard;
-        if (gifSize/2 < exportBoard.cellGrid.length) {
+        if (gifSize/2 < exportBoard.getCellGrid().length) {
             PopUpAlerts.sizeBoardError();
         }
 
@@ -308,12 +308,12 @@ public class EditorController implements Initializable {
     }
 
     public void drawGifEntireBoard(GIFWriter writer, java.awt.Color cellColor) {
-        gifCellSize = gifSize/gifBoard.cellGrid.length;
+        gifCellSize = gifSize/gifBoard.getCellGrid().length;
         int cellDrawSize = (int) gifCellSize - 1;
-        int offset = (gifSize - (cellDrawSize * gifBoard.cellGrid.length)) / 2;
-        for (int x = 1; x <= gifBoard.cellGrid.length; x++) {
-            for (int y = 1; y <= gifBoard.cellGrid[0].length; y++) {
-                if (gifBoard.cellGrid[x - 1][y - 1] == 1) {
+        int offset = (gifSize - (cellDrawSize * gifBoard.getCellGrid().length)) / 2;
+        for (int x = 1; x <= gifBoard.getCellGrid().length; x++) {
+            for (int y = 1; y <= gifBoard.getCellGrid()[0].length; y++) {
+                if (gifBoard.getCellGrid()[x - 1][y - 1] == 1) {
                     writer.fillRect((x * cellDrawSize) - cellDrawSize + offset, (x * cellDrawSize) + offset,
                             (y * cellDrawSize) - cellDrawSize + offset, (y * cellDrawSize) + offset, cellColor);
                 }

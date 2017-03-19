@@ -123,7 +123,6 @@ public class GameOfLife {
         Pattern rulePattern = Pattern.compile("[^sSbB012345678/]",Pattern.MULTILINE | Pattern.DOTALL);
         Pattern formatPattern = Pattern.compile("^[bB][0-8]*/[sS][0-8]*$");
 
-        //Pattern rulePattern = Pattern.compile("[sbSB]{1}[0-8]*/[sbSB]{1}[0-8]*",Pattern.MULTILINE | Pattern.DOTALL);
         Matcher ruleMatcher = rulePattern.matcher(rules);
         Matcher formatMatcher = formatPattern.matcher(rules);
 
@@ -132,14 +131,32 @@ public class GameOfLife {
         }
 
         String[] bothRules = rules.split("[/]");
+
+        String surviveRulesTemp = "";
+        String bornRulesTemp = "";
         for (int i = 0; i < bothRules.length; i++) {
             bothRules[i] = bothRules[i].toUpperCase();
             if (bothRules[i].startsWith("S")) {
-                surviveRules = bothRules[i].replaceFirst("S", "");
+                surviveRulesTemp = bothRules[i].replaceFirst("S", "");
             } else if (bothRules[i].startsWith("B")) {
-                bornRules = bothRules[i].replaceFirst("B", "");
+                bornRulesTemp = bothRules[i].replaceFirst("B", "");
             }
         }
+
+        StringBuilder surviveBuilder = new StringBuilder();
+        StringBuilder bornBuilder = new StringBuilder();
+
+        for (int i = 0; i < 9; i ++) {
+            if (surviveRulesTemp.contains(""+i)) {
+                surviveBuilder.append(i);
+            }
+            if (bornRulesTemp.contains(""+i)) {
+                bornBuilder.append(i);
+            }
+        }
+
+        surviveRules = surviveBuilder.toString();
+        bornRules = bornBuilder.toString();
         ruleString = "B" + bornRules + "/S" + surviveRules;
     }
 
@@ -155,17 +172,17 @@ public class GameOfLife {
     public void enforceRules() {
 
         //Creates a new byte[][] with the same dimensions as the current board.
-        newGenerationCells = new byte[playBoard.cellGrid.length][playBoard.cellGrid[0].length];
+        newGenerationCells = new byte[playBoard.getCellGrid().length][playBoard.getCellGrid()[0].length];
 
         //Compares the current play board with the neighbour count.
         //Sets the values in newGenerationCells based on the rules of the Game of Life.
-        for (int x = 0; x < playBoard.cellGrid.length; x++) {
-            for (int y = 0; y < playBoard.cellGrid[0].length; y++) {
+        for (int x = 0; x < playBoard.getCellGrid().length; x++) {
+            for (int y = 0; y < playBoard.getCellGrid()[0].length; y++) {
                 String neighbours = ""+neighbourCount[x][y];
 
 
                 //Checks if the current cell is alive
-                if (playBoard.cellGrid[x][y] == 1) {
+                if (playBoard.getCellState(x, y) == 1) {
 
                     //Checks if the live cell has less than two or more than three living neighbours.
                     //If yes, the cell dies.
@@ -178,7 +195,7 @@ public class GameOfLife {
                 }
 
                 //If the current cell is dead and has exactly three living neighbours, it comes alive.
-                else if (playBoard.cellGrid[x][y] == 0) {
+                else if (playBoard.getCellState(x,y) == 0) {
                     if (bornRules.contains(neighbours)) {
                         newGenerationCells[x][y] = 1;
                         playBoard.cellsAlive++;

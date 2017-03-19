@@ -86,7 +86,7 @@ public class FileHandler extends Reader {
 
         gameOfLife.setRuleSet(loadedRules);
         byte[][] newBoard = boardFromFile(revisedRleString, x, y);
-        if (newBoard.length > playBoard.cellGrid.length || newBoard[0].length > playBoard.cellGrid[0].length) {
+        if (newBoard.length > playBoard.getCellGrid().length || newBoard[0].length > playBoard.getCellGrid()[0].length) {
             throw new ArrayIndexOutOfBoundsException();
         } else {
             playBoard.setBoardFromRLE(newBoard);
