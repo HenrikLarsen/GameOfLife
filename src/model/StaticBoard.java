@@ -186,6 +186,7 @@ public class StaticBoard extends Board {
         return boundingBox;
     }
 
+    @Override
     public Object clone(){
         byte[][] cellGrid = new byte[this.cellGrid.length][this.cellGrid[0].length];
         for (int i = 0; i < this.cellGrid.length; i++) {
@@ -195,5 +196,29 @@ public class StaticBoard extends Board {
         }
         StaticBoard staticBoardClone = new StaticBoard(cellGrid);
         return staticBoardClone;
+    }
+
+    public byte[][] trim() {
+        int[] boundingBox = getBoundingBox();
+        int x = Math.abs(boundingBox[1] - boundingBox[0] + 1);
+        int y = Math.abs(boundingBox[3] - boundingBox[2] + 1);
+
+        byte[][] trimmedBoard = new byte[x][y];
+
+        int newX = 0;
+        int newY = 0;
+
+        for (int i = boundingBox[0]; i <= boundingBox[1]; i++) {
+            for (int j = boundingBox[2]; j <= boundingBox[3]; j++) {
+                if (cellGrid[i][j] == 1) {
+                    trimmedBoard[newX][newY] = 1;
+                }
+                newY++;
+            }
+            newX++;
+            newY = 0;
+        }
+
+        return trimmedBoard;
     }
 }

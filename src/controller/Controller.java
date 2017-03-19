@@ -58,7 +58,8 @@ public class Controller implements Initializable {
     private FileHandler fileHandler = new FileHandler();
     private Stage editorStage;
     private EditorController editorController;
-    private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds", "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
+    private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
+            "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
 
 
     /**
@@ -134,7 +135,8 @@ public class Controller implements Initializable {
      */
     private void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor, board.cellSize, board.cellGrid, gridToggle);
+        canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor, board.cellSize,
+                board.cellGrid, gridToggle);
     }
 
     /**

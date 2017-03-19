@@ -4,6 +4,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Affine;
+import model.GameOfLife;
 import model.StaticBoard;
 
 /**
@@ -13,7 +15,8 @@ public class CanvasDrawer {
     private boolean erase;
     private byte[][] boardAtMousePressed;
 
-    protected void drawBoard(Canvas canvas, GraphicsContext gc, Color cellColor, Color backgroundColor, double cellSize, byte[][] cellGrid, boolean grid) {
+    protected void drawBoard(Canvas canvas, GraphicsContext gc, Color cellColor, Color backgroundColor,
+                             double cellSize, byte[][] cellGrid, boolean grid) {
         gc.setFill(backgroundColor);
         gc.fillRect(0,0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(cellColor);
@@ -97,5 +100,52 @@ public class CanvasDrawer {
 
     protected void setEraseFalse() {
         erase = false;
+    }
+
+    protected void drawStripBoard (GameOfLife stripGol, StaticBoard stripBoard, Canvas strip, Color cellColor){
+        double stripCellSize;
+        GraphicsContext gc = strip.getGraphicsContext2D();
+        gc.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
+        gc.setFill(cellColor);
+        Affine padding = new Affine();
+        double xPadding = 10;
+        double ty = (strip.getHeight() * 0.1);
+        double tx = xPadding;
+        padding.setTy(ty);
+        gc.setLineWidth(1);
+        for (int i = 0; i < 20; i++) {
+            byte[][] trimmedBoard = stripBoard.trim();
+            if (trimmedBoard.length >= trimmedBoard[0].length) {
+                stripCellSize = (strip.getHeight() * 0.85 / trimmedBoard.length);
+            } else {
+                stripCellSize = (strip.getHeight() * 0.85 / trimmedBoard[0].length);
+            }
+
+            padding.setTx(tx);
+            gc.setTransform(padding);
+
+            for (int x = 0; x < trimmedBoard.length; x++) {
+                for (int y = 0; y < trimmedBoard[0].length; y++) {
+                    if (trimmedBoard[x][y] == 1) {
+                        gc.fillRect(x * stripCellSize + 1, y * stripCellSize + 1, stripCellSize, stripCellSize);
+                    }
+                }
+            }
+
+            padding.setTx(tx - 13);
+            gc.setTransform(padding);
+
+            if (i > 0) {
+                gc.strokeLine(0, 0, 0, strip.getHeight());
+            }
+            //tx += xPadding;
+            stripGol.nextGeneration();
+            tx += strip.getHeight() + xPadding;
+        }
+
+        //reset transform
+        padding.setTx(0.0);
+        gc.setTransform(padding);
+
     }
 }
