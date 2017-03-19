@@ -1,4 +1,4 @@
-package sample;
+package model;
 
 /**
  * The StaticBoard class handles everything with the play board.

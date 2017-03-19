@@ -1,8 +1,4 @@
-package sample;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import org.junit.Rule;
+package model;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

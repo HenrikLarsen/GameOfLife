@@ -1,9 +1,10 @@
-package sample;
+package controller;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import model.StaticBoard;
 
 /**
  * Created by Oscar Vladau on 17.03.2017.

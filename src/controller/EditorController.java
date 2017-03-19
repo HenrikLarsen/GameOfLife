@@ -1,4 +1,4 @@
-package sample;
+package controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +16,9 @@ import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
 import lieng.GIFWriter;
+import model.GameOfLife;
+import model.RulesFormatException;
+import model.StaticBoard;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +33,7 @@ import java.util.Date;
  */
 
 
-public class PatternExportController implements Initializable {
+public class EditorController implements Initializable {
     @FXML Canvas editorCanvas;
     @FXML TextField titleField;
     @FXML TextField authorField;

@@ -1,4 +1,4 @@
-package sample;
+package model;
 
 /**
  * Created by henriklarsen on 27.02.2017.
@@ -36,7 +36,7 @@ public class FileHandler extends Reader {
         while((line = br.readLine()) != null) {
             stringBuilder.append(line).append("\n");
             if (line.startsWith("#") || line.startsWith("x")) {
-                metaDataRaw.append(line + "\n");
+                metaDataRaw.append(line).append("\n");
             }
         }
         stringBuilder.trimToSize();
@@ -163,17 +163,17 @@ public class FileHandler extends Reader {
         String[] lines = meta.toString().split("\\n");
         for (int x = 0; x < lines.length; x++) {
             if (lines[x].startsWith("#N")) {
-                metaDataTitle.append("Title: " + lines[x]);
+                metaDataTitle.append("Title: ").append(lines[x]);
             } else if (lines[x].startsWith("#O")) {
-                metaData.append("Author: " + lines[x] + "\n\n");
+                metaData.append("Author: ").append(lines[x]).append("\n\n");
             } else if (lines[x].startsWith("#c") || lines[x].startsWith("#C")) {
-                metaData.append(lines[x] + " ");
+                metaData.append(lines[x]).append(" ");
             } else if (lines[x].startsWith("#r")) {
-                metaData.append("Rule-set: " + lines[x] + "\n");
+                metaData.append("Rule-set: ").append(lines[x]).append("\n");
             } else if (lines[x].startsWith("#R") || lines[x].startsWith("#P")) {
-                metaData.append("Starts at: " + lines[x] + "\n");
+                metaData.append("Starts at: ").append(lines[x]).append("\n");
             } else if (lines[x].startsWith("x")) {
-                metaData.append("\n\n"+lines[x]);
+                metaData.append("\n\n").append(lines[x]);
             }
         }
         String metaDataString = metaData.toString();

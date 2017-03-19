@@ -1,8 +1,8 @@
-package test;
+package unitTesting;
 
 import org.junit.Test;
-import sample.GameOfLife;
-import sample.StaticBoard;
+import model.GameOfLife;
+import model.StaticBoard;
 
 /**
  * The GameOfLifeTest class is a JUnit class, doing unit testing of methods in the GameOfLife class. <br>

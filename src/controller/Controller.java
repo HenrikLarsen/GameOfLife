@@ -1,6 +1,5 @@
-package sample;
+package controller;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -20,10 +19,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * The Controller class handles all user-interaction within the application.
@@ -57,8 +56,8 @@ public class Controller implements Initializable {
     private Timeline timeline;
     private boolean gridToggle = false;
     private FileHandler fileHandler = new FileHandler();
-    private Stage exportStage;
-    private PatternExportController exportController;
+    private Stage editorStage;
+    private EditorController editorController;
     private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds", "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
 
 
@@ -432,22 +431,22 @@ public class Controller implements Initializable {
 
     public void exportButtonClick(ActionEvent actionEvent) throws Exception{
         timeline.pause();
-        exportStage = new Stage();
-        exportStage.initModality(Modality.WINDOW_MODAL);
-        exportStage.initOwner(canvasArea.getScene().getWindow());
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("PatternExport.fxml"));
+        editorStage = new Stage();
+        editorStage.initModality(Modality.WINDOW_MODAL);
+        editorStage.initOwner(canvasArea.getScene().getWindow());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Editor.fxml"));
         Parent root = loader.load();
-        exportController = loader.getController();
-        exportController.setExportBoard(board);
-        exportController.setGameOfLife(gOL);
-        exportController.setCanvasDrawer(canvasDrawer);
-        exportController.drawEditorBoard();
-        exportController.drawStrip();
+        editorController = loader.getController();
+        editorController.setExportBoard(board);
+        editorController.setGameOfLife(gOL);
+        editorController.setCanvasDrawer(canvasDrawer);
+        editorController.drawEditorBoard();
+        editorController.drawStrip();
 
-        exportStage.setTitle("GameOfLife");
-        exportStage.setScene(new Scene(root, 800, 600));
+        editorStage.setTitle("GameOfLife");
+        editorStage.setScene(new Scene(root, 800, 600));
 
-        exportStage.showAndWait();
+        editorStage.showAndWait();
         draw();
         ruleLabel.setText(gOL.ruleString.toUpperCase());
     }
