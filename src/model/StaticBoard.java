@@ -10,7 +10,7 @@ package model;
  */
 public class StaticBoard extends Board {
     private final int WIDTH = 64, HEIGHT = 64;
-    public byte[][] boardGrid;
+    public byte[][] cellGrid;
     public int cellsAlive = 0;
 
     /**
@@ -19,11 +19,11 @@ public class StaticBoard extends Board {
      * @param newBoard
      */
     public StaticBoard(byte[][] newBoard){
-        this.boardGrid = newBoard;
+        this.cellGrid = newBoard;
     }
 
     public StaticBoard() {
-        this.boardGrid = new byte[WIDTH][HEIGHT];
+        this.cellGrid = new byte[WIDTH][HEIGHT];
     }
 
     /**
@@ -31,8 +31,8 @@ public class StaticBoard extends Board {
      * Returns a byte[][] array with the count number to each cell.
      */
     public byte[][] countNeighbours() {
-        int xMax = boardGrid.length;
-        int yMax = boardGrid[0].length;
+        int xMax = cellGrid.length;
+        int yMax = cellGrid[0].length;
 
         //new byte[][] that sets the number of neighbours to each cell.
         byte[][] neighbourCount = new byte[xMax][yMax];
@@ -43,7 +43,7 @@ public class StaticBoard extends Board {
 
                 //Sjekker om cellen er i live, og om den er det øker den antall naboer for alle cellene rundt.
                 //Klarer ikke jobbe med cellene ytterst i brettet.
-                if (boardGrid[x][y] == 1) {
+                if (cellGrid[x][y] == 1) {
 
                     if (x - 1 >= 0 && y - 1 >= 0) {
                         neighbourCount[x - 1][y - 1]++;
@@ -87,7 +87,7 @@ public class StaticBoard extends Board {
      * @param newGrid - the new board to be set.
      */
     public void setBoard(byte[][] newGrid) {
-        this.boardGrid = newGrid;
+        this.cellGrid = newGrid;
     }
 
     /**
@@ -95,9 +95,9 @@ public class StaticBoard extends Board {
      * Resets the cell counter to 0.
      */
     public void resetBoard() {
-        for (int x = 0; x < boardGrid.length; x++) {
-            for (int y = 0; y < boardGrid[0].length; y++) {
-                boardGrid[x][y] = 0;
+        for (int x = 0; x < cellGrid.length; x++) {
+            for (int y = 0; y < cellGrid[0].length; y++) {
+                cellGrid[x][y] = 0;
             }
         }
         cellsAlive = 0;
@@ -106,9 +106,9 @@ public class StaticBoard extends Board {
     @Override
     public String toString(){
         String str = "";
-        for (int y = 0; y < boardGrid[0].length; y++) {
-            for (int x = 0; x < boardGrid.length; x++) {
-                if (boardGrid[x][y] == 1) {
+        for (int y = 0; y < cellGrid[0].length; y++) {
+            for (int x = 0; x < cellGrid.length; x++) {
+                if (cellGrid[x][y] == 1) {
                     str = str + "1";
                 } else {
                     str = str + "0";
@@ -125,18 +125,18 @@ public class StaticBoard extends Board {
         //These two makes the RLE in the middle bro. remove Start X from for-loop to revert.
         int startX = 0;
         int startY = 0;
-        if (importedBoard.length < boardGrid.length) {
-            startX = (boardGrid.length - importedBoard.length) / 2;
+        if (importedBoard.length < cellGrid.length) {
+            startX = (cellGrid.length - importedBoard.length) / 2;
         }
-        if (importedBoard[0].length < boardGrid[0].length) {
-            startY = (boardGrid[0].length - importedBoard[0].length) / 2;
+        if (importedBoard[0].length < cellGrid[0].length) {
+            startY = (cellGrid[0].length - importedBoard[0].length) / 2;
         }
 
 
         for (int x = 0; x < importedBoard.length; x++) {
             for (int y = 0; y < importedBoard[0].length; y++) {
-                boardGrid[startX+x][startY+y] = importedBoard[x][y];
-                if(boardGrid[startX+x][startY+y] == 1){
+                cellGrid[startX+x][startY+y] = importedBoard[x][y];
+                if(cellGrid[startX+x][startY+y] == 1){
                     cellsAlive++;
                 }
 
@@ -145,12 +145,12 @@ public class StaticBoard extends Board {
     }
 
     public String getBoundingBoxPattern() {
-        if(boardGrid.length == 0) return "";
+        if(cellGrid.length == 0) return "";
         int[] boundingBox = getBoundingBox();
         String str = "";
         for(int i = boundingBox[0]; i <= boundingBox[1]; i++) {
             for(int j = boundingBox[2]; j <= boundingBox[3]; j++) {
-                if(boardGrid[i][j] == 1) {
+                if(cellGrid[i][j] == 1) {
                     str = str + "1";
                 } else {
                     str = str + "0";
@@ -162,13 +162,13 @@ public class StaticBoard extends Board {
 
     public int[] getBoundingBox() {
         int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
-        boundingBox[0] = boardGrid.length;
+        boundingBox[0] = cellGrid.length;
         boundingBox[1] = 0;
-        boundingBox[2] = boardGrid[0].length;
+        boundingBox[2] = cellGrid[0].length;
         boundingBox[3] = 0;
-        for(int i = 0; i < boardGrid.length; i++) {
-            for(int j = 0; j < boardGrid[i].length; j++) {
-                if(boardGrid[i][j] == 0) continue;
+        for(int i = 0; i < cellGrid.length; i++) {
+            for(int j = 0; j < cellGrid[i].length; j++) {
+                if(cellGrid[i][j] == 0) continue;
                 if(i < boundingBox[0]) {
                     boundingBox[0] = i;
                 }
@@ -187,10 +187,10 @@ public class StaticBoard extends Board {
     }
 
     public Object clone(){
-        byte[][] cellGrid = new byte[boardGrid.length][boardGrid[0].length];
-        for (int i = 0; i < boardGrid.length; i++) {
-            for (int j = 0; j < boardGrid[0].length; j++) {
-                cellGrid[i][j] = boardGrid[i][j];
+        byte[][] cellGrid = new byte[this.cellGrid.length][this.cellGrid[0].length];
+        for (int i = 0; i < this.cellGrid.length; i++) {
+            for (int j = 0; j < this.cellGrid[0].length; j++) {
+                cellGrid[i][j] = this.cellGrid[i][j];
             }
         }
         StaticBoard staticBoardClone = new StaticBoard(cellGrid);

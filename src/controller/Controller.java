@@ -124,7 +124,7 @@ public class Controller implements Initializable {
      * each cell, dead or alive.
      * @see #gridToggle
      * @see StaticBoard
-     * @see StaticBoard#boardGrid
+     * @see StaticBoard#cellGrid
      * @see javafx.scene.canvas.GraphicsContext
      * @see javafx.scene.canvas.GraphicsContext#setFill(Paint)
      * @see javafx.scene.canvas.GraphicsContext#fillRect(double, double, double, double)
@@ -134,7 +134,7 @@ public class Controller implements Initializable {
      */
     private void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor, board.cellSize, board.boardGrid, gridToggle);
+        canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor, board.cellSize, board.cellGrid, gridToggle);
     }
 
     /**
@@ -256,11 +256,11 @@ public class Controller implements Initializable {
      * when the user click the left mouse button on the canvas.
      * @see #draw()
      * @see Board#cellSize
-     * @see StaticBoard#boardGrid
+     * @see StaticBoard#cellGrid
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mousePressed(MouseEvent mouseEvent) {
-        canvasDrawer.drawPressed(board.boardGrid, board.cellSize, mouseEvent, board);
+        canvasDrawer.drawPressed(board.cellGrid, board.cellSize, mouseEvent, board);
         draw();
     }
 
@@ -270,11 +270,11 @@ public class Controller implements Initializable {
      * the mouse while holding mouse button clicked on the canvas.
      * @see #draw()
      * @see Board#cellSize
-     * @see StaticBoard#boardGrid
+     * @see StaticBoard#cellGrid
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mouseDragged(MouseEvent mouseEvent) {
-        canvasDrawer.drawDragged(board.boardGrid, board.cellSize, mouseEvent, board);
+        canvasDrawer.drawDragged(board.cellGrid, board.cellSize, mouseEvent, board);
         draw();
     }
 
@@ -290,7 +290,8 @@ public class Controller implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir"/* + "/rleFiles"*/)));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Run-length encoding", "*.rle"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Run-length encoding",
+                "*.rle"));
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             timeline.stop();
@@ -298,34 +299,12 @@ public class Controller implements Initializable {
             generationLabel.setText(Integer.toString(gOL.genCounter));
             try {
                 fileHandler.readGameBoardFromDisk(file);
-                aliveLabel.setText(Integer.toString(board.cellsAlive));
-                ruleLabel.setText(gOL.ruleString.toUpperCase());
             } catch (IOException ie) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("File not found!");
-                alert.setContentText("The file may be corrupt or not exist. Try another file.");
-                alert.showAndWait();
-            } catch (PatternFormatException pfe) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("Corrupt or erroneous file");
-                alert.setContentText("It seems you did bad.");
-                alert.showAndWait();
-            } catch (ArrayIndexOutOfBoundsException aiobe) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("Out of bounds!");
-                alert.setContentText("The pattern you are trying to load is too big.");
-                alert.showAndWait();
-            } catch (RulesFormatException rfe) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("Out of bounds!");
-                alert.setContentText("The pattern you are trying to load is too big.");
-                alert.showAndWait();
+                PopUpAlerts.ioAlertFromDisk();
             }
         }
+        aliveLabel.setText(Integer.toString(board.cellsAlive));
+        ruleLabel.setText(gOL.ruleString.toUpperCase());
         draw();
     }
 
@@ -344,29 +323,7 @@ public class Controller implements Initializable {
                 aliveLabel.setText(Integer.toString(board.cellsAlive));
                 ruleLabel.setText(gOL.ruleString.toUpperCase());
             } catch (IOException ie) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("Invalid URL!");
-                alert.setContentText("This URL does not contain an RLE file!");
-                alert.showAndWait();
-            } catch (PatternFormatException pfe) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("Corrupt or erroneous file");
-                alert.setContentText("It seems you did bad.");
-                alert.showAndWait();
-            } catch (ArrayIndexOutOfBoundsException aiobe) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("Out of bounds!");
-                alert.setContentText("The pattern you are trying to load is too big.");
-                alert.showAndWait();
-            } catch (RulesFormatException rfe) {
-                Alert rulesAlert = new Alert(Alert.AlertType.WARNING);
-                rulesAlert.setTitle("Error");
-                rulesAlert.setHeaderText("Invalid rules");
-                rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
-                rulesAlert.showAndWait();
+                PopUpAlerts.ioAlertFromURL();
             }
         }
         draw();
@@ -376,17 +333,10 @@ public class Controller implements Initializable {
         try {
             String ruleString = ruleInputField.getText().toUpperCase();
             gOL.setRuleString(ruleString);
-            //System.out.println(gOL.ruleString);
-            //System.out.println("Survives : " + gOL.surviveRules);
-            //System.out.println("Born : " + gOL.bornRules);
             ruleLabel.setText(gOL.ruleString.toUpperCase());
             ruleInputField.setText("");
         } catch (RulesFormatException rfe) {
-            Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
-            rulesAlert.setTitle("Error");
-            rulesAlert.setHeaderText("Invalid rules");
-            rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
-            rulesAlert.showAndWait();
+            PopUpAlerts.ruleAlert2();
         }
     }
 
@@ -395,11 +345,7 @@ public class Controller implements Initializable {
         try{
             gOL.setRuleString(rules);
         }catch (RulesFormatException rfee) {
-            Alert rulesAlert = new Alert(Alert.AlertType.INFORMATION);
-            rulesAlert.setTitle("Error2");
-            rulesAlert.setHeaderText("Invalid rules");
-            rulesAlert.setContentText("The rules you are trying to load are invalid. Remember to keep your digits from 0-8!");
-            rulesAlert.showAndWait();
+            PopUpAlerts.ruleAlert2();
         }
         ruleLabel.setText(gOL.ruleString.toUpperCase());
     }

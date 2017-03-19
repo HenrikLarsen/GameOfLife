@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
 import lieng.GIFWriter;
 import model.GameOfLife;
+import model.PopUpAlerts;
 import model.RulesFormatException;
 import model.StaticBoard;
 
@@ -95,8 +96,8 @@ public class EditorController implements Initializable {
 
     public void drawEditorBoard() {
         GraphicsContext graphicsContext = editorCanvas.getGraphicsContext2D();
-        cellSize = editorCanvas.getWidth() / exportBoard.boardGrid.length;
-        canvasDrawer.drawBoard(editorCanvas, graphicsContext, currentCellColor, currentBackgroundColor, cellSize, exportBoard.boardGrid, grid);
+        cellSize = editorCanvas.getWidth() / exportBoard.cellGrid.length;
+        canvasDrawer.drawBoard(editorCanvas, graphicsContext, currentCellColor, currentBackgroundColor, cellSize, exportBoard.cellGrid, grid);
     }
 
     public void closeClick(ActionEvent actionEvent) {
@@ -122,12 +123,12 @@ public class EditorController implements Initializable {
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
-        canvasDrawer.drawPressed(exportBoard.boardGrid, cellSize, mouseEvent, exportBoard);
+        canvasDrawer.drawPressed(exportBoard.cellGrid, cellSize, mouseEvent, exportBoard);
         drawEditorBoard();
     }
 
     public void mouseDragged(MouseEvent mouseEvent) {
-        canvasDrawer.drawDragged(exportBoard.boardGrid, cellSize, mouseEvent, exportBoard);
+        canvasDrawer.drawDragged(exportBoard.cellGrid, cellSize, mouseEvent, exportBoard);
         drawEditorBoard();
     }
 
@@ -161,7 +162,7 @@ public class EditorController implements Initializable {
 
         String rawString = patternToString(trimmedPattern);
         System.out.println(rawString);
-        String encodedString = encodeStringToRLE(rawString);
+        String encodedString = stringToRLE(rawString);
 
         //Adds a new line for every 70 characters
         String splitString = encodedString.replaceAll("(.{70})", "$1\n");
@@ -197,11 +198,7 @@ public class EditorController implements Initializable {
             printWriter.println(splitString);
             printWriter.close();
         } catch (IOException ioe) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("Could not save file.");
-            alert.setContentText("Your pattern was not saved. Please try again.");
-            alert.showAndWait();
+            PopUpAlerts.ioeSaveError();
         }
 
         System.out.println(file.toString());
@@ -235,7 +232,7 @@ public class EditorController implements Initializable {
 
         for (int i = boundingBox[0]; i <= boundingBox[1]; i++) {
             for (int j = boundingBox[2]; j <= boundingBox[3]; j++) {
-                if (boardTrim.boardGrid[i][j] == 1) {
+                if (boardTrim.cellGrid[i][j] == 1) {
                     trimmedBoard[newX][newY] = 1;
                 }
                 newY++;
@@ -273,25 +270,25 @@ public class EditorController implements Initializable {
     }
 
 
-    //triks litt med denne:
-    public String encodeStringToRLE(String rawString) {
-        StringBuilder encodedString = new StringBuilder();
-
-        for (int i = 0; i < rawString.length(); i++) {
+    public String stringToRLE(String rawString) {
+        StringBuilder RLEString = new StringBuilder();
+        for (int curChar = 0; curChar < rawString.length(); curChar++) {
             int repetitions = 1;
-
-            while ((i + 1 < rawString.length()) && (rawString.charAt(i) == rawString.charAt(i + 1))) {
-                i++;
+            int nextChar = curChar+1;
+            while ((nextChar < rawString.length()) && (rawString.charAt(nextChar) == rawString.charAt(curChar))) {
+                curChar++;
+                nextChar++;
                 repetitions++;
             }
 
             if (repetitions > 1) {
-                encodedString.append(repetitions).append(rawString.charAt(i));
+                RLEString.append(repetitions).append(rawString.charAt(curChar));
             } else {
-                encodedString.append(rawString.charAt(i));
+                RLEString.append(rawString.charAt(curChar));
             }
         }
-        return encodedString.toString();
+
+        return RLEString.toString();
     }
 
     public void drawStrip() {
@@ -349,24 +346,14 @@ public class EditorController implements Initializable {
         int counter = 20;
 
 
-        if (gifSize/2 < exportBoard.boardGrid.length) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Warning!");
-            alert.setHeaderText("Board is too big");
-            alert.setContentText("Your current board contains more cells than can be drawn! \nAs a result," +
-                    " your gif might not show anything. \n\nTry increasing the gif size, decreasing board size" +
-                    " or choosing the option to draw only the pattern to fix this!");
-            alert.showAndWait();
+        if (gifSize/2 < exportBoard.cellGrid.length) {
+            PopUpAlerts.sizeBoardError();
         }
 
         if (!numFramesInputField.getText().isEmpty()) {
             counter = Integer.parseInt(numFramesInputField.getText());
             if (counter < 1 || counter > 400) {
-                Alert counterAlert = new Alert(Alert.AlertType.INFORMATION);
-                counterAlert.setTitle("Error");
-                counterAlert.setHeaderText("Number of frames is to high");
-                counterAlert.setContentText("The number of frames you have entered is too high. Please keep it between 1 and 400");
-                counterAlert.showAndWait();
+                PopUpAlerts.gifFramesAlert();
                 return;
             }
         }
@@ -377,20 +364,17 @@ public class EditorController implements Initializable {
         if (!fpsInputField.getText().isEmpty()) {
             fps = Integer.parseInt(fpsInputField.getText());
             if (fps < 1 || fps > 60) {
-                Alert fpsAlert = new Alert(Alert.AlertType.INFORMATION);
-                fpsAlert.setTitle("Error");
-                fpsAlert.setHeaderText("FPS too high");
-                fpsAlert.setContentText("You're going too fast! Please keep your FPS input between 1 and 60");
-                fpsAlert.showAndWait();
+                PopUpAlerts.gifFPSAlert();
                 return;
             }
         }
+
         System.out.println(fps);
 
         int milliseconds = 1000/fps;
 
-        java.awt.Color backgroundColor = convertToawtColor(currentBackgroundColor);
-        java.awt.Color cellColor = convertToawtColor(currentCellColor);
+        java.awt.Color backgroundColor = convertToAwtColor(currentBackgroundColor);
+        java.awt.Color cellColor = convertToAwtColor(currentCellColor);
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Graphics Interchange Forma", "*.gif"));
@@ -403,19 +387,19 @@ public class EditorController implements Initializable {
                 gifWriter.setBackgroundColor(backgroundColor);
                 writeGoLSequenceToGIF(gifWriter, gifGol, counter, cellColor);
             } catch (IOException ioe) {
-                System.out.println("dildo");
+                PopUpAlerts.ioeSaveError();
             }
         }
     }
 
 
     public void drawGifEntireBoard(GIFWriter writer, java.awt.Color cellColor) {
-        gifCellSize = gifSize/gifBoard.boardGrid.length;
+        gifCellSize = gifSize/gifBoard.cellGrid.length;
         int cellDrawSize = (int) gifCellSize - 1;
-        int offset = (gifSize - (cellDrawSize * gifBoard.boardGrid.length)) / 2;
-        for (int x = 1; x <= gifBoard.boardGrid.length; x++) {
-            for (int y = 1; y <= gifBoard.boardGrid[0].length; y++) {
-                if (gifBoard.boardGrid[x - 1][y - 1] == 1) {
+        int offset = (gifSize - (cellDrawSize * gifBoard.cellGrid.length)) / 2;
+        for (int x = 1; x <= gifBoard.cellGrid.length; x++) {
+            for (int y = 1; y <= gifBoard.cellGrid[0].length; y++) {
+                if (gifBoard.cellGrid[x - 1][y - 1] == 1) {
                     writer.fillRect((x * cellDrawSize) - cellDrawSize + offset, (x * cellDrawSize) + offset,
                             (y * cellDrawSize) - cellDrawSize + offset, (y * cellDrawSize) + offset, cellColor);
                 }
@@ -505,7 +489,7 @@ public class EditorController implements Initializable {
         }
     }
 
-    public java.awt.Color convertToawtColor (Color color) {
+    public java.awt.Color convertToAwtColor(Color color) {
         float red = (float) color.getRed();
         float green = (float) color.getGreen();
         float blue = (float) color.getBlue();
@@ -515,7 +499,5 @@ public class EditorController implements Initializable {
 
         return newColor;
     }
-
-        //TODO: Trix
 }
 

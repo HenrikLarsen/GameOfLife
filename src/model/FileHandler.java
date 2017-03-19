@@ -21,8 +21,30 @@ public class FileHandler extends Reader {
         return 5;
     }
 
-    public void readGameBoardFromDisk(File file) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException, RulesFormatException{
-        readGameBoard(new FileReader(file));
+    public void readGameBoardFromDisk(File file) throws IOException{
+        try {
+            readGameBoard(new FileReader(file));
+        } catch (PatternFormatException pfe) {
+            PopUpAlerts.patternFormatAlert();
+        } catch (ArrayIndexOutOfBoundsException aiobe) {
+            PopUpAlerts.outOfBounds();
+        } catch (RulesFormatException rfe) {
+            PopUpAlerts.ruleAlert2();
+        }
+    }
+
+    public void readGameBoardFromURL(String url) throws IOException {
+        URL destination = new URL(url);
+        URLConnection conn = destination.openConnection();
+        try {
+            readGameBoard(new InputStreamReader(conn.getInputStream()));
+        } catch (PatternFormatException pfe) {
+            PopUpAlerts.patternFormatAlert();
+        } catch (ArrayIndexOutOfBoundsException aiobe) {
+            PopUpAlerts.outOfBounds();
+        } catch (RulesFormatException rfe) {
+            PopUpAlerts.ruleAlert2();
+        }
     }
 
     private void readGameBoard(Reader reader) throws IOException, PatternFormatException, ArrayIndexOutOfBoundsException, RulesFormatException{
@@ -85,7 +107,7 @@ public class FileHandler extends Reader {
         }
         //System.out.println(str2);
 
-        if (newBoard.length > playBoard.boardGrid.length || newBoard[0].length > playBoard.boardGrid[0].length) {
+        if (newBoard.length > playBoard.cellGrid.length || newBoard[0].length > playBoard.cellGrid[0].length) {
             throw new ArrayIndexOutOfBoundsException();
         } else {
             playBoard.setBoardFromRLE(newBoard);
@@ -149,12 +171,6 @@ public class FileHandler extends Reader {
             }
         }
         return loadedBoard;
-    }
-
-    public void readGameBoardFromURL(String url) throws IOException, PatternFormatException, RulesFormatException {
-        URL destination = new URL(url);
-        URLConnection conn = destination.openConnection();
-        readGameBoard(new InputStreamReader(conn.getInputStream()));
     }
 
     public void formatMetadata(StringBuilder meta) {
