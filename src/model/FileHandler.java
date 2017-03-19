@@ -70,9 +70,7 @@ public class FileHandler extends Reader {
             }
         }
         stringBuilder.trimToSize();
-
-        System.out.println(metaDataRaw);
-        System.out.println(stringBuilder);
+        formatMetadata(metaDataRaw);
 
         Matcher rleMatcher = rlePattern.matcher(stringBuilder);
         if(!rleMatcher.find()){
@@ -81,42 +79,18 @@ public class FileHandler extends Reader {
 
         int x = Integer.parseInt(rleMatcher.group(1));
         int y = Integer.parseInt(rleMatcher.group(2));
-
-        System.out.println("x = " + x + " y = " + y);
-
         String loadedRules = rleMatcher.group(3);
-
-        gameOfLife.setRuleSet(loadedRules);
-
         String str = rleMatcher.group(4);
-
-        System.out.println(loadedRules);
-        System.out.println(rleMatcher.group(4));
-
         String rleString = str.replaceAll("[\r\n]+", "");
-
         String revisedRleString = newBoard(rleString);
 
+        gameOfLife.setRuleSet(loadedRules);
         byte[][] newBoard = boardFromFile(revisedRleString, x, y);
-
-        StringBuilder str2 = new StringBuilder("");
-        for (byte[] aNewBoard : newBoard) {
-            for (int g = 0; g < newBoard[0].length; g++) {
-                if (aNewBoard[g] == 1) {
-                    str2.append("1");
-                } else {
-                    str2.append("0");
-                }
-            }
-        }
-
         if (newBoard.length > playBoard.cellGrid.length || newBoard[0].length > playBoard.cellGrid[0].length) {
             throw new ArrayIndexOutOfBoundsException();
         } else {
             playBoard.setBoardFromRLE(newBoard);
         }
-
-        formatMetadata(metaDataRaw);
 
     }
 
@@ -124,6 +98,7 @@ public class FileHandler extends Reader {
         int leadingNumber = 0;
         String returnString = "";
         for(int i = 0; i < rleString.length(); i++) {
+
             char t = rleString.charAt(i);
 
             if(Character.isDigit(t)) {
