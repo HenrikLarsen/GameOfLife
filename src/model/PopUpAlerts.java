@@ -91,4 +91,20 @@ public class PopUpAlerts {
         fpsAlert.setContentText("You're going too fast! Please keep your FPS input between 1 and 60");
         fpsAlert.showAndWait();
     }
+
+    public static void ruleDescription (String ruleName, String ruleString, String ruleDescription) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Rule description");
+        alert.setHeaderText("Title: " + ruleName);
+        alert.setContentText("RLE rule format: " + ruleString + "\n\n" + ruleDescription);
+        alert.showAndWait();
+    }
+
+    public static void metaData (String header, String description) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Pattern Metadata");
+        alert.setHeaderText(header);
+        alert.setContentText(description);
+        alert.showAndWait();
+    }
 }

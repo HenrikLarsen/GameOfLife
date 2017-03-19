@@ -351,28 +351,24 @@ public class Controller implements Initializable {
     }
 
     public void showRuleDescription(ActionEvent actionEvent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Rule description");
-        alert.setHeaderText("Title: " + gOL.ruleName);
-        alert.setContentText("RLE rule format: " + gOL.ruleString + "\n\n" + gOL.ruleDescription);
-        alert.showAndWait();
+        PopUpAlerts.ruleDescription(gOL.ruleName, gOL.ruleString, gOL.ruleDescription);
     }
 
     public void showMetadata(ActionEvent actionEvent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Pattern Metadata");
+        String title;
+        String description;
         if (fileHandler.metaTitle.equals("")) {
-            alert.setHeaderText("No title");
+            title = "No title";
         } else {
-            alert.setHeaderText(fileHandler.metaTitle);
+            title = fileHandler.metaTitle;
+        }
+        if (fileHandler.metaData.equals("")) {
+            description = "No description avaliable. Try loading an RLE-file!";
+        } else {
+            description = fileHandler.metaData;
         }
 
-        if (fileHandler.metaData.equals("")) {
-            alert.setContentText("No description avaliable. Try loading an RLE-file!");
-        } else {
-            alert.setContentText(fileHandler.metaData);
-        }
-        alert.showAndWait();
+        PopUpAlerts.metaData(title, description);
     }
 
     public void exportButtonClick(ActionEvent actionEvent) throws Exception{
