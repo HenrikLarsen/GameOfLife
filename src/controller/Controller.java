@@ -12,6 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.*;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -60,6 +63,8 @@ public class Controller implements Initializable {
     private EditorController editorController;
     private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
             "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
+    private boolean move = false;
+
 
 
     /**
@@ -182,6 +187,7 @@ public class Controller implements Initializable {
      * @param actionEvent - The event where the user clicks on the "start"-button.
      */
     public void startClick(ActionEvent actionEvent) {
+        move = false;
         timeline.play();
     }
 
@@ -192,6 +198,7 @@ public class Controller implements Initializable {
      * @param actionEvent - The event where the user clicks on the "pause"-button.
      */
     public void pauseClick(ActionEvent actionEvent) {
+        move = false;
         timeline.pause();
     }
 
@@ -207,6 +214,7 @@ public class Controller implements Initializable {
      */
     public void resetClick(ActionEvent actionEvent) {
         timeline.stop();
+        move = false;
         gOL.genCounter = 0;
         generationLabel.setText(Integer.toString(gOL.genCounter));
         board.resetBoard();
@@ -308,6 +316,7 @@ public class Controller implements Initializable {
         aliveLabel.setText(Integer.toString(board.cellsAlive));
         ruleLabel.setText(gOL.ruleString.toUpperCase());
         draw();
+        move = true;
     }
 
     public void importURLClick(ActionEvent actionEvent) {
@@ -328,6 +337,7 @@ public class Controller implements Initializable {
                 PopUpAlerts.ioAlertFromURL();
             }
         }
+        move = true;
         draw();
     }
 
@@ -393,5 +403,67 @@ public class Controller implements Initializable {
         editorStage.showAndWait();
         draw();
         ruleLabel.setText(gOL.ruleString.toUpperCase());
+    }
+
+    public void arrowMove(KeyEvent keyEvent) {
+        if (!move) {
+            return;
+        }
+        int[] boundingBox = board.getBoundingBox();
+        byte[][] newBox = new byte[board.getCellGrid().length][board.getCellGrid()[0].length];
+        if(keyEvent.getCode() == KeyCode.W) {
+            if (boundingBox[2] > 0) {
+                for(int x = boundingBox[0]; x <= boundingBox[1]; x++) {
+                    for(int y = boundingBox[2]; y <= boundingBox[3]; y++) {
+                        newBox[x][y-1] = board.getCellState(x, y);
+                    }
+                }
+                board.setBoard(newBox);
+            }
+        } else if (keyEvent.getCode() == KeyCode.S) {
+            System.out.println("down");
+            if (boundingBox[3] < board.getCellGrid()[0].length-1) {
+                for(int x = boundingBox[0]; x <= boundingBox[1]; x++) {
+                    for(int y = boundingBox[2]; y <= boundingBox[3]; y++) {
+                        newBox[x][y+1] = board.getCellState(x, y);
+                    }
+                }
+                board.setBoard(newBox);
+            }
+        } else if (keyEvent.getCode() == KeyCode.A){
+            System.out.println("left");
+            if (boundingBox[0] > 0) {
+                for(int x = boundingBox[0]; x <= boundingBox[1]; x++) {
+                    for(int y = boundingBox[2]; y <= boundingBox[3]; y++) {
+                        newBox[x-1][y] = board.getCellState(x, y);
+                    }
+                }
+                board.setBoard(newBox);
+            }
+        } else if (keyEvent.getCode() == KeyCode.D) {
+            System.out.println("right");
+            if (boundingBox[1] < board.getCellGrid().length - 1) {
+                for (int x = boundingBox[0]; x <= boundingBox[1]; x++) {
+                    for (int y = boundingBox[2]; y <= boundingBox[3]; y++) {
+                        newBox[x + 1][y] = board.getCellState(x, y);
+                    }
+                }
+                board.setBoard(newBox);
+            }
+
+        } else if (keyEvent.getCode() == KeyCode.Q) {
+            if (boundingBox[1] < board.getCellGrid().length - 1 ) {
+                for (int x = boundingBox[0]; x <= boundingBox[1]; x++) {
+                    for (int y = boundingBox[2]; y <= boundingBox[3]; y++) {
+                        newBox[y][x] = board.getCellState(x, y);
+                    }
+                }
+                board.setBoard(newBox);
+            }
+
+        } else if (keyEvent.getCode() == KeyCode.ENTER) {
+            move = false;
+        }
+        draw();
     }
 }

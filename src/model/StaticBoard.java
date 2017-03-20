@@ -9,7 +9,7 @@ package model;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 200, HEIGHT = 200;
+    private final int WIDTH = 60, HEIGHT = 60;
     private byte[][] cellGrid;
     public int cellsAlive = 0;
 
@@ -235,4 +235,26 @@ public class StaticBoard extends Board {
     public byte getCellState(int x, int y) {
         return cellGrid[x][y];
     }
+
+
+    /*
+    public byte[][] moveCellsKeyboard(int xStart, int yStart, int xStop, int yStop, String place){
+        byte[][] newBox = new byte[getCellGrid().length][getCellGrid()[0].length];
+
+        for(int x = xStart; x <= xStop; x++) {
+            for(int y = yStart; y <= yStop; y++) {
+                if (place.equals("up")) {
+                    newBox[x][y - 1] = getCellState(x, y);
+                } else if (place.equals("down")) {
+                    newBox[x][y + 1] = getCellState(x, y);
+                } else if (place.equals("left")) {
+                    newBox[x-1][y] = getCellState(x, y);
+                } else if (place.equals("right")) {
+                    newBox[x+1][y] = getCellState(x, y);
+                }
+            }
+        }
+        return newBox;
+    }
+    */
 }

@@ -7,7 +7,7 @@ public class Board {
     public int startCells;
     public int height;
     public int width;
-    public double cellSize = 12.2d; //19.4d;
+    public double cellSize = 15.5d; //19.4d;
 
     public void setCellSize(double size){
         this.cellSize = size;
