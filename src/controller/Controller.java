@@ -61,6 +61,10 @@ public class Controller implements Initializable {
     private FileHandler fileHandler = new FileHandler();
     private Stage editorStage;
     private EditorController editorController;
+
+    private Stage statisticStage;
+    private StatisticsController statisticsController;
+
     private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
             "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
     private boolean move = false;
@@ -465,5 +469,17 @@ public class Controller implements Initializable {
             move = false;
         }
         draw();
+    }
+
+    public void showStatistic(ActionEvent actionEvent) throws Exception {
+        timeline.pause();
+        statisticStage = new Stage();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
+        Parent root = loader.load();
+
+        statisticStage.setTitle("Statistics");
+        statisticStage.setScene(new Scene(root, 800, 600));
+        statisticStage.showAndWait();
     }
 }
