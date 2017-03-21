@@ -61,7 +61,7 @@ public class Controller implements Initializable {
     private FileHandler fileHandler = new FileHandler();
     private Stage editorStage;
     private EditorController editorController;
-
+    private Statistics statistics;
     private Stage statisticStage;
     private StatisticsController statisticsController;
 
@@ -473,13 +473,28 @@ public class Controller implements Initializable {
 
     public void showStatistic(ActionEvent actionEvent) throws Exception {
         timeline.pause();
-        statisticStage = new Stage();
+        TextInputDialog textInputDialog = new TextInputDialog();
+        textInputDialog.setHeaderText("Show Statistics");
+        textInputDialog.setContentText("Enter statistic length");
+        textInputDialog.showAndWait();
+        String url = textInputDialog.getResult();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
-        Parent root = loader.load();
+        if(url != null){
+            int iterations = Integer.parseInt(url);
+            statisticStage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
+            Parent root = loader.load();
+            statisticsController = loader.getController();
+            statisticsController.setIterations(iterations);
+            statisticsController.setGameOfLife(gOL);
+            statisticsController.makeChart();
 
-        statisticStage.setTitle("Statistics");
-        statisticStage.setScene(new Scene(root, 800, 600));
-        statisticStage.showAndWait();
+            statisticStage.setTitle("GameOfLife");
+            statisticStage.setScene(new Scene(root, 800, 600));
+
+            statisticStage.showAndWait();
+        }
+
+
     }
 }
