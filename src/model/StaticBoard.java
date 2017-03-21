@@ -161,14 +161,19 @@ public class StaticBoard extends Board {
     }
 
     public int[] getBoundingBox() {
+        int[] boundingBox = getBoundingBox(cellGrid);
+        return boundingBox;
+    }
+
+    public int[] getBoundingBox(byte[][] board) {
         int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
-        boundingBox[0] = cellGrid.length;
+        boundingBox[0] = board.length;
         boundingBox[1] = 0;
-        boundingBox[2] = cellGrid[0].length;
+        boundingBox[2] = board[0].length;
         boundingBox[3] = 0;
-        for(int i = 0; i < cellGrid.length; i++) {
-            for(int j = 0; j < cellGrid[i].length; j++) {
-                if(cellGrid[i][j] == 0) continue;
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                if(board[i][j] == 0) continue;
                 if(i < boundingBox[0]) {
                     boundingBox[0] = i;
                 }
@@ -199,6 +204,11 @@ public class StaticBoard extends Board {
     }
 
     public byte[][] trim() {
+        byte[][] trimmedBoard = trim(cellGrid);
+        return trimmedBoard;
+    }
+
+    public byte[][] trim(byte[][] board) {
         int[] boundingBox = getBoundingBox();
         int x = Math.abs(boundingBox[1] - boundingBox[0] + 1);
         int y = Math.abs(boundingBox[3] - boundingBox[2] + 1);
@@ -210,7 +220,7 @@ public class StaticBoard extends Board {
 
         for (int i = boundingBox[0]; i <= boundingBox[1]; i++) {
             for (int j = boundingBox[2]; j <= boundingBox[3]; j++) {
-                if (cellGrid[i][j] == 1) {
+                if (board[i][j] == 1) {
                     trimmedBoard[newX][newY] = 1;
                 }
                 newY++;
@@ -237,24 +247,87 @@ public class StaticBoard extends Board {
     }
 
 
-    /*
-    public byte[][] moveCellsKeyboard(int xStart, int yStart, int xStop, int yStop, String place){
-        byte[][] newBox = new byte[getCellGrid().length][getCellGrid()[0].length];
-
-        for(int x = xStart; x <= xStop; x++) {
-            for(int y = yStart; y <= yStop; y++) {
-                if (place.equals("up")) {
-                    newBox[x][y - 1] = getCellState(x, y);
-                } else if (place.equals("down")) {
-                    newBox[x][y + 1] = getCellState(x, y);
-                } else if (place.equals("left")) {
-                    newBox[x-1][y] = getCellState(x, y);
-                } else if (place.equals("right")) {
-                    newBox[x+1][y] = getCellState(x, y);
+    public void movePattern(String direction) {
+        int[] boundingBox = getBoundingBox();
+        byte[][] newBox = new byte[cellGrid.length][cellGrid[0].length];
+        for(int x = boundingBox[0]; x <= boundingBox[1]; x++) {
+            for(int y = boundingBox[2]; y <= boundingBox[3]; y++) {
+                if (direction.equals("up") && boundingBox[2] > 0) {
+                    newBox[x][y - 1] = cellGrid[x][y];
+                } else if (direction.equals("down") && boundingBox[3] < cellGrid[0].length-1) {
+                    newBox[x][y+1] = cellGrid[x][y];
+                } else if (direction.equals("left") && boundingBox[0] > 0) {
+                    newBox[x-1][y] = cellGrid[x][y];
+                } else if (direction.equals("right") && boundingBox[1] < cellGrid.length - 1) {
+                    newBox[x + 1][y] = cellGrid[x][y];
+                } else {
+                    return;
                 }
             }
         }
-        return newBox;
+        setBoard(newBox);
     }
-    */
+
+    public void rotate(boolean clockwise){
+        if (clockwise) {
+            byte[][] transposedPattern = transposePattern(cellGrid);
+            if (transposedPattern != null) {
+                byte[][] rotatedPattern = reverseRows(transposedPattern);
+                setBoard(rotatedPattern);
+            }
+        } else if (!clockwise){
+            byte[][] reversedPattern = reverseRows(cellGrid);
+            byte[][] rotatedPattern = transposePattern(reversedPattern);
+            if (rotatedPattern != null) {
+                setBoard(rotatedPattern);
+            }
+        }
+    }
+
+
+    public byte[][] transposePattern(byte[][] board) {
+        byte[][] trimmed = trim(board);
+        byte[][] transposedTrimmed = new byte[trimmed[0].length][trimmed.length];
+        for (int x = 0; x < trimmed[0].length; x++) {
+            for (int y = 0; y < trimmed.length; y++){
+                transposedTrimmed[x][y] = trimmed[y][x];
+            }
+        }
+
+        int[] boundingBox = getBoundingBox();
+
+        int xStart = boundingBox[0];
+        int yStart = boundingBox[2];
+
+
+        int trimmedX = 0;
+        int trimmedY = 0;
+
+        byte[][] transposedPattern = new byte[cellGrid.length][cellGrid[0].length];
+        if (transposedTrimmed.length+xStart > transposedPattern.length || transposedTrimmed[0].length+yStart > transposedPattern[0].length){
+            return null;
+        }
+        for (int x = xStart; x < transposedTrimmed.length+xStart; x++) {
+            for (int y = yStart; y < transposedTrimmed[0].length+yStart; y++){
+                transposedPattern[x][y] = transposedTrimmed[trimmedX][trimmedY];
+                trimmedY++;
+            }
+            trimmedX++;
+            trimmedY = 0;
+        }
+        return transposedPattern;
+    }
+
+    public byte[][] reverseRows(byte[][] board) {
+        int[] boundingBox = getBoundingBox(board);
+        byte[][] reversedPattern = new byte[board.length][board[0].length];
+        int xBack = 0;
+        for (int x = boundingBox[0]; x <= boundingBox[1]; x++) {
+            for (int y = boundingBox[2]; y <= boundingBox[3]; y++) {
+                reversedPattern[x][y] = board[boundingBox[1] - xBack][y];
+            }
+            xBack++;
+        }
+        return reversedPattern;
+    }
 }
