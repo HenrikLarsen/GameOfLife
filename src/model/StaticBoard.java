@@ -330,4 +330,16 @@ public class StaticBoard extends Board {
         }
         return reversedPattern;
     }
+
+    public int countCellsAlive(){
+        int count = 0;
+        for (int x = 0; x < cellGrid[0].length; x++) {
+            for (int y = 0; y < cellGrid.length; y++){
+               if(cellGrid[x][y] == 1){
+                   count++;
+                }
+            }
+        }
+        return count;
+    }
 }

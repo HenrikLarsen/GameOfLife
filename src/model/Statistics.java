@@ -51,11 +51,11 @@ public class Statistics {
 
         // CellSize & CellDiff
         for(int j = 0; j < statistics[0].length; j++){
-            statistics[0][j] = gameOfLife.playBoard.cellsAlive;
             if(j == 0){
                 statistics[1][j] = 0;
-                statistics[0][j] = gameOfLife.playBoard.cellsAlive;
+                statistics[0][j] = gameOfLife.playBoard.countCellsAlive();
             }else{
+                statistics[0][j] = gameOfLife.playBoard.cellsAlive;
                 statistics[1][j] = gameOfLife.playBoard.cellsAlive - statistics[0][j-1];
             }
 
