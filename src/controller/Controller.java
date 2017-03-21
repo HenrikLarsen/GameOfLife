@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.event.*;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.*;
@@ -65,7 +66,7 @@ public class Controller implements Initializable {
     private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
             "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
     private boolean move = false;
-
+    private MouseEvent initialDrag;
 
 
     /**
@@ -104,6 +105,7 @@ public class Controller implements Initializable {
         chooseRulesBox.getSelectionModel().selectFirst();
         cellColorPicker.setValue(currentCellColor);
         backgroundColorPicker.setValue(currentBackgroundColor);
+        draw();
     }
 
     /**
@@ -274,6 +276,9 @@ public class Controller implements Initializable {
         if (mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.drawPressed(mouseEvent, board);
             aliveLabel.setText("" + board.cellsAlive);
+        }else if (mouseEvent.isSecondaryButtonDown()) {
+            initialDrag = mouseEvent;
+            canvasArea.setCursor(Cursor.MOVE);
         }
         draw();
     }
@@ -291,6 +296,8 @@ public class Controller implements Initializable {
         if (mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.drawDragged(mouseEvent, board);
             aliveLabel.setText("" + board.cellsAlive);
+        } else if (mouseEvent.isSecondaryButtonDown()) {
+            canvasDrawer.setDragOffset(mouseEvent, initialDrag);
         }
         draw();
     }
@@ -300,6 +307,7 @@ public class Controller implements Initializable {
      */
     public void mouseDragOver() {
         canvasDrawer.setEraseFalse();
+        canvasArea.setCursor(Cursor.DEFAULT);
     }
 
 
@@ -448,10 +456,10 @@ public class Controller implements Initializable {
             zoom = zoom*4;
         } else if (canvasDrawer.getCellDrawSize() > 40) {
             zoom = zoom*2;
-        } else if (canvasDrawer.getCellDrawSize() < 10) {
-            zoom = zoom / 2;
         } else if (canvasDrawer.getCellDrawSize() < 2) {
             zoom = zoom / 4;
+        } else if (canvasDrawer.getCellDrawSize() < 10) {
+            zoom = zoom / 2;
         }
         canvasDrawer.setCellDrawSize(canvasDrawer.getCellDrawSize() + zoom);
         System.out.println(zoom);

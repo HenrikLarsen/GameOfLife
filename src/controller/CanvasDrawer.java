@@ -16,22 +16,31 @@ public class CanvasDrawer {
     private byte[][] boardAtMousePressed;
     private double cellDrawSize = 15.5d;
     private double stripCellSize;
+    private double xZoomOffset = 0;
+    private double yZoomOffset = 0;
+    private double xDragOffset = 0;
+    private double yDragOffset = 0;
 
     protected void drawBoard(Canvas canvas, GraphicsContext gc, Color cellColor, Color backgroundColor,
                              byte[][] cellGrid, boolean grid) {
+
         gc.setFill(backgroundColor);
         gc.fillRect(0,0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(cellColor);
 
+        setZoomOffset(cellGrid, canvas);
         for (int x = 0; x < cellGrid.length; x++) {
             for (int y = 0; y < cellGrid[0].length; y++) {
                 if (cellGrid[x][y] == 1) {
-                    gc.fillRect(x * cellDrawSize + 1, y * cellDrawSize + 1, cellDrawSize, cellDrawSize);
+                    gc.fillRect(x * cellDrawSize + xZoomOffset + xDragOffset, y * cellDrawSize + yZoomOffset +
+                                    yDragOffset, cellDrawSize, cellDrawSize);
                     if (grid) {
-                        gc.strokeRect(x * cellDrawSize + 1, y * cellDrawSize + 1, cellDrawSize, cellDrawSize);
+                        gc.strokeRect(x * cellDrawSize + xZoomOffset + xDragOffset, y * cellDrawSize +
+                                yZoomOffset + yDragOffset, cellDrawSize, cellDrawSize);
                     }
                 } else if (grid) {
-                    gc.strokeRect(x * cellDrawSize + 1, y * cellDrawSize + 1, cellDrawSize, cellDrawSize);
+                    gc.strokeRect(x * cellDrawSize + xZoomOffset + xDragOffset, y * cellDrawSize + yZoomOffset +
+                            yDragOffset, cellDrawSize, cellDrawSize);
                 }
             }
         }
@@ -41,8 +50,8 @@ public class CanvasDrawer {
         byte[][] cellGrid = board.getCellGrid();
 
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
-        int x = (int)(mouseEvent.getX()/ cellDrawSize);
-        int y = (int)(mouseEvent.getY()/ cellDrawSize);
+        int x = (int)((mouseEvent.getX()- (xZoomOffset+xDragOffset))/ cellDrawSize);
+        int y = (int)((mouseEvent.getY()- (yZoomOffset+yDragOffset))/ cellDrawSize);
 
         //Makes a copy of the board when the mouse button is pressed, stores as a global variable.
         boardAtMousePressed = new byte[cellGrid.length][cellGrid[0].length];
@@ -79,8 +88,8 @@ public class CanvasDrawer {
         byte[][] cellGrid = board.getCellGrid();
 
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
-        int x = (int) (mouseEvent.getX() / cellDrawSize);
-        int y = (int) (mouseEvent.getY() / cellDrawSize);
+        int x = (int)((mouseEvent.getX()- (xZoomOffset+xDragOffset))/ cellDrawSize);
+        int y = (int)((mouseEvent.getY()- (yZoomOffset+yDragOffset))/ cellDrawSize);
 
         //Checks that the user is drawing within the borders of the board.
         if ((x < cellGrid.length) && (y < cellGrid[0].length) && x >= 0 && y >= 0) {
@@ -155,12 +164,36 @@ public class CanvasDrawer {
     }
 
     public void setCellDrawSize (double size) {
-        if (size > 0 && size < 321) {
+        if (size >= 0.3 && size < 321) {
             this.cellDrawSize = size;
         }
     }
 
     public double getCellDrawSize () {
         return cellDrawSize;
+    }
+
+    public void setZoomOffset(byte[][] cellGrid, Canvas canvas) {
+        if (cellGrid.length * cellDrawSize > canvas.getWidth()) {
+            xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
+        } else if (cellGrid.length * cellDrawSize < canvas.getWidth()){
+            xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
+        }
+
+        if (cellGrid[0].length * cellDrawSize > canvas.getHeight()){
+            yZoomOffset = (canvas.getHeight() - (cellGrid[0].length * cellDrawSize))/2;
+        } else if (cellGrid[0].length * cellDrawSize < canvas.getHeight()){
+            yZoomOffset = (canvas.getHeight()-(cellGrid[0].length*cellDrawSize))/2;
+        }
+    }
+
+    public void setDragOffset(MouseEvent drag, MouseEvent click) {
+        double originalX = xDragOffset+click.getX();
+        double originalY = yDragOffset+click.getY();
+        double xCurOffset = drag.getX()-click.getX();
+        double yCurOffset = drag.getY()-click.getY();
+
+        xDragOffset = xCurOffset;
+        yDragOffset = yCurOffset;
     }
 }
