@@ -12,7 +12,7 @@ Layout er konstruert ved bruk av scenebuilder.
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" onKeyPressed="#movePattern" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#movePattern" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
     <top>
         <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
             <menus>
@@ -35,7 +35,7 @@ Layout er konstruert ved bruk av scenebuilder.
         </MenuBar>
     </top>
     <center>
-        <Canvas fx:id="canvasArea" height="625.0" onMouseDragged="#mouseDragged" onMousePressed="#mousePressed" onMouseReleased="#mouseDragOver" width="800.0" BorderPane.alignment="TOP_LEFT">
+        <Canvas fx:id="canvasArea" height="625.0" onMouseDragged="#mouseDragged" onMousePressed="#mousePressed" onMouseReleased="#mouseDragOver" onScroll="#scrollZoom" width="800.0" BorderPane.alignment="TOP_LEFT">
             <BorderPane.margin>
                 <Insets />
             </BorderPane.margin>

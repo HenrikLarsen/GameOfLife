@@ -54,7 +54,6 @@ public class EditorController implements Initializable {
     private GameOfLife gifGol;
     private FileHandler fileHandler = new FileHandler();
     private CanvasDrawer canvasDrawer;
-    public double cellSize;
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
     private boolean grid = false;
@@ -95,8 +94,8 @@ public class EditorController implements Initializable {
 
     public void drawEditorBoard() {
         GraphicsContext graphicsContext = editorCanvas.getGraphicsContext2D();
-        cellSize = editorCanvas.getWidth() / exportBoard.getCellGrid().length;
-        canvasDrawer.drawBoard(editorCanvas, graphicsContext, currentCellColor, currentBackgroundColor, cellSize,
+        canvasDrawer.setCellDrawSize(editorCanvas.getWidth() / exportBoard.getCellGrid().length);
+        canvasDrawer.drawBoard(editorCanvas, graphicsContext, currentCellColor, currentBackgroundColor,
                 exportBoard.getCellGrid(), grid);
     }
 
@@ -123,12 +122,12 @@ public class EditorController implements Initializable {
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
-        canvasDrawer.drawPressed(cellSize, mouseEvent, exportBoard);
+        canvasDrawer.drawPressed(mouseEvent, exportBoard);
         drawEditorBoard();
     }
 
     public void mouseDragged(MouseEvent mouseEvent) {
-        canvasDrawer.drawDragged(cellSize, mouseEvent, exportBoard);
+        canvasDrawer.drawDragged(mouseEvent, exportBoard);
         drawEditorBoard();
     }
 
@@ -140,6 +139,7 @@ public class EditorController implements Initializable {
     public void clearBoardClick() {
         exportBoard.resetBoard();
         drawEditorBoard();
+        drawStrip();
     }
 
     public void toggleGridClick() {
