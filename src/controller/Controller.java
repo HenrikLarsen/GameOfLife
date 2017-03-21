@@ -456,9 +456,9 @@ public class Controller implements Initializable {
             zoom = zoom*4;
         } else if (canvasDrawer.getCellDrawSize() > 40) {
             zoom = zoom*2;
-        } else if (canvasDrawer.getCellDrawSize() < 4) {
+        } else if (canvasDrawer.getCellDrawSize() < 3) {
             zoom = zoom / 16;
-        } else if (canvasDrawer.getCellDrawSize() < 6) {
+        } else if (canvasDrawer.getCellDrawSize() < 5) {
             zoom = zoom / 8;
         } else if (canvasDrawer.getCellDrawSize() < 8) {
             zoom = zoom / 4;
