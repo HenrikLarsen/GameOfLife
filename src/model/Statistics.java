@@ -55,8 +55,8 @@ public class Statistics {
                 statistics[1][j] = 0;
                 statistics[0][j] = gameOfLife.playBoard.countCellsAlive();
             }else{
-                statistics[0][j] = gameOfLife.playBoard.cellsAlive;
-                statistics[1][j] = gameOfLife.playBoard.cellsAlive - statistics[0][j-1];
+                statistics[0][j] = gameOfLife.playBoard.countCellsAlive();
+                statistics[1][j] = gameOfLife.playBoard.countCellsAlive() - statistics[0][j-1];
             }
 
             gameOfLife.nextGeneration();

@@ -84,7 +84,7 @@ public class FileHandler extends Reader {
         String rleString = str.replaceAll("[\r\n]+", "");
         String revisedRleString = newBoard(rleString);
 
-        gameOfLife.setRuleSet(loadedRules);
+        gameOfLife.setRuleString(loadedRules);
         byte[][] newBoard = boardFromFile(revisedRleString, x, y);
         if (newBoard.length > playBoard.getCellGrid().length || newBoard[0].length > playBoard.getCellGrid()[0].length) {
             throw new ArrayIndexOutOfBoundsException();
