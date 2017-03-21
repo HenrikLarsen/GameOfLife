@@ -7,15 +7,13 @@ import javafx.collections.ObservableList;
 import javafx.event.*;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.*;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
@@ -68,7 +66,7 @@ public class Controller implements Initializable {
     private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
             "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
     private boolean move = false;
-
+    private MouseEvent initialDrag;
 
 
     /**
@@ -107,6 +105,7 @@ public class Controller implements Initializable {
         chooseRulesBox.getSelectionModel().selectFirst();
         cellColorPicker.setValue(currentCellColor);
         backgroundColorPicker.setValue(currentBackgroundColor);
+        draw();
     }
 
     /**
@@ -144,7 +143,7 @@ public class Controller implements Initializable {
      */
     private void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor, board.cellSize,
+        canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor,
                 board.getCellGrid(), gridToggle);
     }
 
@@ -252,7 +251,7 @@ public class Controller implements Initializable {
      * while within the sizeInputField textfield.
      * @see #sizeInputField
      * @see #draw()
-     * @see StaticBoard#setCellSize(double)
+     * @see StaticBoard(double)
      * @see javafx.scene.control.TextField
      * @see TextField#getText()
      * @param actionEvent - The event where the user presses enter when within the Textfield box.
@@ -260,7 +259,7 @@ public class Controller implements Initializable {
     public void cellSizeOnEnter(ActionEvent actionEvent) {
         if (!sizeInputField.getText().isEmpty()) {
             double size = Double.parseDouble(sizeInputField.getText());
-            board.setCellSize(size);
+            canvasDrawer.setCellDrawSize(size);
             draw();
         }
     }
@@ -269,13 +268,18 @@ public class Controller implements Initializable {
      * Method that lets the user "draw" on the canvas by clicking on the canvas, inverting the clicked cell. Is called
      * when the user click the left mouse button on the canvas.
      * @see #draw()
-     * @see Board#cellSize
+     * @see Board
      * @see StaticBoard#cellGrid
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mousePressed(MouseEvent mouseEvent) {
-        canvasDrawer.drawPressed(board.cellSize, mouseEvent, board);
-        aliveLabel.setText(""+board.cellsAlive);
+        if (mouseEvent.isPrimaryButtonDown()) {
+            canvasDrawer.drawPressed(mouseEvent, board);
+            aliveLabel.setText("" + board.cellsAlive);
+        }else if (mouseEvent.isSecondaryButtonDown()) {
+            initialDrag = mouseEvent;
+            canvasArea.setCursor(Cursor.MOVE);
+        }
         draw();
     }
 
@@ -284,13 +288,17 @@ public class Controller implements Initializable {
      * mousePressed() method, and continues from that if the mouse is dragged. Is called when the user drags
      * the mouse while holding mouse button clicked on the canvas.
      * @see #draw()
-     * @see Board#cellSize
+     * @see Board
      * @see StaticBoard#cellGrid
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mouseDragged(MouseEvent mouseEvent) {
-        canvasDrawer.drawDragged(board.cellSize, mouseEvent, board);
-        aliveLabel.setText(""+board.cellsAlive);
+        if (mouseEvent.isPrimaryButtonDown()) {
+            canvasDrawer.drawDragged(mouseEvent, board);
+            aliveLabel.setText("" + board.cellsAlive);
+        } else if (mouseEvent.isSecondaryButtonDown()) {
+            canvasDrawer.setDragOffset(mouseEvent, initialDrag);
+        }
         draw();
     }
 
@@ -299,6 +307,7 @@ public class Controller implements Initializable {
      */
     public void mouseDragOver() {
         canvasDrawer.setEraseFalse();
+        canvasArea.setCursor(Cursor.DEFAULT);
     }
 
 
@@ -372,7 +381,9 @@ public class Controller implements Initializable {
     }
 
     public void showRuleDescription(ActionEvent actionEvent) {
+        timeline.pause();
         PopUpAlerts.ruleDescription(gOL.ruleName, gOL.ruleString, gOL.ruleDescription);
+        timeline.play();
     }
 
     public void showMetadata(ActionEvent actionEvent) {
@@ -388,8 +399,9 @@ public class Controller implements Initializable {
         } else {
             description = fileHandler.metaData;
         }
-
+        timeline.pause();
         PopUpAlerts.metaData(title, description);
+        timeline.play();
     }
 
     public void exportButtonClick(ActionEvent actionEvent) throws Exception{
@@ -436,6 +448,25 @@ public class Controller implements Initializable {
         draw();
     }
 
+    public void scrollZoom (ScrollEvent scrollEvent){
+        double zoom = scrollEvent.getDeltaY()/40;
+        if (canvasDrawer.getCellDrawSize() > 160) {
+            zoom = zoom*8;
+        } else if (canvasDrawer.getCellDrawSize() > 80) {
+            zoom = zoom*4;
+        } else if (canvasDrawer.getCellDrawSize() > 40) {
+            zoom = zoom*2;
+        } else if (canvasDrawer.getCellDrawSize() < 2) {
+            zoom = zoom / 4;
+        } else if (canvasDrawer.getCellDrawSize() < 10) {
+            zoom = zoom / 2;
+        }
+        canvasDrawer.setCellDrawSize(canvasDrawer.getCellDrawSize() + zoom);
+        System.out.println(zoom);
+        System.out.println(canvasDrawer.getCellDrawSize());
+        draw();
+    }
+
     public void showStatistic(ActionEvent actionEvent) throws Exception {
         timeline.pause();
         TextInputDialog textInputDialog = new TextInputDialog();
@@ -459,7 +490,5 @@ public class Controller implements Initializable {
 
             statisticStage.showAndWait();
         }
-
-
     }
 }
