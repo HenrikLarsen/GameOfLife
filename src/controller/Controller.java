@@ -143,7 +143,7 @@ public class Controller implements Initializable {
      */
     private void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        canvasDrawer.drawBoard(canvasArea, gc, currentCellColor, currentBackgroundColor,
+        canvasDrawer.drawBoard(canvasArea, board, gc, currentCellColor, currentBackgroundColor,
                 board.getCellGrid(), gridToggle);
     }
 
@@ -191,6 +191,9 @@ public class Controller implements Initializable {
      */
     public void startClick(ActionEvent actionEvent) {
         move = false;
+        board.finalizeBoard();
+        aliveLabel.setText(Integer.toString(board.cellsAlive));
+        draw();
         timeline.play();
     }
 
@@ -202,6 +205,9 @@ public class Controller implements Initializable {
      */
     public void pauseClick(ActionEvent actionEvent) {
         move = false;
+        board.finalizeBoard();
+        aliveLabel.setText(Integer.toString(board.cellsAlive));
+        draw();
         timeline.pause();
     }
 
@@ -443,6 +449,11 @@ public class Controller implements Initializable {
         } else if (keyEvent.getCode() == KeyCode.E) {
             board.rotate(true);
         } else if (keyEvent.getCode() == KeyCode.ENTER || keyEvent.getCode() == KeyCode.SPACE) {
+            board.finalizeBoard();
+            aliveLabel.setText(Integer.toString(board.cellsAlive));
+            move = false;
+        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.ESCAPE) {
+            board.discardPattern();
             move = false;
         }
         draw();

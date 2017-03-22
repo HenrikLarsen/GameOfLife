@@ -21,7 +21,7 @@ public class CanvasDrawer {
     private double xDragOffset = 0;
     private double yDragOffset = 0;
 
-    protected void drawBoard(Canvas canvas, GraphicsContext gc, Color cellColor, Color backgroundColor,
+    protected void drawBoard(Canvas canvas, StaticBoard board, GraphicsContext gc, Color cellColor, Color backgroundColor,
                              byte[][] cellGrid, boolean grid) {
 
         gc.setFill(backgroundColor);
@@ -44,7 +44,15 @@ public class CanvasDrawer {
                 }
             }
         }
+
+        if (board.getLoadedPattern() != null && board.getLoadedPatternBoundingBox() != null) {
+            byte[][] loadedPattern = board.getLoadedPattern();
+            int[] boundingBox = board.getLoadedPatternBoundingBox();
+            drawLoadedPattern(gc, loadedPattern, boundingBox);
+        }
     }
+
+
 
     protected void drawPressed(MouseEvent mouseEvent, StaticBoard board) {
         byte[][] cellGrid = board.getCellGrid();
@@ -173,6 +181,23 @@ public class CanvasDrawer {
         return cellDrawSize;
     }
 
+    public void drawLoadedPattern(GraphicsContext gc, byte[][] loadedPattern, int[] boundingBox) {
+        gc.setGlobalAlpha(0.5);
+        gc.setFill(Color.BLACK);
+        double xStart = boundingBox[0]*cellDrawSize;
+        double yStart = boundingBox[2]*cellDrawSize;
+        System.out.println(boundingBox[0]+" "+boundingBox[1]+" "+boundingBox[2]+" "+boundingBox[3]);
+        for (int x = 0; x < loadedPattern.length; x++) {
+            for (int y = 0; y < loadedPattern[0].length; y++) {
+                if (loadedPattern[x][y] == 1) {
+                    gc.fillRect(x * cellDrawSize + xZoomOffset + xDragOffset +xStart, y * cellDrawSize + yZoomOffset +
+                            yDragOffset + yStart, cellDrawSize, cellDrawSize);
+                }
+            }
+        }
+        gc.setGlobalAlpha(1);
+    }
+
     public void setZoomOffset(byte[][] cellGrid, Canvas canvas) {
         if (cellGrid.length * cellDrawSize > canvas.getWidth()) {
             xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
@@ -196,4 +221,7 @@ public class CanvasDrawer {
         xDragOffset = xCurOffset;
         yDragOffset = yCurOffset;
     }
+
+
+    //TODO: Fix drag
 }
