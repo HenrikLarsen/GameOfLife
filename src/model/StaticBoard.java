@@ -9,7 +9,7 @@ package model;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 60, HEIGHT = 60;
+    private final int WIDTH = 200, HEIGHT = 200;
     private byte[][] cellGrid;
     public int cellsAlive = 0;
     private byte[][] loadedPattern;
@@ -148,6 +148,9 @@ public class StaticBoard extends Board {
 
     public void finalizeBoard() {
         if (loadedPattern != null && loadedPatternBoundingBox != null) {
+            System.out.println(loadedPatternBoundingBox);
+            System.out.println(loadedPattern.length);
+            System.out.println(loadedPattern[0].length);
             int xLoaded = 0;
             int yLoaded = 0;
             for (int x = loadedPatternBoundingBox[0]; x <= loadedPatternBoundingBox[1]; x++) {
@@ -330,12 +333,21 @@ public class StaticBoard extends Board {
         int yTotal= loadedPatternBoundingBox[3]-loadedPatternBoundingBox[2];
         System.out.println("xDifference = "+xTotal+"\n yDifference = "+yTotal);
 
-        int diff = (xTotal-yTotal)/2;
+        int startDiff = (xTotal-yTotal)/2;
+        int endDiff = (xTotal-yTotal)/2;
+        if ((xTotal%2==0 && yTotal%2!=0) || (xTotal%2!=0 && yTotal%2==0)) {
+            if (xTotal % 2 == 0) {
+                startDiff = (xTotal - yTotal - 1) / 2;
+            } else {
+                startDiff = (xTotal - yTotal + 1) / 2;
+            }
+        }
+
         int[] newBoundingBox = new int[4];
-        newBoundingBox[0] = loadedPatternBoundingBox[0]+diff;
-        newBoundingBox[1] = loadedPatternBoundingBox[1]-diff;
-        newBoundingBox[2] = loadedPatternBoundingBox[2]-diff;
-        newBoundingBox[3] = loadedPatternBoundingBox[3]+diff;
+        newBoundingBox[0] = loadedPatternBoundingBox[0]+startDiff;
+        newBoundingBox[1] = loadedPatternBoundingBox[1]-endDiff;
+        newBoundingBox[2] = loadedPatternBoundingBox[2]-startDiff;
+        newBoundingBox[3] = loadedPatternBoundingBox[3]+endDiff;
 
         if (newBoundingBox[0] < 0 || newBoundingBox[1] > cellGrid.length-1 || newBoundingBox[2] < 0
                 || newBoundingBox[3] > cellGrid[0].length-1) {
