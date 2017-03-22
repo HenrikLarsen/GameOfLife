@@ -95,7 +95,7 @@ public class EditorController implements Initializable {
     public void drawEditorBoard() {
         GraphicsContext graphicsContext = editorCanvas.getGraphicsContext2D();
         canvasDrawer.setCellDrawSize(editorCanvas.getWidth() / exportBoard.getCellGrid().length);
-        canvasDrawer.drawBoard(editorCanvas, graphicsContext, currentCellColor, currentBackgroundColor,
+        canvasDrawer.drawBoard(editorCanvas, exportBoard, graphicsContext, currentCellColor, currentBackgroundColor,
                 exportBoard.getCellGrid(), grid);
     }
 
