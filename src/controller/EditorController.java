@@ -53,7 +53,7 @@ public class EditorController implements Initializable {
     private GameOfLife stripGol;
     private GameOfLife gifGol;
     private FileHandler fileHandler = new FileHandler();
-    private CanvasDrawer canvasDrawer;
+    private CanvasDrawer canvasDrawer = new CanvasDrawer();
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
     private boolean grid = false;
@@ -357,5 +357,7 @@ public class EditorController implements Initializable {
 
         return newColor;
     }
+    //TODO: FIKS på hva brukeren skal få velge (Legg inn bakgrunnsfarge)
+    //TODO: Legg GIF-relaterte metoder i en GIF-spesifik klasse.
 }
 
