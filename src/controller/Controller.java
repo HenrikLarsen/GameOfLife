@@ -287,7 +287,7 @@ public class Controller implements Initializable {
             canvasDrawer.drawPressed(mouseEvent, board);
             aliveLabel.setText("" + board.cellsAlive);
         }else if (mouseEvent.isSecondaryButtonDown()) {
-            initialDrag = mouseEvent;
+            canvasDrawer.setOriginalDrag(mouseEvent);
             canvasArea.setCursor(Cursor.MOVE);
         }
         draw();
@@ -304,12 +304,12 @@ public class Controller implements Initializable {
      */
     public void mouseDragged(MouseEvent mouseEvent) {
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
-            canvasDrawer.setDragOffset(mouseEvent, initialDrag);
+            canvasDrawer.setDragOffset(mouseEvent);
         } else if (mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.drawDragged(mouseEvent, board);
             aliveLabel.setText("" + board.cellsAlive);
         } else if (mouseEvent.isSecondaryButtonDown()) {
-            canvasDrawer.setDragOffset(mouseEvent, initialDrag);
+            canvasDrawer.setDragOffset(mouseEvent);
         }
         draw();
     }

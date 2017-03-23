@@ -9,7 +9,7 @@ package model;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 200, HEIGHT = 200;
+    private final int WIDTH = 64, HEIGHT = 64;
     private byte[][] cellGrid;
     public int cellsAlive = 0;
     private byte[][] loadedPattern;
@@ -338,10 +338,10 @@ public class StaticBoard extends Board {
         if ((xTotal+yTotal)%2!=0) {
             if (xTotal % 2 == 0) {
                 startDiff = (xTotal - yTotal - 1) / 2;
-                endDiff = (xTotal-yTotal + 1)/2;
+                endDiff = (xTotal - yTotal + 1)/2;
             } else {
                 startDiff = (xTotal - yTotal + 1) / 2;
-                endDiff = (xTotal-yTotal - 1)/2;
+                endDiff = (xTotal - yTotal - 1)/2;
             }
         }
         System.out.println("startDiff = "+startDiff+"\n endDiff = "+endDiff);
@@ -397,7 +397,7 @@ public class StaticBoard extends Board {
     }
 
     public int getSumXYCordinates(){
-
+        return 2;
     }
 
     public int[] getLoadedPatternBoundingBox() {

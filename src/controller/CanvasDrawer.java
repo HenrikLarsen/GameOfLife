@@ -20,6 +20,8 @@ public class CanvasDrawer {
     private double yZoomOffset = 0;
     private double xDragOffset = 0;
     private double yDragOffset = 0;
+    private double xOnStartDrag = 0;
+    private double yOnStartDrag = 0;
 
     protected void drawBoard(Canvas canvas, StaticBoard board, GraphicsContext gc, Color cellColor, Color backgroundColor,
                              byte[][] cellGrid, boolean grid) {
@@ -212,18 +214,19 @@ public class CanvasDrawer {
         }
     }
 
-    public void setDragOffset(MouseEvent drag, MouseEvent click  /*, int width*/) {
-        double originalX = xDragOffset+click.getX();
-        double originalY = yDragOffset+click.getY();
-        double xCurOffset = drag.getX()-click.getX();
-        double yCurOffset = drag.getY()-click.getY();
+    public void setDragOffset(MouseEvent drag) {
+        double xCurOffset = drag.getX()- xOnStartDrag;
+        double yCurOffset = drag.getY()- yOnStartDrag;
 
-        //if (xCurOffset+xZoomOffset < 10 || xCurOffset+xZoomOffset > cellDrawSize*width) {
-            xDragOffset = xCurOffset;
-       // }
-       // if (yCurOffset+yZoomOffset < 10) {
-            yDragOffset = yCurOffset;
-       // }
+        xDragOffset += xCurOffset;
+        yDragOffset += yCurOffset;
+        xOnStartDrag = drag.getX();
+        yOnStartDrag = drag.getY();
+    }
+
+    public void setOriginalDrag(MouseEvent mouseEvent) {
+        xOnStartDrag = mouseEvent.getX();
+        yOnStartDrag = mouseEvent.getY();
     }
 
 
