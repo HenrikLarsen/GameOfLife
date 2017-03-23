@@ -9,7 +9,7 @@ package model;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 1000, HEIGHT = 1000;
+    private final int WIDTH = 400, HEIGHT = 313;
     private byte[][] cellGrid;
     public int cellsAlive = 0;
     private byte[][] loadedPattern;
@@ -386,8 +386,8 @@ public class StaticBoard extends Board {
 
     public int countCellsAlive(){
         int count = 0;
-        for (int x = 0; x < cellGrid[0].length; x++) {
-            for (int y = 0; y < cellGrid.length; y++){
+        for (int x = 0; x < cellGrid.length; x++) {
+            for (int y = 0; y < cellGrid[0].length; y++){
                if(cellGrid[x][y] == 1){
                    count++;
                 }

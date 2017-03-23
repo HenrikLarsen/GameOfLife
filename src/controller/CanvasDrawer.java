@@ -31,6 +31,8 @@ public class CanvasDrawer {
         gc.setFill(cellColor);
 
         setZoomOffset(cellGrid, canvas);
+        xDragOffset = checkDragOffset(xDragOffset, xZoomOffset);
+        yDragOffset = checkDragOffset(yDragOffset, yZoomOffset);
         for (int x = 0; x < cellGrid.length; x++) {
             for (int y = 0; y < cellGrid[0].length; y++) {
                 if (cellGrid[x][y] == 1) {
@@ -174,7 +176,7 @@ public class CanvasDrawer {
     }
 
     public void setCellDrawSize (double size) {
-        if (size >= 0.3 && size < 321) {
+        if (size >= 0.34 && size < 321) {
             this.cellDrawSize = size;
         }
     }
@@ -205,24 +207,24 @@ public class CanvasDrawer {
             xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
         } else if (cellGrid.length * cellDrawSize < canvas.getWidth()){
             xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
-            xDragOffset = 0;
-            yDragOffset = yDragOffset/2;
         }
 
         if (cellGrid[0].length * cellDrawSize > canvas.getHeight()){
             yZoomOffset = (canvas.getHeight() - (cellGrid[0].length * cellDrawSize))/2;
         } else if (cellGrid[0].length * cellDrawSize < canvas.getHeight()){
             yZoomOffset = (canvas.getHeight()-(cellGrid[0].length*cellDrawSize))/2;
-            yDragOffset = 0;
-            xDragOffset = xDragOffset/2;
         }
     }
 
     public void setDragOffset(MouseEvent drag) {
         double xCurOffset = drag.getX()- xOnStartDrag;
         double yCurOffset = drag.getY()- yOnStartDrag;
+        xDragOffset += xCurOffset;
+        xOnStartDrag = drag.getX();
+        yOnStartDrag = drag.getY();
+        yDragOffset += yCurOffset;
 
-        double xChecker = xDragOffset+xCurOffset-xZoomOffset;
+        /*double xChecker = xDragOffset+xCurOffset-xZoomOffset;
         double yChecker = yDragOffset+yCurOffset-yZoomOffset;
 
         if (xChecker + cellDrawSize > 0 && xChecker - cellDrawSize < -2*xZoomOffset) {
@@ -233,7 +235,7 @@ public class CanvasDrawer {
         if (yChecker + cellDrawSize > 0 && yChecker - cellDrawSize < -2*yZoomOffset) {
             yOnStartDrag = drag.getY();
             yDragOffset += yCurOffset;
-        }
+        }*/
 
     }
 
@@ -242,7 +244,20 @@ public class CanvasDrawer {
         yOnStartDrag = mouseEvent.getY();
     }
 
+    public double checkDragOffset(double dragOffset, double zoomOffset) {
+        double newOffset;
+        if (dragOffset-zoomOffset+cellDrawSize < 0 && dragOffset-zoomOffset-cellDrawSize > -2*zoomOffset) {
+            newOffset = 0;
+        } else if (dragOffset-zoomOffset+cellDrawSize < 0) {
+            newOffset = zoomOffset - cellDrawSize;
+        } else if (dragOffset-zoomOffset-cellDrawSize > -2*zoomOffset) {
+            newOffset = -zoomOffset+cellDrawSize;
+        } else {
+            newOffset = dragOffset;
+        }
+        return newOffset;
+    }
 
-    //TODO: Fix drag
+    //TODO: Fiks at den zoomer mot midten
     //TODO: Fiks grid-funskjonen
 }
