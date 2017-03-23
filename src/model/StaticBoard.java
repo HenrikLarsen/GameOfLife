@@ -335,13 +335,16 @@ public class StaticBoard extends Board {
 
         int startDiff = (xTotal-yTotal)/2;
         int endDiff = (xTotal-yTotal)/2;
-        if ((xTotal%2==0 && yTotal%2!=0) || (xTotal%2!=0 && yTotal%2==0)) {
+        if ((xTotal+yTotal)%2!=0) {
             if (xTotal % 2 == 0) {
                 startDiff = (xTotal - yTotal - 1) / 2;
+                endDiff = (xTotal-yTotal + 1)/2;
             } else {
                 startDiff = (xTotal - yTotal + 1) / 2;
+                endDiff = (xTotal-yTotal - 1)/2;
             }
         }
+        System.out.println("startDiff = "+startDiff+"\n endDiff = "+endDiff);
 
         int[] newBoundingBox = new int[4];
         newBoundingBox[0] = loadedPatternBoundingBox[0]+startDiff;

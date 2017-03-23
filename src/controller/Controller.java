@@ -279,7 +279,10 @@ public class Controller implements Initializable {
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mousePressed(MouseEvent mouseEvent) {
-        if (mouseEvent.isPrimaryButtonDown()) {
+        if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
+            initialDrag = mouseEvent;
+            canvasArea.setCursor(Cursor.MOVE);
+        }else if (mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.drawPressed(mouseEvent, board);
             aliveLabel.setText("" + board.cellsAlive);
         }else if (mouseEvent.isSecondaryButtonDown()) {
@@ -299,7 +302,9 @@ public class Controller implements Initializable {
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mouseDragged(MouseEvent mouseEvent) {
-        if (mouseEvent.isPrimaryButtonDown()) {
+        if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
+            canvasDrawer.setDragOffset(mouseEvent, initialDrag);
+        } else if (mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.drawDragged(mouseEvent, board);
             aliveLabel.setText("" + board.cellsAlive);
         } else if (mouseEvent.isSecondaryButtonDown()) {
@@ -387,9 +392,7 @@ public class Controller implements Initializable {
     }
 
     public void showRuleDescription(ActionEvent actionEvent) {
-        timeline.pause();
         PopUpAlerts.ruleDescription(gOL.ruleName, gOL.ruleString, gOL.ruleDescription);
-        timeline.play();
     }
 
     public void showMetadata(ActionEvent actionEvent) {
@@ -405,9 +408,7 @@ public class Controller implements Initializable {
         } else {
             description = fileHandler.metaData;
         }
-        timeline.pause();
         PopUpAlerts.metaData(title, description);
-        timeline.play();
     }
 
     public void exportButtonClick(ActionEvent actionEvent) throws Exception{
@@ -420,9 +421,10 @@ public class Controller implements Initializable {
         editorController = loader.getController();
         editorController.setExportBoard(board);
         editorController.setGameOfLife(gOL);
-        editorController.setCanvasDrawer(canvasDrawer);
+        //editorController.setCanvasDrawer(canvasDrawer);
         editorController.drawEditorBoard();
         editorController.drawStrip();
+        board.discardPattern();
 
         editorStage.setTitle("GameOfLife");
         editorStage.setScene(new Scene(root, 800, 600));

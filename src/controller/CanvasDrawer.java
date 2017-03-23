@@ -212,16 +212,21 @@ public class CanvasDrawer {
         }
     }
 
-    public void setDragOffset(MouseEvent drag, MouseEvent click) {
+    public void setDragOffset(MouseEvent drag, MouseEvent click  /*, int width*/) {
         double originalX = xDragOffset+click.getX();
         double originalY = yDragOffset+click.getY();
         double xCurOffset = drag.getX()-click.getX();
         double yCurOffset = drag.getY()-click.getY();
 
-        xDragOffset = xCurOffset;
-        yDragOffset = yCurOffset;
+        //if (xCurOffset+xZoomOffset < 10 || xCurOffset+xZoomOffset > cellDrawSize*width) {
+            xDragOffset = xCurOffset;
+       // }
+       // if (yCurOffset+yZoomOffset < 10) {
+            yDragOffset = yCurOffset;
+       // }
     }
 
 
     //TODO: Fix drag
+    //TODO: Fiks grid-funskjonen
 }
