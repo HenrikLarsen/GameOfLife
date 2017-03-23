@@ -205,12 +205,16 @@ public class CanvasDrawer {
             xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
         } else if (cellGrid.length * cellDrawSize < canvas.getWidth()){
             xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
+            xDragOffset = 0;
+            yDragOffset = yDragOffset/2;
         }
 
         if (cellGrid[0].length * cellDrawSize > canvas.getHeight()){
             yZoomOffset = (canvas.getHeight() - (cellGrid[0].length * cellDrawSize))/2;
         } else if (cellGrid[0].length * cellDrawSize < canvas.getHeight()){
             yZoomOffset = (canvas.getHeight()-(cellGrid[0].length*cellDrawSize))/2;
+            yDragOffset = 0;
+            xDragOffset = xDragOffset/2;
         }
     }
 
@@ -218,10 +222,19 @@ public class CanvasDrawer {
         double xCurOffset = drag.getX()- xOnStartDrag;
         double yCurOffset = drag.getY()- yOnStartDrag;
 
-        xDragOffset += xCurOffset;
-        yDragOffset += yCurOffset;
-        xOnStartDrag = drag.getX();
-        yOnStartDrag = drag.getY();
+        double xChecker = xDragOffset+xCurOffset-xZoomOffset;
+        double yChecker = yDragOffset+yCurOffset-yZoomOffset;
+
+        if (xChecker + cellDrawSize > 0 && xChecker - cellDrawSize < -2*xZoomOffset) {
+            xDragOffset += xCurOffset;
+            xOnStartDrag = drag.getX();
+        }
+
+        if (yChecker + cellDrawSize > 0 && yChecker - cellDrawSize < -2*yZoomOffset) {
+            yOnStartDrag = drag.getY();
+            yDragOffset += yCurOffset;
+        }
+
     }
 
     public void setOriginalDrag(MouseEvent mouseEvent) {

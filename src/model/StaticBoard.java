@@ -9,7 +9,7 @@ package model;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 64, HEIGHT = 64;
+    private final int WIDTH = 1000, HEIGHT = 1000;
     private byte[][] cellGrid;
     public int cellsAlive = 0;
     private byte[][] loadedPattern;
