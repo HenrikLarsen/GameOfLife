@@ -397,7 +397,15 @@ public class StaticBoard extends Board {
     }
 
     public int getSumXYCordinates(){
-        return 2;
+        int xySum = 0;
+        for(int x = 0; x < cellGrid[0].length; x++){
+            for(int y = 0; y < cellGrid.length; y++){
+                if(cellGrid[x][y] == 1){
+                    xySum += x + y;
+                }
+            }
+        }
+        return xySum;
     }
 
     public int[] getLoadedPatternBoundingBox() {
