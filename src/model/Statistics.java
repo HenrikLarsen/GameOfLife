@@ -4,6 +4,7 @@ package model;
  * Created by henriklarsen on 20.03.2017.
  */
 public class Statistics {
+    public int progress = 0;
 
     public static int[][] getStatistics(GameOfLife game, int iterations) {
         GameOfLife gameOfLife = (GameOfLife) game.clone();
@@ -61,8 +62,6 @@ public class Statistics {
 
             gameOfLife.nextGeneration();
         }
-
-
 
         String out = "CellsAlive:";
         for (int j = 0; j < statistics[0].length; j++) {

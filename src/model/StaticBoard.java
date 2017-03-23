@@ -396,6 +396,10 @@ public class StaticBoard extends Board {
         return count;
     }
 
+    public int getSumXYCordinates(){
+
+    }
+
     public int[] getLoadedPatternBoundingBox() {
         return loadedPatternBoundingBox;
     }

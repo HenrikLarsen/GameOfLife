@@ -1,5 +1,6 @@
 package controller;
 
+import com.sun.deploy.ui.ProgressDialog;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -490,10 +491,11 @@ public class Controller implements Initializable {
         textInputDialog.setHeaderText("Show Statistics");
         textInputDialog.setContentText("Enter statistic length");
         textInputDialog.showAndWait();
-        String url = textInputDialog.getResult();
+        String out = textInputDialog.getResult();
 
-        if(url != null){
-            int iterations = Integer.parseInt(url);
+        if(out != null){
+
+            int iterations = Integer.parseInt(out);
             statisticStage = new Stage();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
             Parent root = loader.load();
