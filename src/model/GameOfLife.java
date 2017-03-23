@@ -128,6 +128,7 @@ public class GameOfLife {
 
         if(ruleMatcher.find() || !formatMatcher.find()){
             PopUpAlerts.ruleAlert1();
+            rules = "B3/S23";
         }
 
         String[] bothRules = rules.split("[/]");

@@ -96,7 +96,7 @@ public class FileHandler extends Reader {
 
     private String newBoard(String rleString) throws PatternFormatException {
         int leadingNumber = 0;
-        String returnString = "";
+        StringBuilder returnString = new StringBuilder();
         for(int i = 0; i < rleString.length(); i++) {
 
             char t = rleString.charAt(i);
@@ -104,16 +104,16 @@ public class FileHandler extends Reader {
             if(Character.isDigit(t)) {
                 leadingNumber = (10 * leadingNumber) + (t - '0');
             } else if (t == 'o') {
-                returnString += getRevisedString("1", leadingNumber);
+                returnString.append(getRevisedString("1", leadingNumber));
                 leadingNumber = 0;
             } else if (t == 'b'){
-                returnString += getRevisedString("0", leadingNumber);
+                returnString.append(getRevisedString("0", leadingNumber));
                 leadingNumber = 0;
             } else if (t == '$') {
-                returnString += getRevisedString("$", leadingNumber);
+                returnString.append(getRevisedString("$", leadingNumber));
                 leadingNumber = 0;
             } else if (t == '!') {
-                return returnString;
+                return returnString.toString();
             } else {
                 throw new PatternFormatException();
             }
@@ -126,11 +126,11 @@ public class FileHandler extends Reader {
             i = 1;
         }
 
-        String deadOrAlive = "";
+        StringBuilder deadOrAlive = new StringBuilder();
         for (int x = 0; x < i; x++) {
-            deadOrAlive += s;
+            deadOrAlive.append(s);
         }
-        return deadOrAlive;
+        return deadOrAlive.toString();
     }
 
     private byte[][] boardFromFile(String s, int x, int y){

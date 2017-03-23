@@ -48,13 +48,27 @@ public class CanvasDrawer {
                 }
             }
         }
-
+/*
+        if (grid) {
+            drawGrid(canvas, gc, cellGrid);
+        }
+*/
         if (board.getLoadedPattern() != null && board.getLoadedPatternBoundingBox() != null) {
             byte[][] loadedPattern = board.getLoadedPattern();
             int[] boundingBox = board.getLoadedPatternBoundingBox();
             drawLoadedPattern(gc, loadedPattern, boundingBox);
         }
     }
+
+    /*public void drawGrid(Canvas canvas, GraphicsContext gc, byte[][] cellGrid) {
+        gc.setLineWidth(0.5);
+        for (int y = 0; y <= cellGrid[0].length; y++) {
+            gc.strokeLine(xDragOffset+xZoomOffset, y*cellDrawSize+yDragOffset+yZoomOffset, canvas.getWidth()-(xDragOffset+xZoomOffset), y*cellDrawSize+yDragOffset+yZoomOffset);
+        }
+        for (int x = 0; x <= cellGrid.length; x++) {
+            gc.strokeLine(x*cellDrawSize+xDragOffset+xZoomOffset, yDragOffset+yZoomOffset, x*cellDrawSize+xDragOffset+xZoomOffset, canvas.getHeight()-(yDragOffset+yZoomOffset));
+        }
+    }*/
 
 
 
@@ -176,7 +190,7 @@ public class CanvasDrawer {
     }
 
     public void setCellDrawSize (double size) {
-        if (size >= 0.34 && size < 321) {
+        if (size >= 0.3 && size < 60) { //321) {
             this.cellDrawSize = size;
         }
     }
@@ -203,17 +217,22 @@ public class CanvasDrawer {
     }
 
     public void setZoomOffset(byte[][] cellGrid, Canvas canvas) {
-        if (cellGrid.length * cellDrawSize > canvas.getWidth()) {
-            xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
-        } else if (cellGrid.length * cellDrawSize < canvas.getWidth()){
+        xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
+        yZoomOffset = (canvas.getHeight()-(cellGrid[0].length*cellDrawSize))/2;
+        /*
+        if (cellGrid.length*cellDrawSize > canvas.getWidth() && xDragOffset != 0) {
+            double x = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
+            xZoomOffset = x;
+        } else {
             xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
         }
 
-        if (cellGrid[0].length * cellDrawSize > canvas.getHeight()){
-            yZoomOffset = (canvas.getHeight() - (cellGrid[0].length * cellDrawSize))/2;
-        } else if (cellGrid[0].length * cellDrawSize < canvas.getHeight()){
+        if (cellGrid[0].length * cellDrawSize > canvas.getHeight() && yDragOffset != 0){
+            double y = (canvas.getHeight() - (cellGrid[0].length * cellDrawSize))/2;
+            yZoomOffset = y;
+        } else {
             yZoomOffset = (canvas.getHeight()-(cellGrid[0].length*cellDrawSize))/2;
-        }
+        }*/
     }
 
     public void setDragOffset(MouseEvent drag) {
@@ -258,6 +277,7 @@ public class CanvasDrawer {
         return newOffset;
     }
 
+    //TODO: Fiks at checkDrag får store mønster til å wiggle når man har dragget og zoomer helt ut.
     //TODO: Fiks at den zoomer mot midten
     //TODO: Fiks grid-funskjonen
 }
