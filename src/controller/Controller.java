@@ -68,6 +68,7 @@ public class Controller implements Initializable {
             "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
     private boolean move = false;
     private MouseEvent initialDrag;
+    private TextInputDialog textInputDialogStatistics = new TextInputDialog();
 
 
     /**
@@ -101,6 +102,14 @@ public class Controller implements Initializable {
             return change;
         });
         ruleInputField.setTextFormatter(formatter);
+
+
+        TextFormatter<String> onlyNumbers = new TextFormatter<String>( change -> {
+            change.setText(change.getText().replaceAll("[^\\d]", ""));
+            return change;
+        });
+        textInputDialogStatistics.getEditor().setTextFormatter(onlyNumbers);
+
 
         chooseRulesBox.setItems(chooseRulesList);
         chooseRulesBox.getSelectionModel().selectFirst();
@@ -487,11 +496,10 @@ public class Controller implements Initializable {
 
     public void showStatistic(ActionEvent actionEvent) throws Exception {
         timeline.pause();
-        TextInputDialog textInputDialog = new TextInputDialog();
-        textInputDialog.setHeaderText("Show Statistics");
-        textInputDialog.setContentText("Enter statistic length");
-        textInputDialog.showAndWait();
-        String out = textInputDialog.getResult();
+        textInputDialogStatistics.setHeaderText("Show Statistics");
+        textInputDialogStatistics.setContentText("Enter statistic length");
+        textInputDialogStatistics.showAndWait();
+        String out = textInputDialogStatistics.getResult();
 
         if(out != null){
 

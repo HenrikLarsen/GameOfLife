@@ -10,56 +10,37 @@ public class Statistics {
         GameOfLife gameOfLife = (GameOfLife) game.clone();
         int[][] statistics = new int[3][iterations + 1];
 
-        /*
-        int xySum = 0;
-        int cellsAlive = 0;
-        int cellsDiff = 0;
-        double reBoard = 0;
+        // First board to be measured with
+        int firstxySum = gameOfLife.playBoard.getSumXYCordinates();
+        int firstCellsAlive = gameOfLife.playBoard.countCellsAlive();
+        int firstCellsDifference = 0;
+        double firstReducedBoard = 0.5 * firstCellsAlive + 3.0 * firstCellsDifference + 0.25 * firstxySum;
 
-        for(int t = 0; t < statistics[0].length; t++){
-            statistics[0][t] = gameOfLife.playBoard.cellsAlive;
-            if(t == 0){
-                statistics[1][t] = 0;
-            }else{
-                statistics[1][t] = gameOfLife.playBoard.cellsAlive - statistics[0][t-1];
-            }
 
-            cellsAlive = gameOfLife.playBoard.cellsAlive;
-            cellsDiff = gameOfLife.playBoard.cellsAlive - statistics[0][t-1];
-            for(int i = 0; i < gameOfLife.playBoard.getCellGrid()[0].length; i++){
-                for(int j = 0; j < gameOfLife.playBoard.getCellGrid()[0].length; j++){
-                    if(gameOfLife.playBoard.getCellGrid()[i][j] == 1){
-                        xySum += i + j;
-                    }
-                }
-            }
-
-            reBoard = 0.5 * cellsAlive + 3.0 * cellsDiff + 0.25*xySum;
-
-            if(t == 0){
-                statistics[2][t] = (int)reBoard;
-            }else{
-                statistics[2][t] = (int) Math.floor(((Math.min((int)reBoard, statistics[2][t-1])/ Math.max((int)reBoard, statistics[2][t-1]))*100));
-            }
-
-            gameOfLife.nextGeneration();
-            xySum = 0;
-            cellsAlive = 0;
-            cellsDiff = 0;
-            reBoard = 0;
-        }
-        */
-
-        // CellSize & CellDiff
         for(int j = 0; j < statistics[0].length; j++){
-            if(j == 0){
-                statistics[1][j] = 0;
-                statistics[0][j] = gameOfLife.playBoard.countCellsAlive();
-            }else{
-                statistics[0][j] = gameOfLife.playBoard.countCellsAlive();
-                statistics[1][j] = gameOfLife.playBoard.countCellsAlive() - statistics[0][j-1];
-            }
 
+            int xySum = gameOfLife.playBoard.getSumXYCordinates();
+            int cellsAlive = gameOfLife.playBoard.countCellsAlive();
+            int cellsDifference;
+            if(j == 0){
+                cellsDifference = 0;
+            }else{
+                cellsDifference = cellsAlive - statistics[0][j-1];
+            }
+            double reducedBoard = 0.5 * cellsAlive + 3.0 * cellsDifference + 0.25 * xySum;
+
+            double simumlarity = Math.floor(Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100);
+
+            // Entering stats
+            if(j == 0 || cellsAlive == 0){
+                statistics[0][j] = cellsAlive;
+                statistics[1][j] = 0;
+                statistics[2][j] = 100;
+            }else{
+                statistics[0][j] = cellsAlive;
+                statistics[1][j] = cellsDifference;
+                statistics[2][j] = (int)simumlarity;
+            }
             gameOfLife.nextGeneration();
         }
 
