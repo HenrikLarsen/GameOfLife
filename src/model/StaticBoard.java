@@ -9,7 +9,7 @@ package model;
  * @version 1.1
  */
 public class StaticBoard extends Board {
-    private final int WIDTH = 400, HEIGHT = 313;
+    private final int WIDTH = 64, HEIGHT = 64;
     private byte[][] cellGrid;
     public int cellsAlive = 0;
     private byte[][] loadedPattern;
@@ -307,23 +307,19 @@ public class StaticBoard extends Board {
     public void rotate(boolean clockwise){
         if (clockwise) {
             byte[][] transposedPattern = transposePattern(loadedPattern);
-           // if (transposedPattern != null) {
-                byte[][] rotatedPattern = reverseRows(transposedPattern);
-                int[] newBoundingBox = setNewBoundingBox(rotatedPattern);
-                if (newBoundingBox != null) {
-                    loadedPatternBoundingBox = newBoundingBox;
-                    loadedPattern = rotatedPattern;
-              //  }
+            byte[][] rotatedPattern = reverseRows(transposedPattern);
+            int[] newBoundingBox = setNewBoundingBox(rotatedPattern);
+            if (newBoundingBox != null) {
+                loadedPatternBoundingBox = newBoundingBox;
+                loadedPattern = rotatedPattern;
             }
         } else if (!clockwise){
             byte[][] reversedPattern = reverseRows(loadedPattern);
             byte[][] rotatedPattern = transposePattern(reversedPattern);
-            //if (rotatedPattern != null) {
-                int[] newBoundingBox = setNewBoundingBox(rotatedPattern);
-                if (newBoundingBox != null) {
-                    loadedPatternBoundingBox = newBoundingBox;
-                    loadedPattern = rotatedPattern;
-               // }
+            int[] newBoundingBox = setNewBoundingBox(rotatedPattern);
+            if (newBoundingBox != null) {
+                loadedPatternBoundingBox = newBoundingBox;
+                loadedPattern = rotatedPattern;
             }
         }
     }
@@ -407,11 +403,9 @@ public class StaticBoard extends Board {
         }
         return xySum;
     }
-
     public int[] getLoadedPatternBoundingBox() {
         return loadedPatternBoundingBox;
     }
-
     public byte[][] getLoadedPattern() {
         return loadedPattern;
     }

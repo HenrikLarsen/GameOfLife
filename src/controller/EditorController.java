@@ -48,17 +48,13 @@ public class EditorController implements Initializable {
 
     private StaticBoard exportBoard;
     private StaticBoard stripBoard;
-    private StaticBoard gifBoard;
     private GameOfLife gameOfLife;
     private GameOfLife stripGol;
-    private GameOfLife gifGol;
     private FileHandler fileHandler = new FileHandler();
     private CanvasDrawer canvasDrawer = new CanvasDrawer();
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
     private boolean grid = false;
-    private GIFWriter gifWriter;
-    private double gifCellSize;
     private ObservableList<String> chooseSizeList = FXCollections.observableArrayList("640x640", "800x800",
             "1024x1024", "1200x1200", "1600x1600", "1920x1920");
     private ObservableList<String> chooseDrawList = FXCollections.observableArrayList("Entire Board", "Pattern Only");
@@ -99,6 +95,12 @@ public class EditorController implements Initializable {
                 exportBoard.getCellGrid(), grid);
     }
 
+    public void drawStrip() {
+        stripGol = (GameOfLife) gameOfLife.clone();
+        stripBoard = stripGol.playBoard;
+        canvasDrawer.drawStripBoard(stripGol, stripBoard, strip, currentCellColor);
+    }
+
     public void closeClick(ActionEvent actionEvent) {
         Stage currentStage = (Stage) editorCanvas.getScene().getWindow();
         currentStage.close();
@@ -115,10 +117,6 @@ public class EditorController implements Initializable {
 
     public void setGameOfLife(GameOfLife gOL) {
         this.gameOfLife = gOL;
-    }
-
-    public void setCanvasDrawer(CanvasDrawer cd) {
-        this.canvasDrawer = cd;
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
@@ -177,8 +175,6 @@ public class EditorController implements Initializable {
         } catch (IOException ioe) {
             PopUpAlerts.ioeSaveError();
         }
-
-        System.out.println(file.toString());
     }
 
     public void setRules(ActionEvent actionEvent) {
@@ -193,12 +189,6 @@ public class EditorController implements Initializable {
         drawStrip();
     }
 
-
-    public void drawStrip() {
-        stripGol = (GameOfLife) gameOfLife.clone();
-        stripBoard = stripGol.playBoard;
-        canvasDrawer.drawStripBoard(stripGol, stripBoard, strip, currentCellColor);
-    }
 
     public void chooseSizeClick(ActionEvent actionEvent) {
         String size = (String) chooseSizeBox.getValue();
@@ -237,11 +227,24 @@ public class EditorController implements Initializable {
     }
 
 
-    public void exportGif() {
-        gifGol = (GameOfLife) gameOfLife.clone();
-        gifBoard = gifGol.playBoard;
+    public void saveGifClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Graphics Interchange Format",
+                "*.gif"));
+        File file = fileChooser.showSaveDialog(new Stage());
+
+        if (file == null) {
+            return;
+        }
+
+        String filePath = file.getPath();
+
+        GifConstructor gifConstructor = new GifConstructor();
+        gifConstructor.setGifGol((GameOfLife) gameOfLife.clone());
+
         if (gifSize/2 < exportBoard.getCellGrid().length) {
             PopUpAlerts.sizeBoardError();
+            return;
         }
 
         int counter = 20;
@@ -262,102 +265,16 @@ public class EditorController implements Initializable {
             }
         }
 
-        System.out.println(fps);
+        gifConstructor.setCounter(counter);
+        gifConstructor.setMilliseconds(fps);
+        gifConstructor.setDrawEntireBoard(drawEntireBoard);
+        gifConstructor.setGifBackgroundColor(currentBackgroundColor);
+        gifConstructor.setGifCellColor(currentCellColor);
+        gifConstructor.setGifSize(gifSize);
 
-        int milliseconds = 1000/fps;
-
-        java.awt.Color backgroundColor = convertToAwtColor(currentBackgroundColor);
-        java.awt.Color cellColor = convertToAwtColor(currentCellColor);
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Graphics Interchange Format",
-                "*.gif"));
-        File file = fileChooser.showSaveDialog(new Stage());
-
-        if (file != null) {
-            String filePath = file.getPath();
-            try {
-                gifWriter = new GIFWriter(gifSize, gifSize, filePath, milliseconds);
-                gifWriter.setBackgroundColor(backgroundColor);
-                writeGoLSequenceToGIF(gifWriter, gifGol, counter, cellColor);
-            } catch (IOException ioe) {
-                PopUpAlerts.ioeSaveError();
-            }
-        }
+        gifConstructor.exportGif(filePath);
     }
-
-    void writeGoLSequenceToGIF(GIFWriter writer, GameOfLife game, int counter, java.awt.Color cellColor)
-            throws IOException {
-        if (counter == 0) {
-            writer.close();
-            System.out.println("DONE!");
-        }
-        else {
-            writer.createNextImage();
-            if (drawEntireBoard) {
-                drawGifEntireBoard(writer, cellColor);
-            } else if (!drawEntireBoard) {
-                drawGifPatternOnly(writer, cellColor);
-            }
-            writer.insertCurrentImage();
-            game.nextGeneration();
-            System.out.println(counter);
-            writeGoLSequenceToGIF(writer, game, counter-1, cellColor);
-        }
-
-    }
-
-    public void drawGifEntireBoard(GIFWriter writer, java.awt.Color cellColor) {
-        gifCellSize = gifSize/gifBoard.getCellGrid().length;
-        int cellDrawSize = (int) gifCellSize - 1;
-        int offset = (gifSize - (cellDrawSize * gifBoard.getCellGrid().length)) / 2;
-        for (int x = 1; x <= gifBoard.getCellGrid().length; x++) {
-            for (int y = 1; y <= gifBoard.getCellGrid()[0].length; y++) {
-                if (gifBoard.getCellGrid()[x - 1][y - 1] == 1) {
-                    writer.fillRect((x * cellDrawSize) - cellDrawSize + offset, (x * cellDrawSize) + offset,
-                            (y * cellDrawSize) - cellDrawSize + offset, (y * cellDrawSize) + offset, cellColor);
-                }
-            }
-        }
-    }
-
-    public void drawGifPatternOnly(GIFWriter writer, java.awt.Color cellColor) {
-        byte[][] trimmed = gifBoard.trim();
-        int cellDrawSize;
-
-        if (trimmed.length >= trimmed[0].length) {
-            gifCellSize = gifSize/trimmed.length;
-            cellDrawSize = (int) gifCellSize - 1;
-        } else {
-            gifCellSize = gifSize/trimmed[0].length;
-            cellDrawSize = (int) gifCellSize - 1;
-        }
-
-        int offsetX = (gifSize - (cellDrawSize * trimmed.length)) / 2;
-        int offsetY = (gifSize - (cellDrawSize * trimmed[0].length)) / 2;
-
-        for (int x = 1; x <= trimmed.length; x++) {
-            for (int y = 1; y <= trimmed[0].length; y++) {
-                if (trimmed[x - 1][y - 1] == 1) {
-                    writer.fillRect((x * cellDrawSize) - cellDrawSize + offsetX, (x * cellDrawSize) + offsetX,
-                            (y * cellDrawSize) - cellDrawSize + offsetY, (y * cellDrawSize) +
-                                    offsetY, cellColor);
-                }
-            }
-        }
-    }
-
-    public java.awt.Color convertToAwtColor(Color color) {
-        float red = (float) color.getRed();
-        float green = (float) color.getGreen();
-        float blue = (float) color.getBlue();
-        float opacity = (float) color.getOpacity();
-
-        java.awt.Color newColor = new java.awt.Color(red, green, blue, opacity);
-
-        return newColor;
-    }
-    //TODO: FIKS på hva brukeren skal få velge (Legg inn bakgrunnsfarge)
-    //TODO: Legg GIF-relaterte metoder i en GIF-spesifik klasse.
 }
+
+//TODO: FIKS på hva brukeren skal få velge (Legg inn bakgrunnsfarge)
 

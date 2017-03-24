@@ -473,19 +473,13 @@ public class Controller implements Initializable {
 
     public void scrollZoom (ScrollEvent scrollEvent){
         double zoom = scrollEvent.getDeltaY()/40;
-        if (canvasDrawer.getCellDrawSize() > 160) {
-            zoom = zoom*8;
-        } else if (canvasDrawer.getCellDrawSize() > 80) {
-            zoom = zoom*4;
-        } else if (canvasDrawer.getCellDrawSize() > 40) {
-            zoom = zoom*2;
-        } else if (canvasDrawer.getCellDrawSize() < 3) {
+        if (canvasDrawer.getCellDrawSize() < 3) {
             zoom = zoom / 16;
         } else if (canvasDrawer.getCellDrawSize() < 5) {
             zoom = zoom / 8;
         } else if (canvasDrawer.getCellDrawSize() < 8) {
             zoom = zoom / 4;
-        } else if (canvasDrawer.getCellDrawSize() < 10) {
+        } else if (canvasDrawer.getCellDrawSize() < 20 || canvasDrawer.getCellDrawSize() > 5) {
             zoom = zoom / 2;
         }
         canvasDrawer.setCellDrawSize(canvasDrawer.getCellDrawSize() + zoom);
