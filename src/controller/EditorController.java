@@ -41,9 +41,11 @@ public class EditorController implements Initializable {
     @FXML TextField numFramesInputField;
     @FXML CheckBox dateCheckBox;
     @FXML ColorPicker cellColorPicker;
+    @FXML ColorPicker backgroundColorPicker;
     @FXML Canvas strip;
     @FXML ChoiceBox chooseSizeBox;
     @FXML ChoiceBox chooseDrawBox;
+
 
 
     private StaticBoard exportBoard;
@@ -65,6 +67,7 @@ public class EditorController implements Initializable {
 
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         cellColorPicker.setValue(Color.LIMEGREEN);
+        backgroundColorPicker.setValue(Color.LIGHTGRAY);
         TextFormatter<String> ruleFormatter = new TextFormatter<String>(change -> {
             change.setText(change.getText().replaceAll("[^sSbB012345678/]", ""));
             return change;
@@ -108,6 +111,11 @@ public class EditorController implements Initializable {
 
     public void chooseCellColor(ActionEvent actionEvent) {
         currentCellColor = cellColorPicker.getValue();
+        drawEditorBoard();
+    }
+
+    public void chooseBackgroundColor(ActionEvent actionEvent) {
+        currentBackgroundColor = backgroundColorPicker.getValue();
         drawEditorBoard();
     }
 
@@ -275,6 +283,3 @@ public class EditorController implements Initializable {
         gifConstructor.exportGif(filePath);
     }
 }
-
-//TODO: FIKS på hva brukeren skal få velge (Legg inn bakgrunnsfarge)
-

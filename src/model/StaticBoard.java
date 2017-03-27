@@ -308,7 +308,7 @@ public class StaticBoard extends Board {
         if (clockwise) {
             byte[][] transposedPattern = transposePattern(loadedPattern);
             byte[][] rotatedPattern = reverseRows(transposedPattern);
-            int[] newBoundingBox = setNewBoundingBox(rotatedPattern);
+            int[] newBoundingBox = setNewBoundingBox();
             if (newBoundingBox != null) {
                 loadedPatternBoundingBox = newBoundingBox;
                 loadedPattern = rotatedPattern;
@@ -316,7 +316,7 @@ public class StaticBoard extends Board {
         } else if (!clockwise){
             byte[][] reversedPattern = reverseRows(loadedPattern);
             byte[][] rotatedPattern = transposePattern(reversedPattern);
-            int[] newBoundingBox = setNewBoundingBox(rotatedPattern);
+            int[] newBoundingBox = setNewBoundingBox();
             if (newBoundingBox != null) {
                 loadedPatternBoundingBox = newBoundingBox;
                 loadedPattern = rotatedPattern;
@@ -324,7 +324,7 @@ public class StaticBoard extends Board {
         }
     }
 
-    public int[] setNewBoundingBox(byte[][] newPattern) {
+    public int[] setNewBoundingBox() {
         int xTotal = loadedPatternBoundingBox[1]-loadedPatternBoundingBox[0];
         int yTotal= loadedPatternBoundingBox[3]-loadedPatternBoundingBox[2];
         System.out.println("xDifference = "+xTotal+"\n yDifference = "+yTotal);
