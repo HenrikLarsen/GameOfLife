@@ -48,8 +48,8 @@ public class EditorController implements Initializable {
 
 
 
-    private StaticBoard exportBoard;
-    private StaticBoard stripBoard;
+    private Board exportBoard;
+    private Board stripBoard;
     private GameOfLife gameOfLife;
     private GameOfLife stripGol;
     private FileHandler fileHandler = new FileHandler();
@@ -93,14 +93,20 @@ public class EditorController implements Initializable {
 
     public void drawEditorBoard() {
         GraphicsContext graphicsContext = editorCanvas.getGraphicsContext2D();
-        canvasDrawer.setCellDrawSize(editorCanvas.getWidth() / exportBoard.getCellGrid().length);
-        canvasDrawer.drawBoard(editorCanvas, exportBoard, graphicsContext, currentCellColor, currentBackgroundColor,
-                exportBoard.getCellGrid(), grid);
+        int divisor;
+        if (exportBoard.getWidth() >= exportBoard.getHeight()) {
+            divisor = exportBoard.getWidth();
+        } else {
+            divisor = exportBoard.getHeight();
+        }
+
+        canvasDrawer.setCellDrawSize(editorCanvas.getWidth() / divisor);
+        canvasDrawer.drawBoard(editorCanvas, exportBoard, graphicsContext, currentCellColor, currentBackgroundColor, grid);
     }
 
     public void drawStrip() {
         stripGol = (GameOfLife) gameOfLife.clone();
-        stripBoard = stripGol.playBoard;
+        stripBoard = stripGol.getPlayBoard();
         canvasDrawer.drawStripBoard(stripGol, stripBoard, strip, currentCellColor);
     }
 
@@ -119,7 +125,7 @@ public class EditorController implements Initializable {
         drawEditorBoard();
     }
 
-    public void setExportBoard(StaticBoard board) {
+    public void setExportBoard(Board board) {
         this.exportBoard = board;
     }
 
@@ -250,7 +256,7 @@ public class EditorController implements Initializable {
         GifConstructor gifConstructor = new GifConstructor();
         gifConstructor.setGifGol((GameOfLife) gameOfLife.clone());
 
-        if (gifSize/2 < exportBoard.getCellGrid().length) {
+        if (gifSize/2 < exportBoard.getWidth() || gifSize/2 < exportBoard.getHeight()) {
             PopUpAlerts.sizeBoardError();
             return;
         }

@@ -13,7 +13,7 @@ import model.StaticBoard;
  * @version 1.0
  */
 public class StaticBoardTest {
-    private StaticBoard board = new StaticBoard();
+    private StaticBoard board = new StaticBoard(100,100);
 
     /**
      * Main test of StaticBoards countNeighbours() method. Contains several other methods that tests

@@ -14,7 +14,7 @@ import model.StaticBoard;
  * @version 1.0
  */
 public class GameOfLifeTest {
-    private StaticBoard board = new StaticBoard();
+    private StaticBoard board = new StaticBoard(8, 10);
     private GameOfLife gol = new GameOfLife(board);
 
     /**

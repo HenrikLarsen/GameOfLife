@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class FileHandler extends Reader {
 
-    public StaticBoard playBoard;
+    public Board playBoard;
     public GameOfLife gameOfLife;
     public String metaTitle = "";
     public String metaData = "";
@@ -86,7 +86,7 @@ public class FileHandler extends Reader {
 
         gameOfLife.setRuleString(loadedRules);
         byte[][] newBoard = boardFromFile(revisedRleString, x, y);
-        if (newBoard.length > playBoard.getCellGrid().length || newBoard[0].length > playBoard.getCellGrid()[0].length) {
+        if (newBoard.length > playBoard.getWidth() || newBoard[0].length > playBoard.getHeight()) {
             throw new ArrayIndexOutOfBoundsException();
         } else {
             playBoard.setBoardFromRLE(newBoard);

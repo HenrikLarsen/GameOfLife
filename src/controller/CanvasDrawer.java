@@ -6,6 +6,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
+import model.Board;
 import model.GameOfLife;
 import model.StaticBoard;
 
@@ -26,15 +27,14 @@ public class CanvasDrawer {
     private boolean dragged = false;
     private boolean zoomed = false;
 
-    protected void drawBoard(Canvas canvas, StaticBoard board, GraphicsContext gc, Color cellColor, Color backgroundColor,
-                             byte[][] cellGrid, boolean grid) {
+    protected void drawBoard(Canvas canvas, Board board, GraphicsContext gc, Color cellColor, Color backgroundColor, boolean grid) {
 
         gc.setFill(backgroundColor);
         gc.fillRect(0,0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(cellColor);
 
-        xZoomOffset = (canvas.getWidth()-(cellGrid.length * cellDrawSize))/2;
-        yZoomOffset = (canvas.getHeight()-(cellGrid[0].length*cellDrawSize))/2;
+        xZoomOffset = (canvas.getWidth()-(board.getWidth() * cellDrawSize))/2;
+        yZoomOffset = (canvas.getHeight()-(board.getHeight()*cellDrawSize))/2;
         if (dragged || zoomed) {
             xDragOffset = checkDragOffset(xDragOffset, xZoomOffset);
             yDragOffset = checkDragOffset(yDragOffset, yZoomOffset);
@@ -44,9 +44,9 @@ public class CanvasDrawer {
 
         double xOffset = xZoomOffset + xDragOffset;
         double yOffset = yZoomOffset + yDragOffset;
-        for (int x = 0; x < cellGrid.length; x++) {
-            for (int y = 0; y < cellGrid[0].length; y++) {
-                if (cellGrid[x][y] == 1) {
+        for (int x = 0; x < board.getWidth(); x++) {
+            for (int y = 0; y < board.getHeight(); y++) {
+                if (board.getCellState(x,y) == 1) {
                     gc.fillRect(x * cellDrawSize + xOffset, y * cellDrawSize + yOffset, cellDrawSize, cellDrawSize);
                 }
             }
@@ -59,85 +59,84 @@ public class CanvasDrawer {
         }
 
         if (grid) {
-            drawGrid(gc, cellGrid, xOffset, yOffset);
+            drawGrid(gc, board, xOffset, yOffset);
         }
     }
 
-    public void drawGrid(GraphicsContext gc, byte[][] cellGrid, double xOffset, double yOffset) {
+    public void drawGrid(GraphicsContext gc, Board board, double xOffset, double yOffset) {
         gc.setLineWidth(cellDrawSize/40);
 
-        for (int y = 0; y <= cellGrid[0].length; y++) {
-            gc.strokeLine(xOffset, y*cellDrawSize+yOffset, cellGrid.length*cellDrawSize+xOffset, y*cellDrawSize+yOffset);
+        for (int y = 0; y <= board.getHeight(); y++) {
+            gc.strokeLine(xOffset, y*cellDrawSize+yOffset, board.getWidth()*cellDrawSize+xOffset, y*cellDrawSize+yOffset);
         }
-        for (int x = 0; x <= cellGrid.length; x++) {
-            gc.strokeLine(x*cellDrawSize+xOffset, yOffset, x*cellDrawSize+xOffset, cellGrid[0].length*cellDrawSize+yOffset);
+        for (int x = 0; x <= board.getWidth(); x++) {
+            gc.strokeLine(x*cellDrawSize+xOffset, yOffset, x*cellDrawSize+xOffset, board.getHeight()*cellDrawSize+yOffset);
         }
     }
 
 
 
-    protected void drawPressed(MouseEvent mouseEvent, StaticBoard board) {
-        byte[][] cellGrid = board.getCellGrid();
+    protected void drawPressed(MouseEvent mouseEvent, Board board) {
+
 
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
         int x = (int)((mouseEvent.getX()- (xZoomOffset+xDragOffset))/ cellDrawSize);
         int y = (int)((mouseEvent.getY()- (yZoomOffset+yDragOffset))/ cellDrawSize);
 
         //Makes a copy of the board when the mouse button is pressed, stores as a global variable.
-        boardAtMousePressed = new byte[cellGrid.length][cellGrid[0].length];
+        boardAtMousePressed = new byte[board.getWidth()][board.getHeight()];
         for (int i = 0; i < boardAtMousePressed.length; i++) {
             for (int j = 0; j < boardAtMousePressed[i].length; j++) {
-                boardAtMousePressed[i][j] = cellGrid[i][j];
+                boardAtMousePressed[i][j] = board.getCellState(i,j);
             }
         }
 
         //Checks that the user is within the playing board during click, and changes the cells if yes.
-        if ((x < cellGrid.length) && (y < cellGrid[0].length) && x >= 0 && y >= 0) {
+        if ((x < board.getWidth()) && (y < board.getHeight()) && x >= 0 && y >= 0) {
 
             //Sets global variable erase to true if the first clicked cell was alive.
             //If true, drag and click will only erase until the mouse is released. If false, method will only draw.
-            if (cellGrid[x][y] == 1) {
+            if (board.getCellState(x,y) == 1) {
                 erase = true;
             }
 
-            if (cellGrid[x][y] == 0) {
-                if (cellGrid[x][y] != 1) {
+            if (board.getCellState(x,y) == 0) {
+                if (board.getCellState(x,y) != 1) {
                     board.cellsAlive++;
                 }
-                cellGrid[x][y] = 1;
+                board.setCellState(x,y, (byte)1);
             } else {
-                if (board.cellsAlive > 0 && cellGrid[x][y] == 1) {
+                if (board.cellsAlive > 0 && board.getCellState(x,y) == 1) {
                     board.cellsAlive--;
                 }
-                cellGrid[x][y] = 0;
+                board.setCellState(x,y, (byte)0);
             }
         }
     }
 
-    protected void drawDragged(MouseEvent mouseEvent, StaticBoard board) {
-        byte[][] cellGrid = board.getCellGrid();
+    protected void drawDragged(MouseEvent mouseEvent, Board board) {
 
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
         int x = (int)((mouseEvent.getX()- (xZoomOffset+xDragOffset))/ cellDrawSize);
         int y = (int)((mouseEvent.getY()- (yZoomOffset+yDragOffset))/ cellDrawSize);
 
         //Checks that the user is drawing within the borders of the board.
-        if ((x < cellGrid.length) && (y < cellGrid[0].length) && x >= 0 && y >= 0) {
+        if ((x < board.getWidth()) && (y < board.getHeight()) && x >= 0 && y >= 0) {
 
             //Checks whether the current cell has been changed since the mouse button was pressed.
-            if (cellGrid[x][y] == boardAtMousePressed[x][y]) {
+            if (board.getCellState(x,y) == boardAtMousePressed[x][y]) {
 
                 //If boolean erase is true, it sets the cell to 0. Else, sets the cell to 1.
                 if (erase) {
-                    if (board.cellsAlive > 0 && cellGrid[x][y] == 1) {
+                    if (board.cellsAlive > 0 && board.getCellState(x,y) == 1) {
                         board.cellsAlive--;
                     }
-                    cellGrid[x][y] = 0;
+                    board.setCellState(x,y, (byte)0);
                 } else {
-                    if (cellGrid[x][y] != 1) {
+                    if (board.getCellState(x,y) != 1) {
                         board.cellsAlive++;
                     }
-                    cellGrid[x][y] = 1;
+                    board.setCellState(x,y, (byte)1);
                 }
             }
         }
@@ -147,7 +146,7 @@ public class CanvasDrawer {
         erase = false;
     }
 
-    protected void drawStripBoard (GameOfLife stripGol, StaticBoard stripBoard, Canvas strip, Color cellColor){
+    protected void drawStripBoard (GameOfLife stripGol, Board stripBoard, Canvas strip, Color cellColor){
         GraphicsContext gc = strip.getGraphicsContext2D();
         gc.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
         gc.setFill(cellColor);

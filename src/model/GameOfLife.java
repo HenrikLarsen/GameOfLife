@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class GameOfLife {
     public int genCounter = 0;
-    public StaticBoard playBoard;
+    public Board playBoard;
     public byte[][] neighbourCount;
     public byte[][] newGenerationCells;
     public String ruleString = "B3/S23";
@@ -27,7 +27,7 @@ public class GameOfLife {
      * Sole constructor, sets the parameter board as the current board.
      * @param board StaticBoard - The board to be played.
      */
-    public GameOfLife(StaticBoard board) {
+    public GameOfLife(Board board) {
         this.playBoard = board;
     }
 
@@ -173,12 +173,12 @@ public class GameOfLife {
     public void enforceRules() {
 
         //Creates a new byte[][] with the same dimensions as the current board.
-        newGenerationCells = new byte[playBoard.getCellGrid().length][playBoard.getCellGrid()[0].length];
+        newGenerationCells = new byte[playBoard.getWidth()][playBoard.getHeight()];
 
         //Compares the current play board with the neighbour count.
         //Sets the values in newGenerationCells based on the rules of the Game of Life.
-        for (int x = 0; x < playBoard.getCellGrid().length; x++) {
-            for (int y = 0; y < playBoard.getCellGrid()[0].length; y++) {
+        for (int x = 0; x < playBoard.getWidth(); x++) {
+            for (int y = 0; y < playBoard.getHeight(); y++) {
                 String neighbours = ""+neighbourCount[x][y];
 
 
@@ -210,9 +210,13 @@ public class GameOfLife {
         return ruleString;
     }
 
+    public Board getPlayBoard() {
+        return playBoard;
+    }
+
     @Override
     public Object clone(){
-        GameOfLife golClone = new GameOfLife((StaticBoard)playBoard.clone());
+        GameOfLife golClone = new GameOfLife((Board)playBoard.clone());
         golClone.bornRules = bornRules;
         golClone.surviveRules = surviveRules;
         golClone.ruleString = ruleString;

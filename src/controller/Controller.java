@@ -52,7 +52,7 @@ public class Controller implements Initializable {
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
-    private StaticBoard board = new StaticBoard();
+    private Board board = new DynamicBoard(100, 100);
     private GameOfLife gOL = new GameOfLife(board);
     private CanvasDrawer canvasDrawer = new CanvasDrawer();
     private Timeline timeline;
@@ -153,8 +153,7 @@ public class Controller implements Initializable {
      */
     private void draw(){
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        canvasDrawer.drawBoard(canvasArea, board, gc, currentCellColor, currentBackgroundColor,
-                board.getCellGrid(), gridToggle);
+        canvasDrawer.drawBoard(canvasArea, board, gc, currentCellColor, currentBackgroundColor, gridToggle);
     }
 
     /**

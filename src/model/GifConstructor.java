@@ -12,7 +12,7 @@ import java.io.IOException;
 public class GifConstructor {
     private double gifCellSize;
     private int gifSize;
-    private StaticBoard gifBoard;
+    private Board gifBoard;
     private GameOfLife gifGol;
     private int counter;
     private int milliseconds;
@@ -52,12 +52,12 @@ public class GifConstructor {
     }
 
     public void drawGifEntireBoard(GIFWriter writer, java.awt.Color cellColor) {
-        gifCellSize = gifSize/gifBoard.getCellGrid().length;
+        gifCellSize = gifSize/gifBoard.getWidth();
         int cellDrawSize = (int) gifCellSize - 1;
-        int offset = (gifSize - (cellDrawSize * gifBoard.getCellGrid().length)) / 2;
-        for (int x = 1; x <= gifBoard.getCellGrid().length; x++) {
-            for (int y = 1; y <= gifBoard.getCellGrid()[0].length; y++) {
-                if (gifBoard.getCellGrid()[x - 1][y - 1] == 1) {
+        int offset = (gifSize - (cellDrawSize * gifBoard.getWidth())) / 2;
+        for (int x = 1; x <= gifBoard.getWidth(); x++) {
+            for (int y = 1; y <= gifBoard.getHeight(); y++) {
+                if (gifBoard.getCellState(x - 1,y - 1) == 1) {
                     writer.fillRect((x * cellDrawSize) - cellDrawSize + offset, (x * cellDrawSize) + offset,
                             (y * cellDrawSize) - cellDrawSize + offset, (y * cellDrawSize) + offset, cellColor);
                 }
