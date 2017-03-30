@@ -1,6 +1,7 @@
 package controller;
 
 
+import com.sun.deploy.ui.ProgressDialog;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -16,6 +17,7 @@ public class StatisticsController{
     private GameOfLife gameOfLife;
     private int[][] stat;
     private int iterations;
+    private Statistics statistics = new Statistics();
 
     @FXML
     private CategoryAxis x;
@@ -36,7 +38,7 @@ public class StatisticsController{
 
 
     public void makeChart(){
-        stat = Statistics.getStatistics(gameOfLife, iterations);
+        stat = statistics.getStatistics(gameOfLife, iterations);
 
         XYChart.Series<String, Number> cellsAliveSeries = new XYChart.Series<String, Number>();
         XYChart.Series<String, Number> cellsDiffSeries = new XYChart.Series<String, Number>();
