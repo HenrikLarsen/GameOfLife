@@ -49,7 +49,11 @@ public class StaticBoard extends Board {
     @Override
     public void setCellState(int x, int y, byte state) {
         if (state == 1 || state == 0) {
-            cellGrid[x][y] = state;
+            try {
+                cellGrid[x][y] = state;
+            } catch (ArrayIndexOutOfBoundsException ae) {
+                System.out.println("Out of bounds. Try using a Dynamic Board instead");
+            }
         }
     }
 

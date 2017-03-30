@@ -1,5 +1,7 @@
 package model;
 
+import controller.CanvasDrawer;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,6 +172,7 @@ public class DynamicBoard extends Board{
         if (getWidth() < 1000) {
             if (expandLeft) {
                 expandWidthLeft(1);
+                CanvasDrawer.setExpandedLeft(true);
                 expandLeft = false;
             }
             if (expandRight) {
@@ -182,6 +185,7 @@ public class DynamicBoard extends Board{
             if (expandUp) {
                 expandHeightUp(1);
                 expandUp = false;
+                CanvasDrawer.setExpandedUp(true);
             }
             if (expandDown) {
                 expandHeightDown(1);

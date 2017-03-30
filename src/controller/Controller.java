@@ -115,6 +115,7 @@ public class Controller implements Initializable {
         chooseRulesBox.getSelectionModel().selectFirst();
         cellColorPicker.setValue(currentCellColor);
         backgroundColorPicker.setValue(currentBackgroundColor);
+        canvasDrawer.setZoomOffset(board, canvasArea);
         draw();
     }
 
@@ -328,7 +329,9 @@ public class Controller implements Initializable {
      */
     public void mouseDragOver() {
         canvasDrawer.setEraseFalse();
+        canvasDrawer.setDraggingOutOfBounds(false);
         canvasArea.setCursor(Cursor.DEFAULT);
+
     }
 
 
@@ -482,7 +485,7 @@ public class Controller implements Initializable {
         } else if (canvasDrawer.getCellDrawSize() < 20 || canvasDrawer.getCellDrawSize() > 5) {
             zoom = zoom / 2;
         }
-        canvasDrawer.setCellDrawSize(canvasDrawer.getCellDrawSize() + zoom);
+        canvasDrawer.setZoom(canvasDrawer.getCellDrawSize() + zoom, canvasArea, board);
         System.out.println(zoom);
         System.out.println(canvasDrawer.getCellDrawSize());
         draw();
