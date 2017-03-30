@@ -41,6 +41,9 @@ public class GameOfLife {
      */
     public void nextGeneration() {
         playBoard.cellsAlive = 0;
+        if (playBoard instanceof DynamicBoard) {
+            ((DynamicBoard)playBoard).expandBoard();
+        }
         neighbourCount = playBoard.countNeighbours();
         enforceRules();
         playBoard.setBoard(newGenerationCells);

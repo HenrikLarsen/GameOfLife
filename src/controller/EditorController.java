@@ -242,6 +242,10 @@ public class EditorController implements Initializable {
 
 
     public void saveGifClick() {
+        if (drawEntireBoard && (gifSize/2 < exportBoard.getWidth() || gifSize/2 < exportBoard.getHeight())) {
+            PopUpAlerts.sizeBoardError();
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Graphics Interchange Format",
                 "*.gif"));
@@ -255,11 +259,6 @@ public class EditorController implements Initializable {
 
         GifConstructor gifConstructor = new GifConstructor();
         gifConstructor.setGifGol((GameOfLife) gameOfLife.clone());
-
-        if (gifSize/2 < exportBoard.getWidth() || gifSize/2 < exportBoard.getHeight()) {
-            PopUpAlerts.sizeBoardError();
-            return;
-        }
 
         int counter = 20;
         if (!numFramesInputField.getText().isEmpty()) {

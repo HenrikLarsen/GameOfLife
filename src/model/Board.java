@@ -262,7 +262,7 @@ public abstract class Board {
         return count;
     }
 
-    public int getSumXYCordinates(){
+    public int getSumXYCoordinates(){
         int xySum = 0;
         for(int x = 0; x < getWidth(); x++){
             for(int y = 0; y < getHeight(); y++){

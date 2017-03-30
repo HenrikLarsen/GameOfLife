@@ -1,10 +1,5 @@
 package model;
 
-import javafx.concurrent.Task;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
 /**
  * Created by henriklarsen on 20.03.2017.
  */
@@ -20,7 +15,7 @@ public class Statistics{
         statistics = new int[3][iterations + 1];
 
         // First board to be measured with
-        int firstxySum = gameOfLife.playBoard.getSumXYCordinates();
+        int firstxySum = gameOfLife.playBoard.getSumXYCoordinates();
         int firstCellsAlive = gameOfLife.playBoard.countCellsAlive();
         int firstCellsDifference = 0;
         double firstReducedBoard = 0.5 * firstCellsAlive + 3.0 * firstCellsDifference + 0.25 * firstxySum;
@@ -29,7 +24,7 @@ public class Statistics{
 
         for(int j = 0; j < statistics[0].length; j++){
 
-            int xySum = gameOfLife.playBoard.getSumXYCordinates();
+            int xySum = gameOfLife.playBoard.getSumXYCoordinates();
             int cellsAlive = gameOfLife.playBoard.countCellsAlive();
             int cellsDifference;
             if(j == 0){

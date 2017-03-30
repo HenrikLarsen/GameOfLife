@@ -52,11 +52,11 @@ public class Controller implements Initializable {
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
-    private Board board = new DynamicBoard(100, 100);
+    private Board board = new DynamicBoard(10, 10);
     private GameOfLife gOL = new GameOfLife(board);
     private CanvasDrawer canvasDrawer = new CanvasDrawer();
     private Timeline timeline;
-    private boolean gridToggle = false;
+    private boolean gridToggle = true;
     private FileHandler fileHandler = new FileHandler();
     private Stage editorStage;
     private EditorController editorController;
@@ -257,6 +257,7 @@ public class Controller implements Initializable {
      * @param actionEvent - The event where the user clicks on the "grid"-button.
      */
     public void gridClick(ActionEvent actionEvent) {
+        //board.setCellState(-10,4, (byte)1);
         gridToggle = !gridToggle;
         draw();
     }
@@ -272,9 +273,9 @@ public class Controller implements Initializable {
      * @param actionEvent - The event where the user presses enter when within the Textfield box.
      */
     public void cellSizeOnEnter(ActionEvent actionEvent) {
-        if (!sizeInputField.getText().isEmpty()) {
-            double size = Double.parseDouble(sizeInputField.getText());
-            canvasDrawer.setCellDrawSize(size);
+        if (!sizeInputField.getText().isEmpty() && board instanceof DynamicBoard) {
+            int size = Integer.parseInt(sizeInputField.getText());
+            ((DynamicBoard)board).setGridSize(size);
             draw();
         }
     }
