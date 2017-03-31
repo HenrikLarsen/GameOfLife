@@ -14,7 +14,7 @@ import model.GameOfLife;
  */
 public class CanvasDrawer {
     private boolean erase;
-    private double cellDrawSize = 7.5d;
+    private double cellDrawSize = 10d;
     private double stripCellSize;
     private double xZoomOffset = 0;
     private double yZoomOffset = 0;
@@ -45,13 +45,11 @@ public class CanvasDrawer {
             }
         }
 
-        if (expandedLeft) {
+        if (board instanceof DynamicBoard && ((DynamicBoard) board).getHasExpandedLeft()) {
             xZoomOffset -= cellDrawSize;
-            expandedLeft = false;
         }
-        if (expandedUp) {
+        if (board instanceof DynamicBoard && ((DynamicBoard) board).getHasExpandedUp()) {
             yZoomOffset -= cellDrawSize;
-            expandedUp = false;
         }
 
         double xOffset = xZoomOffset + xDragOffset;
@@ -304,12 +302,12 @@ public class CanvasDrawer {
         draggingOutOfBounds = outOfBounds;
     }
 
-    public static void setExpandedUp(boolean expanded) {
-        expandedUp = expanded;
-    }
 
-    public static void setExpandedLeft(boolean expanded) {
-        expandedLeft = expanded;
+    public void resetOffset(Board board, Canvas canvas) {
+        xDragOffset = 0;
+        yDragOffset = 0;
+        cellDrawSize = 10d;
+        setZoomOffset(board, canvas);
     }
 }
 //TODO: Fiks at den zoomer mot midten (Canvas.setScale() kan hjelpe her)

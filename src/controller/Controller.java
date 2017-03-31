@@ -287,8 +287,9 @@ public class Controller implements Initializable {
         if (!sizeInputField.getText().isEmpty() && board instanceof DynamicBoard) {
             int size = Integer.parseInt(sizeInputField.getText());
             ((DynamicBoard)board).setGridSize(size);
-            draw();
         }
+        canvasDrawer.resetOffset(board, canvasArea);
+        draw();
     }
 
     /**

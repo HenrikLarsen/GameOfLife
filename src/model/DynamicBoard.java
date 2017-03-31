@@ -16,6 +16,8 @@ public class DynamicBoard extends Board{
     private boolean expandRight = false;
     private boolean expandUp = false;
     private boolean expandDown = false;
+    private boolean hasExpandedLeft = false;
+    private boolean hasExpandedUp = false;
 
 
     public DynamicBoard(ArrayList<ArrayList<Byte>> newBoard){
@@ -172,7 +174,7 @@ public class DynamicBoard extends Board{
         if (getWidth() < 1000) {
             if (expandLeft) {
                 expandWidthLeft(1);
-                CanvasDrawer.setExpandedLeft(true);
+                hasExpandedLeft = true;
                 expandLeft = false;
             }
             if (expandRight) {
@@ -185,7 +187,7 @@ public class DynamicBoard extends Board{
             if (expandUp) {
                 expandHeightUp(1);
                 expandUp = false;
-                CanvasDrawer.setExpandedUp(true);
+                hasExpandedUp = true;
             }
             if (expandDown) {
                 expandHeightDown(1);
@@ -208,6 +210,20 @@ public class DynamicBoard extends Board{
         }
         setBoard(newBoard);
     }
+
+    public boolean getHasExpandedLeft() {
+        boolean returnValue = hasExpandedLeft;
+        hasExpandedLeft = false;
+        return returnValue;
+    }
+
+    public boolean getHasExpandedUp() {
+        boolean returnValue = hasExpandedUp;
+        hasExpandedUp = false;
+        return returnValue;
+    }
+
+
 
 
 }
