@@ -217,10 +217,18 @@ public class DynamicBoard extends Board{
         return returnValue;
     }
 
+    public void setHasExpandedLeft(Boolean b) {
+        hasExpandedLeft = b;
+    }
+
     public boolean getHasExpandedUp() {
         boolean returnValue = hasExpandedUp;
         hasExpandedUp = false;
         return returnValue;
+    }
+
+    public void setHasExpandedUp(Boolean b) {
+        hasExpandedUp = b;
     }
 
 

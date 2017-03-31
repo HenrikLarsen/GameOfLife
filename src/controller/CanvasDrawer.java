@@ -25,8 +25,7 @@ public class CanvasDrawer {
     private boolean dragged = false;
     private boolean zoomed = false;
     private boolean draggingOutOfBounds = false;
-    private static boolean expandedUp = false;
-    private static boolean expandedLeft = false;
+
 
     protected void drawBoard(Canvas canvas, Board board, GraphicsContext gc, Color cellColor, Color backgroundColor, boolean grid) {
 
@@ -90,6 +89,9 @@ public class CanvasDrawer {
 
 
     protected void drawPressed(MouseEvent mouseEvent, Board board, boolean expandable) {
+        if (board.getLoadedPattern() != null) {
+            return;
+        }
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
         int x = (int) ((mouseEvent.getX() - (xZoomOffset + xDragOffset)) / cellDrawSize);
         int y = (int) ((mouseEvent.getY() - (yZoomOffset + yDragOffset)) / cellDrawSize);
@@ -137,6 +139,9 @@ public class CanvasDrawer {
 
 
     protected void drawDragged(MouseEvent mouseEvent, Board board, boolean expandable) {
+        if (board.getLoadedPattern() != null) {
+            return;
+        }
 
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
         int x = (int) ((mouseEvent.getX() - (xZoomOffset + xDragOffset)) / cellDrawSize);

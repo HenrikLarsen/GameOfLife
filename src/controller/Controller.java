@@ -452,6 +452,7 @@ public class Controller implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Editor.fxml"));
         Parent root = loader.load();
         editorController = loader.getController();
+        board.finalizeBoard();
 
         if (board.getHeight() > board.getWidth() && board instanceof DynamicBoard) {
             ((DynamicBoard) board).expandWidthRight(board.getHeight() - board.getWidth());
