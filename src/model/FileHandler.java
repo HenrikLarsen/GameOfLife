@@ -86,11 +86,15 @@ public class FileHandler extends Reader {
 
         gameOfLife.setRuleString(loadedRules);
         byte[][] newBoard = boardFromFile(revisedRleString, x, y);
-        if (newBoard.length > playBoard.getWidth() || newBoard[0].length > playBoard.getHeight()) {
+
+        if ((newBoard.length > playBoard.getWidth() || newBoard[0].length > playBoard.getHeight()) && playBoard instanceof StaticBoard) {
             throw new ArrayIndexOutOfBoundsException();
-        } else {
-            playBoard.setBoardFromRLE(newBoard);
+        } else if(newBoard.length > playBoard.getWidth() || newBoard[0].length > playBoard.getHeight() && playBoard instanceof DynamicBoard){
+            ((DynamicBoard) playBoard).expandHeightDown(Math.max(playBoard.getHeight(), y) - Math.min(playBoard.getHeight(), y));
+            ((DynamicBoard) playBoard).expandWidthRight(Math.max(playBoard.getWidth(), x) - Math.min(playBoard.getWidth(), x));
         }
+
+        playBoard.setBoardFromRLE(newBoard);
 
     }
 
