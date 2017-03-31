@@ -89,7 +89,7 @@ public class CanvasDrawer {
 
 
 
-    protected void drawPressed(MouseEvent mouseEvent, Board board) {
+    protected void drawPressed(MouseEvent mouseEvent, Board board, boolean expandable) {
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
         int x = (int) ((mouseEvent.getX() - (xZoomOffset + xDragOffset)) / cellDrawSize);
         int y = (int) ((mouseEvent.getY() - (yZoomOffset + yDragOffset)) / cellDrawSize);
@@ -113,7 +113,7 @@ public class CanvasDrawer {
                 }
                 board.setCellState(x, y, (byte) 0);
             }
-        } else {
+        } else if (expandable){
             if (x < 0) {
                 x -= 1;
             }
@@ -136,7 +136,7 @@ public class CanvasDrawer {
     }
 
 
-    protected void drawDragged(MouseEvent mouseEvent, Board board) {
+    protected void drawDragged(MouseEvent mouseEvent, Board board, boolean expandable) {
 
         //Checks the x and y coordinates of the mouse-pointer and compares it to the current cell size to find the cell.
         int x = (int) ((mouseEvent.getX() - (xZoomOffset + xDragOffset)) / cellDrawSize);
@@ -155,7 +155,7 @@ public class CanvasDrawer {
                 }
                 board.setCellState(x, y, (byte) 1);
             }
-        } else if (!erase) {
+        } else if (!erase && expandable) {
             draggingOutOfBounds = true;
             erase = false;
             board.setCellState(x, y, (byte) 1);

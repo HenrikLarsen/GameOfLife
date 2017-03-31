@@ -134,12 +134,12 @@ public class EditorController implements Initializable {
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
-        canvasDrawer.drawPressed(mouseEvent, exportBoard);
+        canvasDrawer.drawPressed(mouseEvent, exportBoard, false);
         drawEditorBoard();
     }
 
     public void mouseDragged(MouseEvent mouseEvent) {
-        canvasDrawer.drawDragged(mouseEvent, exportBoard);
+        canvasDrawer.drawDragged(mouseEvent, exportBoard, false);
         drawEditorBoard();
     }
 

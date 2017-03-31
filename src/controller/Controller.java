@@ -244,6 +244,8 @@ public class Controller implements Initializable {
      */
     public void resetClick(ActionEvent actionEvent) {
         timeline.stop();
+        startButton.setText("Start");
+        isRunning = false;
         move = false;
         gOL.genCounter = 0;
         generationLabel.setText(Integer.toString(gOL.genCounter));
@@ -310,7 +312,7 @@ public class Controller implements Initializable {
             initialDrag = mouseEvent;
             canvasArea.setCursor(Cursor.MOVE);
         }else if (mouseEvent.isPrimaryButtonDown()) {
-            canvasDrawer.drawPressed(mouseEvent, board);
+            canvasDrawer.drawPressed(mouseEvent, board, true);
             aliveLabel.setText("" + board.cellsAlive);
         }else if (mouseEvent.isSecondaryButtonDown()) {
             canvasDrawer.setOriginalDrag(mouseEvent);
@@ -332,7 +334,7 @@ public class Controller implements Initializable {
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.setDragOffset(mouseEvent);
         } else if (mouseEvent.isPrimaryButtonDown()) {
-            canvasDrawer.drawDragged(mouseEvent, board);
+            canvasDrawer.drawDragged(mouseEvent, board, true);
             aliveLabel.setText("" + board.cellsAlive);
         } else if (mouseEvent.isSecondaryButtonDown()) {
             canvasDrawer.setDragOffset(mouseEvent);
@@ -440,7 +442,7 @@ public class Controller implements Initializable {
         PopUpAlerts.metaData(title, description);
     }
 
-    public void exportButtonClick(ActionEvent actionEvent) throws Exception{
+    public void exportButtonClick(ActionEvent actionEvent) throws Exception {
         timeline.pause();
         editorStage = new Stage();
         editorStage.initModality(Modality.WINDOW_MODAL);
@@ -448,6 +450,13 @@ public class Controller implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Editor.fxml"));
         Parent root = loader.load();
         editorController = loader.getController();
+
+        if (board.getHeight() > board.getWidth() && board instanceof DynamicBoard) {
+            ((DynamicBoard) board).expandWidthRight(board.getHeight() - board.getWidth());
+        } else if (board.getWidth() > board.getHeight() && board instanceof DynamicBoard) {
+            ((DynamicBoard) board).expandHeightDown(board.getWidth() - board.getHeight());
+        }
+        System.out.println("Width = "+board.getWidth()+", Height = "+board.getHeight());
         editorController.setExportBoard(board);
         editorController.setGameOfLife(gOL);
         //editorController.setCanvasDrawer(canvasDrawer);
@@ -459,6 +468,7 @@ public class Controller implements Initializable {
         editorStage.setScene(new Scene(root, 800, 600));
 
         editorStage.showAndWait();
+        canvasDrawer.resetOffset(board, canvasArea);
         draw();
         ruleLabel.setText(gOL.ruleString.toUpperCase());
     }
