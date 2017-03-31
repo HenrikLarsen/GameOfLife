@@ -374,6 +374,7 @@ public class Controller implements Initializable {
         ruleLabel.setText(gOL.ruleString.toUpperCase());
         move = true;
         canvasArea.requestFocus();
+        canvasDrawer.resetOffset(board, canvasArea);
         draw();
 
     }
@@ -398,6 +399,7 @@ public class Controller implements Initializable {
         }
         move = true;
         canvasArea.requestFocus();
+        canvasDrawer.resetOffset(board, canvasArea);
         draw();
     }
 
