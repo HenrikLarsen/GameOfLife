@@ -1,10 +1,10 @@
 package controller;
 
-import com.sun.deploy.ui.ProgressDialog;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.event.*;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -49,6 +49,7 @@ public class Controller implements Initializable {
     @FXML private Label aliveLabel;
     @FXML private Label ruleLabel;
     @FXML private ChoiceBox chooseRulesBox;
+    @FXML private Button startButton;
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
@@ -60,9 +61,9 @@ public class Controller implements Initializable {
     private FileHandler fileHandler = new FileHandler();
     private Stage editorStage;
     private EditorController editorController;
-    private Statistics statistics;
     private Stage statisticStage;
     private StatisticsController statisticsController;
+    private boolean isRunning = false;
 
     private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
             "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
@@ -200,11 +201,24 @@ public class Controller implements Initializable {
      * @param actionEvent - The event where the user clicks on the "start"-button.
      */
     public void startClick(ActionEvent actionEvent) {
-        move = false;
-        board.finalizeBoard();
-        aliveLabel.setText(Integer.toString(board.cellsAlive));
-        draw();
-        timeline.play();
+        if(!isRunning){
+            startButton.setText("Pause");
+            isRunning = true;
+            move = false;
+            board.finalizeBoard();
+            aliveLabel.setText(Integer.toString(board.cellsAlive));
+            draw();
+            timeline.play();
+        }else{
+            startButton.setText("Start");
+            isRunning = false;
+            move = false;
+            board.finalizeBoard();
+            aliveLabel.setText(Integer.toString(board.cellsAlive));
+            draw();
+            timeline.pause();
+        }
+
     }
 
     /**
@@ -214,11 +228,7 @@ public class Controller implements Initializable {
      * @param actionEvent - The event where the user clicks on the "pause"-button.
      */
     public void pauseClick(ActionEvent actionEvent) {
-        move = false;
-        board.finalizeBoard();
-        aliveLabel.setText(Integer.toString(board.cellsAlive));
-        draw();
-        timeline.pause();
+
     }
 
     /**
@@ -498,8 +508,8 @@ public class Controller implements Initializable {
         textInputDialogStatistics.showAndWait();
         String out = textInputDialogStatistics.getResult();
 
-        if(out != null){
 
+        if(out != null){
             int iterations = Integer.parseInt(out);
             statisticStage = new Stage();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
