@@ -172,12 +172,12 @@ Layout er konstruert ved bruk av scenebuilder.
                         <Insets left="14.0" top="10.0" />
                     </HBox.margin>
                 </Button>
-                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseClick" prefWidth="90.0" text="Pause">
+                <Button fx:id="centerButton" mnemonicParsing="false" onAction="#backToCenterClick" prefWidth="90.0" text="Reset View">
                     <HBox.margin>
                         <Insets left="10.0" top="10.0" />
                     </HBox.margin>
                 </Button>
-                <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetClick" prefWidth="90.0" text="Reset">
+                <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetClick" prefWidth="90.0" text="Reset Board">
                     <HBox.margin>
                         <Insets left="10.0" top="10.0" />
                     </HBox.margin>

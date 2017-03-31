@@ -227,8 +227,9 @@ public class Controller implements Initializable {
      * @see Timeline#pause()
      * @param actionEvent - The event where the user clicks on the "pause"-button.
      */
-    public void pauseClick(ActionEvent actionEvent) {
-
+    public void backToCenterClick(ActionEvent actionEvent) {
+        canvasDrawer.resetOffset(board, canvasArea);
+        draw();
     }
 
     /**
@@ -247,8 +248,12 @@ public class Controller implements Initializable {
         gOL.genCounter = 0;
         generationLabel.setText(Integer.toString(gOL.genCounter));
         board.resetBoard();
+        if (board instanceof DynamicBoard) {
+            ((DynamicBoard)board).setGridSize(5);
+        }
         aliveLabel.setText(Integer.toString(board.cellsAlive));
         fileHandler.resetMetaData();
+        canvasDrawer.resetOffset(board, canvasArea);
         draw();
     }
 
