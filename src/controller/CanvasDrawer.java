@@ -68,21 +68,36 @@ public class CanvasDrawer {
         }
 
         if (grid) {
-            drawGrid(gc, board, xOffset, yOffset);
+            drawGrid(gc, xOffset, yOffset);
         }
     }
 
-    public void drawGrid(GraphicsContext gc, Board board, double xOffset, double yOffset) {
+    private void drawGrid(GraphicsContext gc, double xOffset, double yOffset) {
         gc.setLineWidth(cellDrawSize/40);
 
+        double xGridOffset = 0;
+        double yGridOffset = 0;
+        if (xOffset > 0) {
+            xGridOffset = xOffset%cellDrawSize;
+        } else if (xOffset < 0) {
+            xGridOffset = (xOffset%cellDrawSize)+cellDrawSize;
+        }
+        if (yOffset > 0) {
+            yGridOffset = yOffset%cellDrawSize;
+        } else if (yOffset < 0) {
+            yGridOffset = (yOffset%cellDrawSize)+cellDrawSize;
+        }
+
         //Draws the horizontal lines
-        for (int y = 0; y <= board.getHeight(); y++) {
-            gc.strokeLine(xOffset, y*cellDrawSize+yOffset, board.getWidth()*cellDrawSize+xOffset, y*cellDrawSize+yOffset);
+        for (int y = 0; y <= gc.getCanvas().getHeight()/cellDrawSize; y++) {
+            double yStart = y*cellDrawSize+yGridOffset;
+            gc.strokeLine(0, yStart, gc.getCanvas().getWidth(), yStart);
         }
 
         //Draws the vertical lines
-        for (int x = 0; x <= board.getWidth(); x++) {
-            gc.strokeLine(x*cellDrawSize+xOffset, yOffset, x*cellDrawSize+xOffset, board.getHeight()*cellDrawSize+yOffset);
+        for (int x = 0; x <= gc.getCanvas().getWidth()/cellDrawSize; x++) {
+            double xStart = x*cellDrawSize+xGridOffset;
+            gc.strokeLine(xStart, 0, xStart, gc.getCanvas().getHeight());
         }
     }
 
@@ -127,12 +142,7 @@ public class CanvasDrawer {
 
             board.cellsAlive++;
             if (board instanceof DynamicBoard) {
-                if (x < 0) {
-                    xZoomOffset += x * cellDrawSize;
-                }
-                if (y < 0) {
-                    yZoomOffset += y * cellDrawSize;
-                }
+                addOffsetIfExpand(x, y);
             }
         }
     }
@@ -166,12 +176,7 @@ public class CanvasDrawer {
             board.setCellState(x, y, (byte) 1);
             board.cellsAlive++;
             if (board instanceof DynamicBoard) {
-                if (x < 0) {
-                    xZoomOffset += x * cellDrawSize;
-                }
-                if (y < 0) {
-                    yZoomOffset += y * cellDrawSize;
-                }
+                addOffsetIfExpand(x,y);
             }
         }
     }
@@ -313,6 +318,15 @@ public class CanvasDrawer {
         yDragOffset = 0;
         cellDrawSize = 10d;
         setZoomOffset(board, canvas);
+    }
+
+    private void addOffsetIfExpand(int x, int y){
+        if (x < 0) {
+            xZoomOffset += x * cellDrawSize;
+        }
+        if (y < 0) {
+            yZoomOffset += y * cellDrawSize;
+        }
     }
 }
 //TODO: Fiks at den zoomer mot midten (Canvas.setScale() kan hjelpe her)
