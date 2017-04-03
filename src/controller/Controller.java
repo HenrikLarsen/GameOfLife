@@ -552,5 +552,5 @@ public class Controller implements Initializable {
 
             statisticStage.showAndWait();
         }
-    }
+    }//TODO: Fiks en greie for å velge patterns fra presets
 }

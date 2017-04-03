@@ -39,6 +39,7 @@ public class EditorController implements Initializable {
     @FXML TextField ruleInputField;
     @FXML TextField fpsInputField;
     @FXML TextField numFramesInputField;
+    @FXML TextField resizeBoardInput;
     @FXML CheckBox dateCheckBox;
     @FXML ColorPicker cellColorPicker;
     @FXML ColorPicker backgroundColorPicker;
@@ -81,6 +82,11 @@ public class EditorController implements Initializable {
             change.setText(change.getText().replaceAll("[^\\d]", ""));
             return change;
         });
+        TextFormatter<String> boardResizeFormatter = new TextFormatter<String>( change -> {
+            change.setText(change.getText().replaceAll("[^\\d]", ""));
+            return change;
+        });
+        resizeBoardInput.setTextFormatter(boardResizeFormatter);
 
         fpsInputField.setTextFormatter(fpsFormatter);
         numFramesInputField.setTextFormatter(numFramesFormater);
@@ -113,6 +119,22 @@ public class EditorController implements Initializable {
     public void closeClick(ActionEvent actionEvent) {
         Stage currentStage = (Stage) editorCanvas.getScene().getWindow();
         currentStage.close();
+    }
+
+    public void resizeBoardOnEnter() {
+        if (Integer.parseInt(resizeBoardInput.getText()) < 6 || Integer.parseInt(resizeBoardInput.getText()) > 1000) {
+            PopUpAlerts.resizeAlert();
+            return;
+        }
+        if (!resizeBoardInput.getText().isEmpty() && exportBoard instanceof DynamicBoard) {
+            boolean proceedResize = PopUpAlerts.resizeClearAlert();
+            if (proceedResize) {
+                int size = Integer.parseInt(resizeBoardInput.getText());
+                ((DynamicBoard) exportBoard).setGridSize(size);
+                drawEditorBoard();
+                drawStrip();
+            }
+        }
     }
 
     public void chooseCellColor(ActionEvent actionEvent) {
@@ -287,4 +309,5 @@ public class EditorController implements Initializable {
 
         gifConstructor.exportGif(filePath);
     }
+    //TODO: Fix statistics integration
 }

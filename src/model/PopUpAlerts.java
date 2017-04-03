@@ -1,6 +1,9 @@
 package model;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
+import java.util.Optional;
 
 /**
  * Created by Oscar_000 on 19.03.2017.
@@ -106,5 +109,36 @@ public class PopUpAlerts {
         alert.setHeaderText(header);
         alert.setContentText(description);
         alert.showAndWait();
+    }
+
+    public static void resizeAlert() {
+        Alert resizeAlert = new Alert(Alert.AlertType.WARNING);
+        resizeAlert.setTitle("Error");
+        resizeAlert.setHeaderText("Invalid size!");
+        resizeAlert.setContentText("The size you have chosen is not valid. Please write a number between 6 and 1000!");
+        resizeAlert.showAndWait();
+    }
+
+    public static boolean resizeClearAlert() {
+        Alert resizeClearAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        resizeClearAlert.setTitle("Warning");
+        resizeClearAlert.setHeaderText("Resizing will clear the board!");
+        resizeClearAlert.setContentText("I you resize the board, the current elements will be cleared, and you will start" +
+                " with a blank playing board. Are you sure you want to proceed?");
+        Optional<ButtonType> result = resizeClearAlert.showAndWait();
+
+        boolean b = false;
+        if (result.get() == ButtonType.OK) {
+            System.out.println("OK");
+            b = true;
+        }
+
+        if (result.get() == ButtonType.CANCEL) {
+            System.out.println("CANCEL");
+            b = false;
+        }
+
+        System.out.println("B = "+b);
+        return b;
     }
 }

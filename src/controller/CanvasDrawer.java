@@ -329,6 +329,8 @@ public class CanvasDrawer {
         }
     }
 }
+
+//TODO: Fiks at man ikke kan miste brettet
 //TODO: Fiks at den zoomer mot midten (Canvas.setScale() kan hjelpe her)
 // http://stackoverflow.com/questions/12523033/how-do-you-zoom-in-on-a-javafx-2-canvas-node
 // http://stackoverflow.com/questions/12375276/panning-on-a-canvas-in-javafx

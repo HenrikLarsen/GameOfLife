@@ -17,16 +17,12 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FileHandler extends Reader {
+public class FileHandler {
 
     public Board playBoard;
     public GameOfLife gameOfLife;
     public String metaTitle = "";
     public String metaData = "";
-
-    public int read(char[] input, int off, int max){
-        return 5;
-    }
 
     public void readGameBoardFromDisk(File file) throws IOException{
         try {
@@ -186,10 +182,6 @@ public class FileHandler extends Reader {
         metaTitle = "";
         metaData = "";
     }
-
-    public void close(){
-    }
-
 
     public String patternToString(byte[][] pattern) {
         StringBuilder patternString = new StringBuilder();
