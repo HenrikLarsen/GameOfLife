@@ -35,11 +35,11 @@ public class Statistics{
             }
             double reducedBoard = 0.5 * cellsAlive + 3.0 * cellsDifference + 0.25 * xySum;
 
-            double simumlarity = Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100;
-            double simumlarityFloored =  Math.floor(simumlarity);
+            double similarity = Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100;
+            double similarityFloored =  Math.floor(similarity);
 
             sim = new double[statistics[0].length];
-            sim[j] = simumlarity;
+            sim[j] = similarity;
 
             // Entering stats
             if(j == 0 || firstCellsAlive == 0){
@@ -49,7 +49,7 @@ public class Statistics{
             }else{
                 statistics[0][j] = cellsAlive;
                 statistics[1][j] = cellsDifference;
-                statistics[2][j] = (int)simumlarityFloored;
+                statistics[2][j] = (int)similarityFloored;
             }
             gameOfLife.nextGeneration();
         }
@@ -58,13 +58,16 @@ public class Statistics{
         return statistics;
     }
 
-    public int getHighestSimularity(){
-        for(int i = 0; i < sim.length; i++){
-            if(sim[i] > 99){
-                return i;
+    public int getHighestSimilarity(int[][] stat){
+        int iteration = 0;
+        double probability = 99.5;
+        for(int i = 2; i < stat[2].length; i++){
+            if(stat[2][i] > probability){
+                probability = stat[2][i];
+                iteration = i;
             }
         }
-        return 0;
+        return iteration;
     }
 
 
@@ -79,12 +82,12 @@ public class Statistics{
             cellsDiff += " " + statistics[1][j];
         }
 
-        String simularityMeasure = "simularityMeasure: ";
+        String similarityMeasure = "similarityMeasure: ";
         for (int j = 0; j < statistics[0].length; j++) {
-            simularityMeasure += " " + statistics[2][j];
+            similarityMeasure += " " + statistics[2][j];
         }
 
-        String out = CellsAlive + "\n" + cellsDiff + "\n" + simularityMeasure;
+        String out = CellsAlive + "\n" + cellsDiff + "\n" + similarityMeasure;
         return  out;
     }
 }

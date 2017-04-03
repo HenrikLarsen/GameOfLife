@@ -119,13 +119,35 @@ public class PopUpAlerts {
         resizeAlert.showAndWait();
     }
 
+    public static boolean gifSimilarityAlert(int iterations) {
+        Alert gifSimilarityConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        gifSimilarityConfirmation.setTitle("Message");
+        gifSimilarityConfirmation.setHeaderText("High probability of pattern repeat!");
+        gifSimilarityConfirmation.setContentText("It seems to be a high probability that the pattern on the board" +
+                " will be repeated in "+iterations+" iteration(s)! If this is true, we can create an endless looping " +
+                "gif with "+iterations+" images, provided our calculations are correct. Do you want to try with " +
+                iterations+", and see if it works?");
+        Optional<ButtonType> result = gifSimilarityConfirmation.showAndWait();
+
+        boolean b = false;
+        if (result.get() == ButtonType.OK) {
+            b = true;
+        }
+
+        if (result.get() == ButtonType.CANCEL) {
+            b = false;
+        }
+
+        return b;
+    }
+
     public static boolean resizeClearAlert() {
-        Alert resizeClearAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        resizeClearAlert.setTitle("Warning");
-        resizeClearAlert.setHeaderText("Resizing will clear the board!");
-        resizeClearAlert.setContentText("I you resize the board, the current elements will be cleared, and you will start" +
-                " with a blank playing board. Are you sure you want to proceed?");
-        Optional<ButtonType> result = resizeClearAlert.showAndWait();
+        Alert resizeClearConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        resizeClearConfirmation.setTitle("Warning");
+        resizeClearConfirmation.setHeaderText("Resizing will clear the board!");
+        resizeClearConfirmation.setContentText("I you resize the board, the current elements will be cleared, " +
+                "and you will start with a blank playing board. Are you sure you want to proceed?");
+        Optional<ButtonType> result = resizeClearConfirmation.showAndWait();
 
         boolean b = false;
         if (result.get() == ButtonType.OK) {

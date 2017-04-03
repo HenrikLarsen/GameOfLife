@@ -268,6 +268,25 @@ public class EditorController implements Initializable {
             PopUpAlerts.sizeBoardError();
         }
 
+        int counter = 20;
+        if (!numFramesInputField.getText().isEmpty()) {
+            counter = Integer.parseInt(numFramesInputField.getText());
+            if (counter < 1 || counter > 400) {
+                PopUpAlerts.gifFramesAlert();
+                return;
+            }
+        }
+        Statistics statistics = new Statistics();
+        int[][] stat = statistics.getStatistics(gameOfLife, 50);
+        int repeat = statistics.getHighestSimilarity(stat);
+        System.out.println("Repeat = "+repeat);
+        if (repeat != 0) {
+            boolean b = PopUpAlerts.gifSimilarityAlert(repeat);
+            if (b) {
+                counter = repeat;
+            }
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Graphics Interchange Format",
                 "*.gif"));
@@ -282,14 +301,6 @@ public class EditorController implements Initializable {
         GifConstructor gifConstructor = new GifConstructor();
         gifConstructor.setGifGol((GameOfLife) gameOfLife.clone());
 
-        int counter = 20;
-        if (!numFramesInputField.getText().isEmpty()) {
-            counter = Integer.parseInt(numFramesInputField.getText());
-            if (counter < 1 || counter > 400) {
-                PopUpAlerts.gifFramesAlert();
-                return;
-            }
-        }
 
         int fps = 5;
         if (!fpsInputField.getText().isEmpty()) {
