@@ -6,6 +6,7 @@ package model;
 public class Statistics{
     private  int[][] statistics;
     private GameOfLife gameOfLife;
+    private double[] sim;
 
     public Statistics(){
     }
@@ -34,7 +35,11 @@ public class Statistics{
             }
             double reducedBoard = 0.5 * cellsAlive + 3.0 * cellsDifference + 0.25 * xySum;
 
-            double simumlarity = Math.floor(Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100);
+            double simumlarity = Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100;
+            double simumlarityFloored =  Math.floor(simumlarity);
+
+            sim = new double[statistics[0].length];
+            sim[j] = simumlarity;
 
             // Entering stats
             if(j == 0 || firstCellsAlive == 0){
@@ -44,13 +49,22 @@ public class Statistics{
             }else{
                 statistics[0][j] = cellsAlive;
                 statistics[1][j] = cellsDifference;
-                statistics[2][j] = (int)simumlarity;
+                statistics[2][j] = (int)simumlarityFloored;
             }
             gameOfLife.nextGeneration();
         }
 
         System.out.println(statToString());
         return statistics;
+    }
+
+    public int getHighestSimularity(){
+        for(int i = 0; i < sim.length; i++){
+            if(sim[i] > 99){
+                return i;
+            }
+        }
+        return 0;
     }
 
 

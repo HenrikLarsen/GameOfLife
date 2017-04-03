@@ -104,7 +104,6 @@ public class Controller implements Initializable {
         });
         ruleInputField.setTextFormatter(formatter);
 
-
         TextFormatter<String> onlyNumbers = new TextFormatter<String>( change -> {
             change.setText(change.getText().replaceAll("[^\\d]", ""));
             return change;
@@ -371,7 +370,7 @@ public class Controller implements Initializable {
             }
         }
         aliveLabel.setText(Integer.toString(board.cellsAlive));
-        ruleLabel.setText(gOL.ruleString.toUpperCase());
+        ruleLabel.setText(gOL.getRuleString().toUpperCase());
         move = true;
         canvasArea.requestFocus();
         canvasDrawer.resetOffset(board, canvasArea);
@@ -392,7 +391,7 @@ public class Controller implements Initializable {
             try {
                 fileHandler.readGameBoardFromURL(url);
                 aliveLabel.setText(Integer.toString(board.cellsAlive));
-                ruleLabel.setText(gOL.ruleString.toUpperCase());
+                ruleLabel.setText(gOL.getRuleString().toUpperCase());
             } catch (IOException ie) {
                 PopUpAlerts.ioAlertFromURL();
             }
@@ -407,8 +406,13 @@ public class Controller implements Initializable {
         try {
             String ruleString = ruleInputField.getText().toUpperCase();
             gOL.setRuleString(ruleString);
-            ruleLabel.setText(gOL.ruleString.toUpperCase());
+            ruleLabel.setText(gOL.getRuleString().toUpperCase());
             ruleInputField.setText("");
+            if(!chooseRulesList.contains(gOL.getRuleName())){
+                chooseRulesBox.getSelectionModel().clearSelection();
+            }else{
+                chooseRulesBox.getSelectionModel().select(gOL.getRuleName());
+            }
         } catch (RulesFormatException rfe) {
             PopUpAlerts.ruleAlert2();
         }
@@ -421,11 +425,11 @@ public class Controller implements Initializable {
         }catch (RulesFormatException rfee) {
             PopUpAlerts.ruleAlert2();
         }
-        ruleLabel.setText(gOL.ruleString.toUpperCase());
+        ruleLabel.setText(gOL.getRuleString().toUpperCase());
     }
 
     public void showRuleDescription(ActionEvent actionEvent) {
-        PopUpAlerts.ruleDescription(gOL.ruleName, gOL.ruleString, gOL.ruleDescription);
+        PopUpAlerts.ruleDescription(gOL.getRuleName(), gOL.getRuleString(), gOL.getRuleDescription());
     }
 
     public void showMetadata(ActionEvent actionEvent) {
@@ -473,7 +477,7 @@ public class Controller implements Initializable {
         editorStage.showAndWait();
         canvasDrawer.resetOffset(board, canvasArea);
         draw();
-        ruleLabel.setText(gOL.ruleString.toUpperCase());
+        ruleLabel.setText(gOL.getRuleString().toUpperCase());
     }
 
     public void movePattern(KeyEvent keyEvent) {
@@ -522,13 +526,18 @@ public class Controller implements Initializable {
 
     public void showStatistic(ActionEvent actionEvent) throws Exception {
         timeline.pause();
+        startButton.setText("Start");
+        isRunning = false;
         textInputDialogStatistics.setHeaderText("Show Statistics");
         textInputDialogStatistics.setContentText("Enter statistic length");
         textInputDialogStatistics.showAndWait();
-        String out = textInputDialogStatistics.getResult();
 
+        String out = "";
+        if(!textInputDialogStatistics.getResult().isEmpty()){
+          out = textInputDialogStatistics.getResult();
+        }
 
-        if(out != null){
+        if(out != ""){
             int iterations = Integer.parseInt(out);
             statisticStage = new Stage();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
