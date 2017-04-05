@@ -53,7 +53,7 @@ public class Controller implements Initializable {
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
-    private Board board = new DynamicBoard(10, 10);
+    private Board board = new DynamicBoard(50, 50);
     private GameOfLife gOL = new GameOfLife(board);
     private CanvasDrawer canvasDrawer = new CanvasDrawer();
     private Timeline timeline;
@@ -355,7 +355,7 @@ public class Controller implements Initializable {
     public void importFileClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir"/* + "/rleFiles"*/)));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Run-length encoding",
                 "*.rle"));
         File file = fileChooser.showOpenDialog(new Stage());
@@ -552,5 +552,26 @@ public class Controller implements Initializable {
 
             statisticStage.showAndWait();
         }
-    }//TODO: Fiks en greie for å velge patterns fra presets
+    }
+
+    public void openPatternSelect(ActionEvent actionEvent) throws IOException {
+        timeline.pause();
+        startButton.setText("Start");
+        isRunning = false;
+        editorStage = new Stage();
+        editorStage.initModality(Modality.WINDOW_MODAL);
+        editorStage.initOwner(canvasArea.getScene().getWindow());
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/PatternSelect.fxml"));
+        Parent root = fxmlLoader.load();
+        PatternSelectController patternPickerController = fxmlLoader.getController();
+        patternPickerController.setFileHandler(fileHandler);
+        editorStage.setTitle("GameOfLife");
+        editorStage.setScene(new Scene(root, 600, 400));
+
+        editorStage.showAndWait();
+        move = true;
+        canvasDrawer.resetOffset(board, canvasArea);
+        draw();
+        canvasArea.requestFocus();
+    }
 }
