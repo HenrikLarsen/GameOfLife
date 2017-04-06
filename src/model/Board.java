@@ -89,55 +89,55 @@ public abstract class Board {
 
         //for(int x = loadedPatternBoundingBox[0]; x <= loadedPatternBoundingBox[1]; x++) {
         //    for(int y = loadedPatternBoundingBox[2]; y <= loadedPatternBoundingBox[3]; y++) {
-                if (direction.equals("up")) {
-                    if (loadedPatternBoundingBox[2] > 0) {
-                        loadedPatternBoundingBox[2] = yStart - 1;
-                        loadedPatternBoundingBox[3] = yStop - 1;
-                    } else if (loadedPatternBoundingBox[2] == 0) {
-                        if (this instanceof DynamicBoard) {
-                            ((DynamicBoard)this).expandHeightUp(1);
-                            ((DynamicBoard) this).setHasExpandedUp(true);
-                        }
-                    }
-
-                } else if (direction.equals("down")) {
-                    if (loadedPatternBoundingBox[3] < getHeight()-1) {
-                        loadedPatternBoundingBox[2] = yStart + 1;
-                        loadedPatternBoundingBox[3] = yStop + 1;
-                    } else if (loadedPatternBoundingBox[3] == getHeight()-1) {
-                        if (this instanceof DynamicBoard) {
-                            ((DynamicBoard)this).expandHeightDown(1);
-                            loadedPatternBoundingBox[2] = yStart + 1;
-                            loadedPatternBoundingBox[3] = yStop + 1;
-                        }
-                    }
-
-                } else if (direction.equals("left")) {
-                    if (loadedPatternBoundingBox[0] > 0) {
-                        loadedPatternBoundingBox[0] = xStart - 1;
-                        loadedPatternBoundingBox[1] = xStop - 1;
-                    } else if (loadedPatternBoundingBox[0] == 0) {
-                        if (this instanceof DynamicBoard) {
-                            ((DynamicBoard) this).expandWidthLeft(1);
-                            ((DynamicBoard) this).setHasExpandedLeft(true);
-                        }
-                    }
-
-                } else if (direction.equals("right")) {
-                    if (loadedPatternBoundingBox[1] < getWidth() - 1) {
-                        loadedPatternBoundingBox[0] = xStart + 1;
-                        loadedPatternBoundingBox[1] = xStop + 1;
-                    } else if (loadedPatternBoundingBox[1] == getWidth()-1) {
-                        if (this instanceof DynamicBoard) {
-                            ((DynamicBoard) this).expandWidthRight(1);
-                            loadedPatternBoundingBox[0] = xStart + 1;
-                            loadedPatternBoundingBox[1] = xStop + 1;
-                        }
-                    }
-                } else {
-                    return;
+        if (direction.equals("up")) {
+            if (loadedPatternBoundingBox[2] > 0) {
+                loadedPatternBoundingBox[2] = yStart - 1;
+                loadedPatternBoundingBox[3] = yStop - 1;
+            } else if (loadedPatternBoundingBox[2] == 0) {
+                if (this instanceof DynamicBoard && getHeight() < 1900) {
+                    ((DynamicBoard)this).expandHeightUp(1);
+                    ((DynamicBoard) this).setHasExpandedUp(true);
                 }
-            //}
+            }
+
+        } else if (direction.equals("down")) {
+            if (loadedPatternBoundingBox[3] < getHeight()-1) {
+                loadedPatternBoundingBox[2] = yStart + 1;
+                loadedPatternBoundingBox[3] = yStop + 1;
+            } else if (loadedPatternBoundingBox[3] == getHeight()-1) {
+                if (this instanceof DynamicBoard && getHeight() < 1900) {
+                    ((DynamicBoard)this).expandHeightDown(1);
+                    loadedPatternBoundingBox[2] = yStart + 1;
+                    loadedPatternBoundingBox[3] = yStop + 1;
+                }
+            }
+
+        } else if (direction.equals("left")) {
+            if (loadedPatternBoundingBox[0] > 0) {
+                loadedPatternBoundingBox[0] = xStart - 1;
+                loadedPatternBoundingBox[1] = xStop - 1;
+            } else if (loadedPatternBoundingBox[0] == 0) {
+                if (this instanceof DynamicBoard && getWidth() < 1900) {
+                    ((DynamicBoard) this).expandWidthLeft(1);
+                    ((DynamicBoard) this).setHasExpandedLeft(true);
+                }
+            }
+
+        } else if (direction.equals("right")) {
+            if (loadedPatternBoundingBox[1] < getWidth() - 1) {
+                loadedPatternBoundingBox[0] = xStart + 1;
+                loadedPatternBoundingBox[1] = xStop + 1;
+            } else if (loadedPatternBoundingBox[1] == getWidth()-1) {
+                if (this instanceof DynamicBoard && getWidth() < 1900) {
+                    ((DynamicBoard) this).expandWidthRight(1);
+                    loadedPatternBoundingBox[0] = xStart + 1;
+                    loadedPatternBoundingBox[1] = xStop + 1;
+                }
+            }
+        } else {
+            return;
+        }
+        //}
         //}
     }
 

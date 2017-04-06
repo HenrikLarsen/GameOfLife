@@ -250,7 +250,8 @@ public class Controller implements Initializable {
         generationLabel.setText(Integer.toString(gOL.genCounter));
         board.resetBoard();
         if (board instanceof DynamicBoard) {
-            ((DynamicBoard)board).setGridSize(5);
+            ((DynamicBoard)board).setGridSize(50);
+            canvasDrawer.resetCellSize();
         }
         aliveLabel.setText(Integer.toString(board.cellsAlive));
         fileHandler.resetMetaData();
@@ -330,9 +331,7 @@ public class Controller implements Initializable {
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      */
     public void mouseDragged(MouseEvent mouseEvent) {
-        if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
-            canvasDrawer.setDragOffset(mouseEvent);
-        } else if (mouseEvent.isPrimaryButtonDown()) {
+        if (mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.drawDragged(mouseEvent, board, true);
             aliveLabel.setText("" + board.cellsAlive);
         } else if (mouseEvent.isSecondaryButtonDown()) {
@@ -463,7 +462,6 @@ public class Controller implements Initializable {
         } else if (board.getWidth() > board.getHeight() && board instanceof DynamicBoard) {
             ((DynamicBoard) board).expandHeightDown(board.getWidth() - board.getHeight());
         }
-        System.out.println("Width = "+board.getWidth()+", Height = "+board.getHeight());
         editorController.setExportBoard(board);
         editorController.setGameOfLife(gOL);
         //editorController.setCanvasDrawer(canvasDrawer);
@@ -519,8 +517,6 @@ public class Controller implements Initializable {
             zoom = zoom / 2;
         }
         canvasDrawer.setZoom(canvasDrawer.getCellDrawSize() + zoom, canvasArea, board);
-        System.out.println(zoom);
-        System.out.println(canvasDrawer.getCellDrawSize());
         draw();
     }
 
@@ -534,7 +530,7 @@ public class Controller implements Initializable {
 
         String out = "";
         if(!textInputDialogStatistics.getResult().isEmpty()){
-          out = textInputDialogStatistics.getResult();
+            out = textInputDialogStatistics.getResult();
         }
 
         if(out != ""){

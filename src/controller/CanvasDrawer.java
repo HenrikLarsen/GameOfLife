@@ -14,7 +14,7 @@ import model.GameOfLife;
  */
 public class CanvasDrawer {
     private boolean erase;
-    private double cellDrawSize = 10d;
+    private double cellDrawSize = 20d;
     private double stripCellSize;
     private double xZoomOffset = 0;
     private double yZoomOffset = 0;
@@ -102,7 +102,6 @@ public class CanvasDrawer {
     }
 
 
-
     protected void drawPressed(MouseEvent mouseEvent, Board board, boolean expandable) {
         if (board.getLoadedPattern() != null) {
             return;
@@ -158,7 +157,7 @@ public class CanvasDrawer {
         int y = (int) ((mouseEvent.getY() - (yZoomOffset + yDragOffset)) / cellDrawSize);
 
         if ((x < board.getWidth()) && (y < board.getHeight()) && x >= 0 && y >= 0) {
-                //If boolean erase is true, it sets the cell to 0. Else, sets the cell to 1.
+            //If boolean erase is true, it sets the cell to 0. Else, sets the cell to 1.
             if (erase) {
                 if (board.cellsAlive > 0 && board.getCellState(x, y) == 1) {
                     board.cellsAlive--;
@@ -262,7 +261,6 @@ public class CanvasDrawer {
         gc.setFill(Color.BLACK);
         double xStart = boundingBox[0]*cellDrawSize;
         double yStart = boundingBox[2]*cellDrawSize;
-        System.out.println(boundingBox[0]+" "+boundingBox[1]+" "+boundingBox[2]+" "+boundingBox[3]);
         for (int x = 0; x < loadedPattern.length; x++) {
             for (int y = 0; y < loadedPattern[0].length; y++) {
                 if (loadedPattern[x][y] == 1) {
@@ -282,11 +280,15 @@ public class CanvasDrawer {
     public void setDragOffset(MouseEvent drag) {
         double xCurOffset = drag.getX()- xOnStartDrag;
         double yCurOffset = drag.getY()- yOnStartDrag;
+        //if (!(xDragOffset+xZoomOffset > (1900-board.getWidth())*cellDrawSize)) {
         xDragOffset += xCurOffset;
         xOnStartDrag = drag.getX();
+        //}
+        //if (!(yDragOffset+yZoomOffset > (1900-board.getHeight())*cellDrawSize)) {
         yOnStartDrag = drag.getY();
         yDragOffset += yCurOffset;
-        dragged = true;
+        // }
+        // dragged = true;
     }
 
     public void setOriginalDrag(MouseEvent mouseEvent) {
@@ -294,14 +296,19 @@ public class CanvasDrawer {
         yOnStartDrag = mouseEvent.getY();
     }
 
-    public double checkDragOffset(double dragOffset, double zoomOffset) {
+    public double checkDragOffset(double dragOffset, double zoomOffset, int boardlength) {
         double newOffset;
-        if (dragOffset-zoomOffset+cellDrawSize < 0 && dragOffset-zoomOffset-cellDrawSize > -2*zoomOffset) {
+        if (dragOffset+zoomOffset < -cellDrawSize*1900 && dragOffset+zoomOffset > 0) {
             newOffset = 0;
-        } else if (dragOffset-zoomOffset+cellDrawSize < 0) {
-            newOffset = zoomOffset - cellDrawSize;
-        } else if (dragOffset-zoomOffset-cellDrawSize > -2*zoomOffset) {
-            newOffset = -zoomOffset+cellDrawSize;
+        } else if (dragOffset+zoomOffset > (1900-boardlength)*cellDrawSize) {
+            newOffset = (1900-boardlength)*cellDrawSize-zoomOffset;
+
+            //} else if (dragOffset+zoomOffset > -(1900)*cellDrawSize) {
+            //System.out.println(dragOffset+zoomOffset +"\n"+ -2*zoomOffset);
+            //newOffset = -zoomOffset+(1900-boardlength)*cellDrawSize;
+            //newOffset = -(1900)*cellDrawSize-zoomOffset;
+            //newOffset = dragOffset;
+
         } else {
             newOffset = dragOffset;
         }
@@ -316,8 +323,11 @@ public class CanvasDrawer {
     public void resetOffset(Board board, Canvas canvas) {
         xDragOffset = 0;
         yDragOffset = 0;
-        cellDrawSize = 10d;
         setZoomOffset(board, canvas);
+    }
+
+    public void resetCellSize() {
+        cellDrawSize = 20d;
     }
 
     private void addOffsetIfExpand(int x, int y){

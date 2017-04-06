@@ -13,6 +13,9 @@ public class Statistics{
 
     public int[][] getStatistics(GameOfLife game, int iterations) {
         gameOfLife = (GameOfLife) game.clone();
+        if (gameOfLife.getPlayBoard() instanceof DynamicBoard) {
+            ((DynamicBoard) gameOfLife.getPlayBoard()).setExpandable(false);
+        }
         statistics = new int[3][iterations + 1];
 
         // First board to be measured with

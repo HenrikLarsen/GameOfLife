@@ -18,6 +18,7 @@ public class DynamicBoard extends Board{
     private boolean expandDown = false;
     private boolean hasExpandedLeft = false;
     private boolean hasExpandedUp = false;
+    private boolean expandable = true;
 
 
     public DynamicBoard(ArrayList<ArrayList<Byte>> newBoard){
@@ -46,19 +47,25 @@ public class DynamicBoard extends Board{
         int row = x;
         int column = y;
 
-        if (x >= getWidth()) {
+        if ((x >= getWidth() || x < 0) && (getWidth() > 1900 || Math.abs(x)+getWidth() > 1900)) {
+            PopUpAlerts.edgeAlert();
+            return;
+        } else if (x >= getWidth() && expandable) {
             int expand = x-getWidth()+1;
             expandWidthRight(expand);
-        } else if (x < 0) {
+        } else if (x < 0 && expandable) {
             int expand = Math.abs(x);
             expandWidthLeft(expand);
             row = 0;
         }
 
-        if (y >= getHeight()) {
+        if ((y >= getHeight() || y < 0) && (getHeight() > 1900 || Math.abs(y)+getHeight() > 1900)) {
+            PopUpAlerts.edgeAlert();
+            return;
+        } else if (y >= getHeight() && expandable) {
             int expand = y-getHeight()+1;
             expandHeightDown(expand);
-        } else if (y < 0) {
+        } else if (y < 0 && expandable) {
             int expand = Math.abs(y);
             expandHeightUp(expand);
             column = 0;
@@ -167,7 +174,7 @@ public class DynamicBoard extends Board{
     }
 
     public void expandBoard() {
-        if (getHeight() >= 1000 && getWidth() >= 1000) {
+        if ((getHeight() >= 1000 && getWidth() >= 1000) || !expandable) {
             return;
         }
 
@@ -231,7 +238,7 @@ public class DynamicBoard extends Board{
         hasExpandedUp = b;
     }
 
-
-
-
+    public void setExpandable(Boolean b) {
+        expandable = b;
+    }
 }

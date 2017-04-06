@@ -119,6 +119,17 @@ public class PopUpAlerts {
         resizeAlert.showAndWait();
     }
 
+    public static void edgeAlert() {
+        Alert edgeAlert = new Alert(Alert.AlertType.WARNING);
+        edgeAlert.setTitle("Congratulations!");
+        edgeAlert.setHeaderText("End of board!");
+        edgeAlert.setContentText("Congratulations! You have reached the edge of the playing board! You won't be able " +
+                "to expand further in this direction, but you're welcome to keep drawing within the borders. " +
+                "\n\nAlternatively, you can click reset view to go back to the middle of the board, or click reset " +
+                "board to start over!");
+        edgeAlert.showAndWait();
+    }
+
     public static boolean gifSimilarityAlert(int iterations) {
         Alert gifSimilarityConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
         gifSimilarityConfirmation.setTitle("Message");
