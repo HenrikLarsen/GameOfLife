@@ -12,7 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.FileHandler;
-import model.PopUpAlerts;
 
 import java.io.File;
 import java.io.IOException;

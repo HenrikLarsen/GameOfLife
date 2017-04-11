@@ -12,15 +12,6 @@ public class StaticBoard extends Board {
     private final int WIDTH, HEIGHT;
     private byte[][] cellGrid;
 
-    /**
-     * Constructor of the class
-     * sets the parameter board as the current board.
-     *
-     */
-    /*public StaticBoard(byte[][] newBoard){
-        this.cellGrid = newBoard;
-    }*/
-
     public StaticBoard(int x, int y) {
         WIDTH = x;
         HEIGHT = y;
@@ -38,28 +29,24 @@ public class StaticBoard extends Board {
     }
 
 
-    /**
-     * Method that takes a board as a parameter and sets it as the current board.
-     * @param newGrid - the new board to be set.
-     */
-    public void setBoard(byte[][] newGrid) {
-        this.cellGrid = newGrid;
-    }
-
     @Override
     public void setCellState(int x, int y, byte state) {
         if (state == 1 || state == 0) {
-            try {
+            if (x < getWidth() && y < getHeight()) {
                 cellGrid[x][y] = state;
-            } catch (ArrayIndexOutOfBoundsException ae) {
-                System.out.println("Out of bounds. Try using a Dynamic Board instead");
+            } else {
+                throw new ArrayIndexOutOfBoundsException();
             }
         }
     }
 
     @Override
     public byte getCellState(int x, int y) {
-        return cellGrid[x][y];
+        if (x < getWidth() && y < getHeight()) {
+            return cellGrid[x][y];
+        } else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
     }
 
     @Override

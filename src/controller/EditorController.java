@@ -10,20 +10,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Affine;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
-import lieng.GIFWriter;
 import model.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 /**
@@ -190,7 +184,7 @@ public class EditorController implements Initializable {
 
         byte[][] trimmedPattern = exportBoard.trim();
 
-        String rawString = fileHandler.patternToString(trimmedPattern);
+        String rawString = fileHandler.patternExportToString(trimmedPattern);
         System.out.println(rawString);
         String encodedString = fileHandler.stringToRLE(rawString);
 

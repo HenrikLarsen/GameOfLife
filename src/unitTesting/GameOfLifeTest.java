@@ -1,65 +1,21 @@
 package unitTesting;
 
+import javafx.scene.control.Alert;
+import model.Board;
+import model.DynamicBoard;
+import model.RulesFormatException;
 import org.junit.Test;
 import model.GameOfLife;
-import model.StaticBoard;
 
-/**
- * The GameOfLifeTest class is a JUnit class, doing unit testing of methods in the GameOfLife class. <br>
- * Its main purpose is to test and verify that the functionality of the GameOfLife class works as intended
- * and to root out inherent errors in the logic of its methods.
- *
- * @author Oscar Vladau-Husevold
- * @author Henrik Finnerud Larsen
- * @version 1.0
- */
+
 public class GameOfLifeTest {
-    private StaticBoard board = new StaticBoard(8, 10);
-    private GameOfLife gol = new GameOfLife(board);
+    private Board board;
+    private GameOfLife gol;
 
-    /**
-     * Main test of GameOfLife's nextGeneration() method. Contains several other methods that tests
-     * that the method works as intended for specific configurations of a static game board.
-     * @see GameOfLife#nextGeneration()
-     * @see #nextGenerationTest1()
-     * @see #nextGenerationTest2()
-     * @see #nextGenerationTest3()
-     * @see #nextGenerationTest4()
-     * @throws Exception if an error occurs while testing.
-     */
     @Test
-    public void nextGeneration() throws Exception {
-        nextGenerationTest1();
-        nextGenerationTest2();
-        nextGenerationTest3();
-        nextGenerationTest4();
-    }
-
-    /**
-     * Main test of GameOfLife's enforceRules() method. Contains several other methods that tests
-     * that the method works as intended for specific configurations of a static game board.
-     * @see GameOfLife#enforceRules()
-     * @see #enforceRulesTest1()
-     * @see #enforceRulesTest2()
-     * @see #enforceRulesTest3()
-     * @throws Exception if an error occurs while testing.
-     */
-    @Test
-    public void enforceRules() throws Exception{
-        enforceRulesTest1();
-        enforceRulesTest2();
-        enforceRulesTest3();
-    }
-
-    /**
-     * Does a test on the nextGeneration method of GameOfLife to see if the method correctly
-     * sets the cells of the next generation based on the game's rules. <br>
-     * Tests a 8/10 board configuration.
-     * @see GameOfLife#nextGeneration()
-     * @see StaticBoard#setBoard(byte[][])
-     * @see StaticBoard#toString()
-     */
-    private void nextGenerationTest1() {
+    public void nextGenerationTest1() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
         byte[][] testBoard = {
                 {0, 0, 0, 1, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
@@ -68,25 +24,20 @@ public class GameOfLifeTest {
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0}};
 
         board.setBoard(testBoard);
         gol.nextGeneration();
-        String expectedOutput = "00000000000000000000101000000001100000000100000000000000000000000000000000000000";
+        String expectedOutput = "000000000000000000010100000001100000001000000000000000000000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
+        org.junit.Assert.assertEquals(9, board.getWidth());
+        org.junit.Assert.assertEquals(8, board.getHeight());
     }
 
-    /**
-     * Does a test on the nextGeneration method of GameOfLife to see if the method correctly
-     * sets the cells of the next generation based on the game's rules. <br>
-     * Tests a 5/4 board configuration.
-     * @see GameOfLife#nextGeneration()
-     * @see StaticBoard#setBoard(byte[][])
-     * @see StaticBoard#toString()
-     */
-    private void nextGenerationTest2 () {
+    @Test
+    public void nextGenerationTest2 () {
+        board = new DynamicBoard(4,5);
+        gol = new GameOfLife(board);
         byte[][] testBoard = {
                 {0, 0, 1, 1, 0},
                 {0, 1, 0, 0, 1},
@@ -96,20 +47,16 @@ public class GameOfLifeTest {
 
         board.setBoard(testBoard);
         gol.nextGeneration();
-        String expectedOutput = "00000100101010100100";
+        String expectedOutput = "000000010001010010100010000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
+        org.junit.Assert.assertEquals(5, board.getWidth());
+        org.junit.Assert.assertEquals(6, board.getHeight());
     }
 
-    /**
-     * Does a test on the nextGeneration method of GameOfLife to see if the method correctly
-     * sets the cells of the next generation based on the game's rules. Iterates
-     * through several generations to see that the method works consistently.<br>
-     * Tests a glider (A figure that's supposed to move across the board diagonally) on a 6/6 board.
-     * @see GameOfLife#nextGeneration()
-     * @see StaticBoard#setBoard(byte[][])
-     * @see StaticBoard#toString()
-     */
-    private void nextGenerationTest3 () {
+    @Test
+    public void nextGenerationTest3 () {
+        board = new DynamicBoard(6,6);
+        gol = new GameOfLife(board);
         byte[][] testBoard = {
                 {0, 0, 1, 0, 0, 0},
                 {1, 0, 1, 0, 0, 0},
@@ -121,32 +68,28 @@ public class GameOfLifeTest {
 
         board.setBoard(testBoard);
         gol.nextGeneration();
-        String expectedOutput = "000000101000011000010000000000000000";
+        String expectedOutput = "0000000000000001010000011000001000000000000000000";
+        org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
+        org.junit.Assert.assertEquals(7, board.getWidth());
+        org.junit.Assert.assertEquals(7, board.getHeight());
+
+        gol.nextGeneration();
+        expectedOutput = "0000000000000000010000101000001100000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
 
         gol.nextGeneration();
-        expectedOutput = "000000001000101000011000000000000000";
+        expectedOutput = "0000000000000000100000001100001100000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
 
         gol.nextGeneration();
-        expectedOutput = "000000010000001100011000000000000000";
-        org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
-
-        gol.nextGeneration();
-        expectedOutput = "000000001000000100011100000000000000";
+        expectedOutput = "0000000000000000010000000100001110000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
     }
 
-    /**
-     * Does a test on the nextGeneration method of GameOfLife to see if the method correctly
-     * sets the cells of the next generation based on the game's rules. Iterates
-     * through several generations to see that the method works consistently.<br>
-     * Tests the corners on a 6/6 board.
-     * @see GameOfLife#nextGeneration()
-     * @see StaticBoard#setBoard(byte[][])
-     * @see StaticBoard#toString()
-     */
-    private void nextGenerationTest4 () {
+    @Test
+    public void nextGenerationTest4 () {
+        board = new DynamicBoard(6,6);
+        gol = new GameOfLife(board);
         byte[][] testBoard = {
                 {1, 1, 1, 1, 1, 1},
                 {1, 1, 0, 0, 0, 1},
@@ -158,27 +101,30 @@ public class GameOfLifeTest {
 
         board.setBoard(testBoard);
         gol.nextGeneration();
-        String expectedOutput = "101111000001101001100101100000111101";
+        String expectedOutput = "0011110001011110100000111101001111001011110000010111101000111100";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
+        org.junit.Assert.assertEquals(8, board.getWidth());
+        org.junit.Assert.assertEquals(8, board.getHeight());
 
         gol.nextGeneration();
-        expectedOutput = "000111001001010001100010100100111000";
+        expectedOutput = "000011000000010001000010000010010010000010010000011" +
+                "0000010010000010010010000010000100010000000110000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
+        org.junit.Assert.assertEquals(10, board.getWidth());
+        org.junit.Assert.assertEquals(10, board.getHeight());
 
         gol.nextGeneration();
-        expectedOutput = "000111001101010011110010101100111000";
+        expectedOutput = "00000000000000000100000000001100000000011000000000111000" +
+                "0000011000000000000000000110000000011100000000011000000000110000000000100000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
+        org.junit.Assert.assertEquals(12, board.getWidth());
+        org.junit.Assert.assertEquals(12, board.getHeight());
     }
 
-    /**
-     * Does a test on the enforceRules method of GameOfLife to see if the method correctly
-     * enforces the rules of Conways game of life using the board and its neighbours.<br>
-     * Tests a 6/6 board configuration.
-     * @see GameOfLife#enforceRules()
-     * @see StaticBoard#setBoard(byte[][])
-     * @see StaticBoard#toString()
-     */
-    private void enforceRulesTest1() {
+    @Test
+    public void enforceRulesTest1() {
+        board = new DynamicBoard(6,6);
+        gol = new GameOfLife(board);
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0},
@@ -205,16 +151,10 @@ public class GameOfLifeTest {
         org.junit.Assert.assertEquals(expectedOutput, board.toString());
     }
 
-    /**
-     * Does a test on the enforceRules method of GameOfLife to see if the method correctly
-     * enforces the rules of Conways game of life using the board and its neighbours.<br>
-     * Tests a 10/9 board configuration.
-     * @see GameOfLife#enforceRules()
-     * @see StaticBoard#setBoard(byte[][])
-     * @see StaticBoard#countNeighbours()
-     * @see StaticBoard#toString()
-     */
-    private void enforceRulesTest2() {
+    @Test
+    public void enforceRulesTest2() {
+        board = new DynamicBoard(9,10);
+        gol = new GameOfLife(board);
         byte[][] testBoard = {
                 {0, 1, 1, 0, 0, 1, 0, 1, 1, 1},
                 {1, 0, 0, 0, 0, 1, 1, 1, 0, 0},
@@ -230,21 +170,16 @@ public class GameOfLifeTest {
         gol.neighbourCount = board.countNeighbours();
         gol.enforceRules();
         board.setBoard(gol.newGenerationCells);
-        String expectedOutput = "011111110101010101001010000000100000011111110101110001000000000100000001100000001010111000";
+        String expectedOutput = "011111110101010101001010000000100000011111110101" +
+                "110001000000000100000001100000001010111000";
 
         org.junit.Assert.assertEquals(expectedOutput, board.toString());
     }
 
-    /**
-     * Does a test on the enforceRules method of GameOfLife to see if the method correctly
-     * enforces the rules of Conways game of life using the board and its neighbours.<br>
-     * Tests a 8/8 board configuration.
-     * @see GameOfLife#enforceRules()
-     * @see StaticBoard#setBoard(byte[][])
-     * @see StaticBoard#countNeighbours()
-     * @see StaticBoard#toString()
-     */
-    private void enforceRulesTest3() {
+    @Test
+    public void enforceRulesTest3() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
         byte[][] testBoard = {
                 {0, 0, 1, 1, 1, 0, 0, 1},
                 {1, 0, 0, 0, 0, 1, 0, 0},
@@ -263,4 +198,265 @@ public class GameOfLifeTest {
 
         org.junit.Assert.assertEquals(expectedOutput, board.toString());
     }
+
+    @Test
+    public void enforceRulesAlternateRulesTest1() {
+        board = new DynamicBoard(6,6);
+        gol = new GameOfLife(board);
+        byte[][] testBoard = {
+                {0, 0, 0, 0, 0, 0},
+                {0, 1, 0, 1, 0, 0},
+                {0, 0, 1, 1, 0, 0},
+                {0, 1, 0, 0, 1, 0},
+                {0, 1, 0, 0, 0, 0},
+                {1, 0, 0, 1, 0, 0}};
+
+        board.setBoard(testBoard);
+        gol.neighbourCount = board.countNeighbours();
+        try {
+            gol.setRuleSet("B012345678/S");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+        gol.enforceRules();
+        board.setBoard(gol.newGenerationCells);
+
+        String expectedOutput = "111110101001110111100110111011111111";
+
+        org.junit.Assert.assertEquals(expectedOutput, board.toString());
+    }
+
+    @Test
+    public void enforceRulesAlternateRulesTest2() {
+        board = new DynamicBoard(6,6);
+        gol = new GameOfLife(board);
+        byte[][] testBoard = {
+                {0, 0, 0, 0, 0, 0},
+                {0, 1, 0, 1, 0, 0},
+                {0, 0, 1, 1, 0, 0},
+                {0, 1, 0, 0, 1, 0},
+                {0, 1, 0, 0, 0, 0},
+                {1, 0, 0, 1, 0, 0}};
+
+        board.setBoard(testBoard);
+        gol.neighbourCount = board.countNeighbours();
+        try {
+            gol.setRuleSet("B/S");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+        gol.enforceRules();
+        board.setBoard(gol.newGenerationCells);
+
+        String expectedOutput = "000000000000000000000000000000000000";
+
+        org.junit.Assert.assertEquals(expectedOutput, board.toString());
+    }
+
+    @Test
+    public void enforceRulesAlternateRulesTest3() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+        byte[][] testBoard = {
+                {0, 0, 1, 1, 1, 0, 0, 1},
+                {1, 0, 0, 0, 0, 1, 0, 0},
+                {1, 0, 1, 1, 0, 0, 0, 1},
+                {0, 0, 0, 1, 0, 0, 0, 1},
+                {0, 0, 0, 0, 1, 0, 1, 1},
+                {1, 0, 0, 0, 0, 1, 0, 0},
+                {1, 0, 0, 0, 0, 1, 0, 1},
+                {1, 0, 1, 1, 1, 0, 0, 0}};
+
+        board.setBoard(testBoard);
+        gol.neighbourCount = board.countNeighbours();
+        try {
+            gol.setRuleString("Life Without Death");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+        gol.enforceRules();
+        board.setBoard(gol.newGenerationCells);
+
+        String expectedOutput = "0110011100100001101100011011001110111101010011100110101010111110";
+
+        org.junit.Assert.assertEquals(expectedOutput, board.toString());
+    }
+
+    @Test
+    public void enforceRulesAlternateRulesTest4() {
+        board = new DynamicBoard(9,10);
+        gol = new GameOfLife(board);
+        byte[][] testBoard = {
+                {0, 1, 1, 0, 0, 1, 0, 1, 1, 1},
+                {1, 0, 0, 0, 0, 1, 1, 1, 0, 0},
+                {0, 1, 1, 0, 0, 1, 1, 1, 0, 1},
+                {0, 1, 0, 1, 0, 0, 0, 1, 0, 1},
+                {0, 1, 1, 0, 0, 1, 0, 1, 1, 1},
+                {1, 0, 0, 0, 0, 1, 1, 1, 0, 0},
+                {0, 1, 1, 0, 0, 1, 1, 1, 0, 1},
+                {1, 0, 0, 0, 0, 1, 1, 1, 0, 0},
+                {0, 1, 1, 0, 0, 1, 1, 1, 0, 1}};
+
+        board.setBoard(testBoard);
+        gol.neighbourCount = board.countNeighbours();
+        try {
+            gol.setRuleString("34 Life");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+        gol.enforceRules();
+        board.setBoard(gol.newGenerationCells);
+
+        String expectedOutput = "00111010000111010001101101000000000001111111" +
+                "0011101001000000000101110001100000101010101000";
+
+        org.junit.Assert.assertEquals(expectedOutput, board.toString());
+    }
+
+    @Test
+    public void setRuleStringTest1() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+
+        try {
+            gol.setRuleString("Replicator");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+
+        String expectedRuleString = "B1357/S1357";
+        String expectedBornRule = "1357";
+        String expectedSurviveRule = "1357";
+        String expectedRuleName = "Replicator";
+
+        org.junit.Assert.assertEquals(expectedRuleString, gol.getRuleString());
+        org.junit.Assert.assertEquals(expectedBornRule, gol.getBornRules());
+        org.junit.Assert.assertEquals(expectedSurviveRule, gol.getSurviveRules());
+        org.junit.Assert.assertEquals(expectedRuleName, gol.getRuleName());
+    }
+
+    @Test
+    public void setRuleStringTest2() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+
+        try {
+            gol.setRuleString("B368/S245");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+
+        String expectedRuleString = "B368/S245";
+        String expectedBornRule = "368";
+        String expectedSurviveRule = "245";
+        String expectedRuleName = "Morley";
+
+        org.junit.Assert.assertEquals(expectedRuleString, gol.getRuleString());
+        org.junit.Assert.assertEquals(expectedBornRule, gol.getBornRules());
+        org.junit.Assert.assertEquals(expectedSurviveRule, gol.getSurviveRules());
+        org.junit.Assert.assertEquals(expectedRuleName, gol.getRuleName());
+    }
+
+    @Test
+    public void setRuleStringTest3() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+
+        try {
+            gol.setRuleString("");
+            org.junit.Assert.fail();
+        } catch (RulesFormatException rfe) {}
+    }
+
+    @Test
+    public void setRuleSetTest1() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+
+        try {
+            gol.setRuleSet("B4678/S35678");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+
+        String expectedRuleString = "B4678/S35678";
+        String expectedBornRule = "4678";
+        String expectedSurviveRule = "35678";
+
+        org.junit.Assert.assertEquals(expectedRuleString, gol.getRuleString());
+        org.junit.Assert.assertEquals(expectedBornRule, gol.getBornRules());
+        org.junit.Assert.assertEquals(expectedSurviveRule, gol.getSurviveRules());
+    }
+
+    @Test
+    public void setRuleSetTest2() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+
+        try {
+            gol.setRuleSet("B0123456777778/S000012333344567853478");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+
+        String expectedRuleString = "B012345678/S012345678";
+        String expectedBornRule = "012345678";
+        String expectedSurviveRule = "012345678";
+
+        org.junit.Assert.assertEquals(expectedRuleString, gol.getRuleString());
+        org.junit.Assert.assertEquals(expectedBornRule, gol.getBornRules());
+        org.junit.Assert.assertEquals(expectedSurviveRule, gol.getSurviveRules());
+    }
+
+    @Test
+    public void setRuleSetTest3() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+
+        try {
+            gol.setRuleSet("B/S");
+        } catch (RulesFormatException rfe) {
+            org.junit.Assert.fail();
+        }
+
+        String expectedRuleString = "B/S";
+        String expectedBornRule = "";
+        String expectedSurviveRule = "";
+
+        org.junit.Assert.assertEquals(expectedRuleString, gol.getRuleString());
+        org.junit.Assert.assertEquals(expectedBornRule, gol.getBornRules());
+        org.junit.Assert.assertEquals(expectedSurviveRule, gol.getSurviveRules());
+    }
+
+    //There appears to be a bug that makes the popup window shown when the formatting is wrong
+    //to throw NoClassDefFoundError instead of ExceptionInInitializerError when using junit.
+    //As long as the error comes from a popup window, the right exception is thrown in the method.
+    @Test(expected = NoClassDefFoundError.class)
+    public void setRuleSetTest4() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+
+        try {
+            gol.setRuleSet("B3/S9");
+            org.junit.Assert.fail();
+        } catch (RulesFormatException rfe) {}
+    }
+
+    @Test
+    public void cloneTest() {
+        board = new DynamicBoard(8,8);
+        gol = new GameOfLife(board);
+
+        GameOfLife shallowGol = gol;
+        org.junit.Assert.assertEquals(gol, shallowGol);
+
+        GameOfLife clonedGol = (GameOfLife)gol.clone();
+        org.junit.Assert.assertFalse(clonedGol.equals(gol));
+        org.junit.Assert.assertFalse(clonedGol.getPlayBoard().equals(board));
+
+        board = new DynamicBoard(2,2);
+        org.junit.Assert.assertFalse(clonedGol.getPlayBoard().getHeight() == board.getHeight());
+        org.junit.Assert.assertFalse(clonedGol.getPlayBoard().getWidth() == board.getWidth());
+    }
+
 }

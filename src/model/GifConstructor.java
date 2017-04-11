@@ -1,5 +1,6 @@
 package model;
 
+import controller.PopUpAlerts;
 import javafx.scene.paint.Color;
 
 import lieng.GIFWriter;
@@ -123,8 +124,8 @@ public class GifConstructor {
         gifCellColor = convertToAwtColor(color);
     }
 
-    public void setDrawEntireBoard(boolean yesOrNo) {
-        drawEntireBoard = yesOrNo;
+    public void setDrawEntireBoard(boolean b) {
+        drawEntireBoard = b;
     }
 
     public void setGifSize(int size) {

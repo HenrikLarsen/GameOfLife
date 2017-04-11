@@ -1,5 +1,7 @@
 package model;
 
+import controller.PopUpAlerts;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,7 +52,7 @@ public class GameOfLife {
 
 
 
-    public void setRuleString(String input)throws RulesFormatException{
+    public void setRuleString(String input) throws RulesFormatException{
         if(input != null){
             if(input == "Life" || input.equals("B3/S23")){
                 ruleString = "B3/S23";
@@ -224,6 +226,14 @@ public class GameOfLife {
 
     public Board getPlayBoard() {
         return playBoard;
+    }
+
+    public String getBornRules() {
+        return bornRules;
+    }
+
+    public String getSurviveRules() {
+        return surviveRules;
     }
 
     @Override

@@ -4,6 +4,7 @@ package model;
  * Created by henriklarsen on 27.02.2017.
  */
 
+import controller.PopUpAlerts;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -65,6 +66,7 @@ public class FileHandler {
                 metaDataRaw.append(line).append("\n");
             }
         }
+        br.close();
         stringBuilder.trimToSize();
         formatMetadata(metaDataRaw);
 
@@ -183,7 +185,7 @@ public class FileHandler {
         metaData = "";
     }
 
-    public String patternToString(byte[][] pattern) {
+    public String patternExportToString(byte[][] pattern) {
         StringBuilder patternString = new StringBuilder();
         if (pattern.length == 0) {
             return "";
@@ -252,6 +254,26 @@ public class FileHandler {
         printWriter.println("x = " + x + ", y = " + y + ", rule = " + rules);
         printWriter.println(splitString);
         printWriter.close();
+    }
+
+    public Board getBoard () {
+        return playBoard;
+    }
+
+    public void setBoard (Board board) {
+        this.playBoard = board;
+    }
+
+    public void setGol (GameOfLife gol) {
+        this.gameOfLife = gol;
+    }
+
+    public String getMetaTitle () {
+        return metaTitle;
+    }
+
+    public String getMetaData() {
+        return metaData;
     }
 
 

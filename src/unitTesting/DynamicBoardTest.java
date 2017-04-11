@@ -1,16 +1,19 @@
+/**
+ * Created by Oscar_000 on 10.04.2017.
+ */
 package unitTesting;
 
 import model.Board;
 import org.junit.Test;
-import model.StaticBoard;
+import model.DynamicBoard;
 
 
-public class StaticBoardTest {
+public class DynamicBoardTest {
     private Board board;
 
     @Test
     public void countNeighboursTest1() {
-        board = new StaticBoard(6,6);
+        board = new DynamicBoard(6,6);
 
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 0},
@@ -30,7 +33,7 @@ public class StaticBoardTest {
 
     @Test
     public void countNeighboursTest2() {
-        board = new StaticBoard(8,8);
+        board = new DynamicBoard(8,8);
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 1, 0 ,0},
                 {1, 1, 0, 0, 0, 1, 0 ,0},
@@ -51,7 +54,7 @@ public class StaticBoardTest {
 
     @Test
     public void countNeighboursTest3() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] testBoard = {
                 {1, 0, 0, 0, 1, 1, 0 ,0, 0, 1},
                 {0, 1, 0, 0, 0, 1, 0 ,0, 0, 1},
@@ -75,7 +78,7 @@ public class StaticBoardTest {
 
     @Test
     public void resetBoardTest1() {
-        board = new StaticBoard(6,6);
+        board = new DynamicBoard(6,6);
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0},
@@ -97,7 +100,7 @@ public class StaticBoardTest {
 
     @Test
     public void resetBoardTest2() {
-        board = new StaticBoard(10,8);
+        board = new DynamicBoard(10,8);
         byte[][] testBoard = {
                 {0, 0, 0, 1, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
@@ -123,7 +126,7 @@ public class StaticBoardTest {
 
     @Test
     public void resetBoardTest3() {
-        board = new StaticBoard(16,19);
+        board = new DynamicBoard(16,19);
         byte[][] testBoard = {
                 {0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0},
@@ -160,7 +163,7 @@ public class StaticBoardTest {
 
     @Test
     public void setCellStateTest1() {
-        board = new StaticBoard(10, 10);
+        board = new DynamicBoard(10, 10);
         board.setCellState(5, 5, (byte)1);
 
         byte expected = 1;
@@ -169,36 +172,188 @@ public class StaticBoardTest {
         org.junit.Assert.assertEquals(expected, actual);
     }
 
-    @Test (expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void setCellStateTest2() {
-        board = new StaticBoard(10, 10);
-        board.setCellState(11,11, (byte)1);
-    }
-
-    @Test (expected = ArrayIndexOutOfBoundsException.class)
-    public void getCellStateNegativeTest1() {
-        board = new StaticBoard(10, 10);
+        board = new DynamicBoard(10, 10);
+        board.setCellState(50,50, (byte)1);
 
         byte expected = 1;
+        byte actual = board.getCellState(50,50);
+
+        org.junit.Assert.assertEquals(expected, actual);
+        org.junit.Assert.assertEquals(0, board.getCellState(49,49));
+        org.junit.Assert.assertEquals(0, board.getCellState(51,51));
+    }
+
+    @Test
+    public void expandBoardTest1() {
+        board = new DynamicBoard(10, 10);
+        board.setCellState(50,50, (byte)1);
+        board.setCellState(0,1, (byte) 1);
+
+        org.junit.Assert.assertEquals(51, board.getHeight());
+        org.junit.Assert.assertEquals(51, board.getWidth());
+
+        ((DynamicBoard)board).expandBoard();
+
+        org.junit.Assert.assertEquals(52, board.getHeight());
+        org.junit.Assert.assertEquals(53, board.getWidth());
+    }
+
+    @Test
+    public void expandBoardTest2() {
+        board = new DynamicBoard(10, 10);
+        board.setCellState(20,20, (byte)1);
+        board.setCellState(0,1, (byte) 1);
+        board.setCellState(15, 0, (byte)1);
+
+
+        org.junit.Assert.assertEquals(21, board.getHeight());
+        org.junit.Assert.assertEquals(21, board.getWidth());
+
+        ((DynamicBoard)board).expandBoard();
+
+        org.junit.Assert.assertEquals(23, board.getHeight());
+        org.junit.Assert.assertEquals(23, board.getWidth());
+    }
+
+    @Test
+    public void expandBoardTest3() {
+        board = new DynamicBoard(998, 998);
+
+        org.junit.Assert.assertEquals(998, board.getHeight());
+        org.junit.Assert.assertEquals(998, board.getWidth());
+
+        board.setCellState(997,997, (byte)1);
+        ((DynamicBoard)board).expandBoard();
+
+        org.junit.Assert.assertEquals(999, board.getHeight());
+        org.junit.Assert.assertEquals(999, board.getWidth());
+    }
+
+    @Test
+    public void expandBoardTest4() {
+        board = new DynamicBoard(999, 999);
+        board.setCellState(0,0, (byte)1);
+        ((DynamicBoard)board).expandBoard();
+
+        org.junit.Assert.assertEquals(1000, board.getHeight());
+        org.junit.Assert.assertEquals(1000, board.getWidth());
+        org.junit.Assert.assertTrue(((DynamicBoard)board).getHasExpandedLeft());
+        org.junit.Assert.assertTrue(((DynamicBoard)board).getHasExpandedUp());
+    }
+
+    @Test
+    public void expandBoardTest5() {
+        board = new DynamicBoard(1000, 1000);
+        board.setCellState(0,0, (byte)1);
+        ((DynamicBoard)board).expandBoard();
+
+        org.junit.Assert.assertEquals(1000, board.getHeight());
+        org.junit.Assert.assertEquals(1000, board.getWidth());
+        org.junit.Assert.assertFalse(((DynamicBoard)board).getHasExpandedLeft());
+        org.junit.Assert.assertFalse(((DynamicBoard)board).getHasExpandedUp());
+    }
+
+    @Test
+    public void getCellStateNegativeTest1() {
+        board = new DynamicBoard(10, 10);
+
+        byte expected = 0;
         byte actual = board.getCellState(10,10);
+
 
         org.junit.Assert.assertEquals(expected, actual);
     }
 
-    @Test (expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void getCellStateNegativeTest2() {
-        board = new StaticBoard(10, 10);
-        board.setCellState(5, 5, (byte)1);
+        board = new DynamicBoard(10, 10);
 
-        byte expected = 1;
+        byte expected = 0;
         byte actual = board.getCellState(10,5);
 
         org.junit.Assert.assertEquals(expected, actual);
     }
 
     @Test
+    public void setGridSizeTest1() {
+        board = new DynamicBoard(10, 10);
+
+        ((DynamicBoard)board).setGridSize(20);
+
+        org.junit.Assert.assertEquals(20, board.getWidth());
+        org.junit.Assert.assertEquals(20, board.getHeight());
+    }
+
+    @Test
+    public void setGridSizeTest2() {
+        board = new DynamicBoard(10, 10);
+
+        ((DynamicBoard)board).setGridSize(-2);
+
+        org.junit.Assert.assertEquals(10, board.getWidth());
+        org.junit.Assert.assertEquals(10, board.getHeight());
+    }
+
+    @Test
+    public void expandWidthRightTest() {
+        board = new DynamicBoard(10, 10);
+        board.setCellState(9,9, (byte)1);
+
+        ((DynamicBoard)board).expandWidthRight(4);
+
+        org.junit.Assert.assertEquals(14, board.getWidth());
+        org.junit.Assert.assertEquals(10, board.getHeight());
+        org.junit.Assert.assertEquals(1, board.getCellState(9,9));
+        org.junit.Assert.assertEquals(0, board.getCellState(11,9));
+    }
+
+    @Test
+    public void expandWidthLeftTest() {
+        board = new DynamicBoard(10, 10);
+        board.setCellState(9,9, (byte)1);
+
+        ((DynamicBoard)board).expandWidthLeft(4);
+
+        org.junit.Assert.assertEquals(14, board.getWidth());
+        org.junit.Assert.assertEquals(10, board.getHeight());
+        org.junit.Assert.assertEquals(1, board.getCellState(13,9));
+        org.junit.Assert.assertEquals(0, board.getCellState(11,9));
+    }
+
+    @Test
+    public void expandHeightDown() {
+        board = new DynamicBoard(10, 10);
+        board.setCellState(9,9, (byte)1);
+
+        ((DynamicBoard)board).expandHeightDown(4);
+
+        org.junit.Assert.assertEquals(10, board.getWidth());
+        org.junit.Assert.assertEquals(14, board.getHeight());
+        org.junit.Assert.assertEquals(1, board.getCellState(9,9));
+        org.junit.Assert.assertEquals(0, board.getCellState(9,12));
+    }
+
+    @Test
+    public void expandHeightUp() {
+        board = new DynamicBoard(10, 10);
+        board.setCellState(9,9, (byte)1);
+        System.out.println(board.toString());
+
+        ((DynamicBoard)board).expandHeightUp(4);
+        System.out.println(board.toString());
+
+        org.junit.Assert.assertEquals(10, board.getWidth());
+        org.junit.Assert.assertEquals(14, board.getHeight());
+        System.out.println(board.toString());
+        org.junit.Assert.assertEquals(1, board.getCellState(9,13));
+        org.junit.Assert.assertEquals(0, board.getCellState(9,12));
+    }
+
+    @Test
     public void countCellsAliveTest1() {
-        board = new StaticBoard(6,6);
+        board = new DynamicBoard(6,6);
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0},
@@ -217,7 +372,7 @@ public class StaticBoardTest {
 
     @Test
     public void countCellsAliveTest2() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] testBoard = {
                 {1, 0, 0, 0, 1, 1, 0 ,0, 0, 1},
                 {0, 1, 0, 0, 0, 1, 0 ,0, 0, 1},
@@ -240,7 +395,7 @@ public class StaticBoardTest {
 
     @Test
     public void countCellsAliveTest3() {
-        board = new StaticBoard(6,6);
+        board = new DynamicBoard(6,6);
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0},
@@ -259,7 +414,7 @@ public class StaticBoardTest {
 
     @Test
     public void getSumXYCoordinatesTest1() {
-        board = new StaticBoard(6,6);
+        board = new DynamicBoard(6,6);
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0},
@@ -277,7 +432,7 @@ public class StaticBoardTest {
 
     @Test
     public void getSumXYCoordinatesTest2() {
-        board = new StaticBoard(10,8);
+        board = new DynamicBoard(10,8);
         byte[][] testBoard = {
                 {0, 0, 0, 1, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
@@ -299,7 +454,7 @@ public class StaticBoardTest {
 
     @Test
     public void getBoundingBoxTest1() {
-        board = new StaticBoard(8,8);
+        board = new DynamicBoard(8,8);
         byte[][] testBoard = {
                 {0, 0, 0, 1, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
@@ -319,7 +474,7 @@ public class StaticBoardTest {
 
     @Test
     public void getBoundingBoxTest2() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -341,7 +496,7 @@ public class StaticBoardTest {
 
     @Test
     public void trimTest1() {
-        board = new StaticBoard(8,8);
+        board = new DynamicBoard(8,8);
         byte[][] testBoard = {
                 {0, 0, 0, 1, 0, 0, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
@@ -364,7 +519,7 @@ public class StaticBoardTest {
 
     @Test
     public void trimTest2() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] testBoard = {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -392,7 +547,7 @@ public class StaticBoardTest {
 
     @Test
     public void setBoardFromRLETest1() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -410,7 +565,7 @@ public class StaticBoardTest {
 
     @Test
     public void setBoardFromRLETest2() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {{1}};
         board.setBoardFromRLE(rleBoard);
 
@@ -425,7 +580,7 @@ public class StaticBoardTest {
 
     @Test
     public void setBoardFromRLETest3() {
-        board = new StaticBoard(100,100);
+        board = new DynamicBoard(100,100);
         byte[][] rleBoard = {
                 {0, 0, 1, 0, 1, 0, 0, 0, 1},
                 {1, 0, 1, 1, 0, 1, 1, 0, 1},
@@ -451,7 +606,7 @@ public class StaticBoardTest {
 
     @Test
     public void movePatternTest1() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -467,7 +622,7 @@ public class StaticBoardTest {
 
     @Test
     public void movePatternTest2() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -489,7 +644,7 @@ public class StaticBoardTest {
 
     @Test
     public void movePatternTest3() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -508,7 +663,7 @@ public class StaticBoardTest {
 
     @Test
     public void movePatternTest4() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -519,7 +674,7 @@ public class StaticBoardTest {
             board.movePattern("right");
         }
 
-        int[] expectedPatternBoundingBox = {7, 9, 7, 9};
+        int[] expectedPatternBoundingBox = {53, 55, 53, 55};
         int[] actualPatternBoundingBox = board.getLoadedPatternBoundingBox();
 
         org.junit.Assert.assertArrayEquals(expectedPatternBoundingBox, actualPatternBoundingBox);
@@ -527,7 +682,7 @@ public class StaticBoardTest {
 
     @Test
     public void rotateTest1() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -545,7 +700,7 @@ public class StaticBoardTest {
 
     @Test
     public void rotateTest2() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -566,7 +721,7 @@ public class StaticBoardTest {
 
     @Test
     public void rotateTest3() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -590,7 +745,7 @@ public class StaticBoardTest {
 
     @Test
     public void rotateTest4() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
         byte[][] rleBoard = {
                 {0, 0, 1},
                 {1, 0, 1},
@@ -606,9 +761,9 @@ public class StaticBoardTest {
         }
         board.rotate(true);
 
-        int[] expectedPatternBoundingBox = {0, 2, 1, 6};
+        int[] expectedPatternBoundingBox = {0, 5, 3, 5};
         int[] actualPatternBoundingBox = board.getLoadedPatternBoundingBox();
-        String expectedPattern = "100101110111111111";
+        String expectedPattern = "111111111100111010";
         String actualPattern = array2DToString(board.getLoadedPattern());
 
         org.junit.Assert.assertArrayEquals(expectedPatternBoundingBox, actualPatternBoundingBox);
@@ -617,7 +772,7 @@ public class StaticBoardTest {
 
     @Test
     public void cloneTest() {
-        board = new StaticBoard(10,10);
+        board = new DynamicBoard(10,10);
 
         Board shallowCopyBoard = board;
         org.junit.Assert.assertEquals(board, shallowCopyBoard);
@@ -627,6 +782,12 @@ public class StaticBoardTest {
 
         clonedBoard.setCellState(3,3, (byte)1);
         org.junit.Assert.assertFalse(clonedBoard.getCellState(3,3) == board.getCellState(3,3));
+
+        board.setCellState(15,15, (byte)1);
+        org.junit.Assert.assertFalse(board.getHeight() == clonedBoard.getHeight());
+
+        org.junit.Assert.assertFalse(clonedBoard.getCellState(15,15) ==
+                board.getCellState(15,15));
     }
 
     private String array2DToString(byte[][] neighbour) {

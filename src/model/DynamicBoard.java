@@ -1,10 +1,8 @@
 package model;
 
-import controller.CanvasDrawer;
+import controller.PopUpAlerts;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Oscar Vladau on 27.03.2017.
@@ -38,16 +36,18 @@ public class DynamicBoard extends Board{
         setBoard(newBoard);
     }
 
-    public void setBoard(ArrayList<ArrayList<Byte>> newGrid) {
+    private void setBoard(ArrayList<ArrayList<Byte>> newGrid) {
         this.cellGrid = newGrid;
     }
+
+    //TODO: Fiks limitern (DEN FORRIGE HADDE RÆVVA BØGG)
 
     @Override
     public void setCellState(int x, int y, byte state) {
         int row = x;
         int column = y;
 
-        if ((x >= getWidth() || x < 0) && (getWidth() > 1900 || Math.abs(x)+getWidth() > 1900)) {
+        if ((x >= getWidth() || x < 0) && (getWidth() > 1900)) { //|| Math.abs(x)+getWidth() > 1900)) {
             PopUpAlerts.edgeAlert();
             return;
         } else if (x >= getWidth() && expandable) {
@@ -59,7 +59,7 @@ public class DynamicBoard extends Board{
             row = 0;
         }
 
-        if ((y >= getHeight() || y < 0) && (getHeight() > 1900 || Math.abs(y)+getHeight() > 1900)) {
+        if ((y >= getHeight() || y < 0) && (getHeight() > 1900)) {// || Math.abs(y)+getHeight() > 1900)) {
             PopUpAlerts.edgeAlert();
             return;
         } else if (y >= getHeight() && expandable) {
@@ -83,7 +83,11 @@ public class DynamicBoard extends Board{
 
     @Override
     public byte getCellState(int x, int y) {
-        return cellGrid.get(x).get(y);
+        try {
+            return cellGrid.get(x).get(y);
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            return 0;
+        }
     }
 
     @Override
@@ -112,15 +116,19 @@ public class DynamicBoard extends Board{
         return dynamicBoardClone;
     }
 
-    public void increaseWidth(int increase) {
+    private void increaseWidth(int increase) {
         WIDTH += increase;
     }
 
-    public void increaseHeight(int increase) {
+    private void increaseHeight(int increase) {
         HEIGHT += increase;
     }
 
     public void expandWidthRight(int expansion) {
+        if (expansion <= 0) {
+            return;
+        }
+
         for (int x = getWidth(); x < getWidth()+expansion; x++) {
             cellGrid.add(new ArrayList<>());
             for (int y = 0; y < getHeight(); y++) {
@@ -131,6 +139,10 @@ public class DynamicBoard extends Board{
     }
 
     public void expandWidthLeft(int expansion) {
+        if (expansion <= 0) {
+            return;
+        }
+
         for (int x = 0; x < expansion; x++) {
             cellGrid.add(0, new ArrayList<>());
             for (int y = 0; y < getHeight(); y++) {
@@ -141,6 +153,10 @@ public class DynamicBoard extends Board{
     }
 
     public void expandHeightDown(int expansion) {
+        if (expansion <= 0) {
+            return;
+        }
+
         for (int x = 0; x < getWidth(); x++) {
             for (int y = getHeight(); y < getHeight()+expansion; y++) {
                 cellGrid.get(x).add(y, (byte)0);
@@ -150,6 +166,10 @@ public class DynamicBoard extends Board{
     }
 
     public void expandHeightUp(int expansion) {
+        if (expansion <= 0) {
+            return;
+        }
+
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < expansion; y++) {
                 cellGrid.get(x).add(0, (byte)0);
@@ -206,6 +226,10 @@ public class DynamicBoard extends Board{
     }
 
     public void setGridSize(int size) {
+        if (size <= 0) {
+            return;
+        }
+
         WIDTH = size;
         HEIGHT = size;
         ArrayList<ArrayList<Byte>> newBoard = new ArrayList<>();

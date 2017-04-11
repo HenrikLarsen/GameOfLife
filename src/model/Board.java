@@ -81,14 +81,160 @@ public abstract class Board {
     }
 
 
+    public String getBoundingBoxPattern() {
+        if(getWidth() == 0) return "";
+        int[] boundingBox = getBoundingBox();
+        String str = "";
+        for(int i = boundingBox[0]; i <= boundingBox[1]; i++) {
+            for(int j = boundingBox[2]; j <= boundingBox[3]; j++) {
+                if(getCellState(i,j) == 1) {
+                    str = str + "1";
+                } else {
+                    str = str + "0";
+                }
+            }
+        }
+        return str;
+    }
+
+    public int countCellsAlive(){
+        int count = 0;
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++){
+                if(getCellState(x,y) == 1){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int getSumXYCoordinates(){
+        int xySum = 0;
+        for(int x = 0; x < getWidth(); x++){
+            for(int y = 0; y < getHeight(); y++){
+                if(getCellState(x,y) == 1){
+                    xySum += x + y;
+                }
+            }
+        }
+        return xySum;
+    }
+
+    public int[] getBoundingBox() {
+        int[] boundingBox = getCurrentBoundingBox();
+        return boundingBox;
+    }
+
+    public int[] getBoundingBox(byte[][] board) {
+        int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
+        boundingBox[0] = board.length;
+        boundingBox[1] = 0;
+        boundingBox[2] = board[0].length;
+        boundingBox[3] = 0;
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[0].length; j++) {
+                if(board[i][j] == 0){
+                    continue;
+                }
+                if(i < boundingBox[0]) {
+                    boundingBox[0] = i;
+                }
+                if(i > boundingBox[1]) {
+                    boundingBox[1] = i;
+                }
+                if(j < boundingBox[2]) {
+                    boundingBox[2] = j;
+                }
+                if(j > boundingBox[3]) {
+                    boundingBox[3] = j;
+                }
+            }
+        }
+        return boundingBox;
+    }
+
+    private int[] getCurrentBoundingBox() {
+        int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
+        boundingBox[0] = getWidth();
+        boundingBox[1] = 0;
+        boundingBox[2] = getHeight();
+        boundingBox[3] = 0;
+        for(int i = 0; i < getWidth(); i++) {
+            for(int j = 0; j < getHeight(); j++) {
+                if(getCellState(i,j) == 0) continue;
+                if(i < boundingBox[0]) {
+                    boundingBox[0] = i;
+                }
+                if(i > boundingBox[1]) {
+                    boundingBox[1] = i;
+                }
+                if(j < boundingBox[2]) {
+                    boundingBox[2] = j;
+                }
+                if(j > boundingBox[3]) {
+                    boundingBox[3] = j;
+                }
+            }
+        }
+        return boundingBox;
+    }
+
+    public byte[][] trim() {
+        int[] boundingBox = getBoundingBox();
+        int x = Math.abs(boundingBox[1] - boundingBox[0] + 1);
+        int y = Math.abs(boundingBox[3] - boundingBox[2] + 1);
+
+        byte[][] trimmedBoard = new byte[x][y];
+
+        int newX = 0;
+        int newY = 0;
+
+        for (int i = boundingBox[0]; i <= boundingBox[1]; i++) {
+            for (int j = boundingBox[2]; j <= boundingBox[3]; j++) {
+                if (getCellState(i,j) == 1) {
+                    trimmedBoard[newX][newY] = 1;
+                }
+                newY++;
+            }
+            newX++;
+            newY = 0;
+        }
+
+        return trimmedBoard;
+    }
+
+    public void setBoardFromRLE (byte[][] importedBoard) {
+        byte[][] boardAtLoad = new byte[getWidth()][getHeight()];
+        loadedPattern = importedBoard;
+
+        //These two makes the RLE in the middle bro. remove Start X from for-loop to revert.
+        int startX = 0;
+        int startY = 0;
+        if (loadedPattern.length < boardAtLoad.length) {
+            startX = (boardAtLoad.length - loadedPattern.length) / 2;
+        }
+        if (loadedPattern[0].length < boardAtLoad[0].length) {
+            startY = (boardAtLoad[0].length - loadedPattern[0].length) / 2;
+        }
+
+
+        for (int x = 0; x < loadedPattern.length; x++) {
+            for (int y = 0; y < loadedPattern[0].length; y++) {
+                boardAtLoad[startX+x][startY+y] = loadedPattern[x][y];
+            }
+        }
+
+        loadedPatternBoundingBox = getBoundingBox(boardAtLoad);
+    }
+
     public void movePattern(String direction) {
         int xStart = loadedPatternBoundingBox[0];
         int xStop = loadedPatternBoundingBox[1];
         int yStart = loadedPatternBoundingBox[2];
         int yStop = loadedPatternBoundingBox[3];
 
-        //for(int x = loadedPatternBoundingBox[0]; x <= loadedPatternBoundingBox[1]; x++) {
-        //    for(int y = loadedPatternBoundingBox[2]; y <= loadedPatternBoundingBox[3]; y++) {
+
         if (direction.equals("up")) {
             if (loadedPatternBoundingBox[2] > 0) {
                 loadedPatternBoundingBox[2] = yStart - 1;
@@ -137,8 +283,6 @@ public abstract class Board {
         } else {
             return;
         }
-        //}
-        //}
     }
 
     public void rotate(boolean clockwise){
@@ -161,7 +305,7 @@ public abstract class Board {
         }
     }
 
-    public int[] setNewBoundingBox() {
+    private int[] setNewBoundingBox() {
         int xTotal = loadedPatternBoundingBox[1]-loadedPatternBoundingBox[0];
         int yTotal= loadedPatternBoundingBox[3]-loadedPatternBoundingBox[2];
         System.out.println("xDifference = "+xTotal+"\n yDifference = "+yTotal);
@@ -188,7 +332,6 @@ public abstract class Board {
         if (this instanceof StaticBoard) {
             if (newBoundingBox[0] < 0 || newBoundingBox[1] > getWidth() - 1 || newBoundingBox[2] < 0
                     || newBoundingBox[3] > getHeight() - 1) {
-                System.out.println("NOPE!");
                 return null;
             }
         } else if (this instanceof DynamicBoard) {
@@ -219,7 +362,7 @@ public abstract class Board {
     }
 
 
-    public byte[][] transposePattern(byte[][] board) {
+    private byte[][] transposePattern(byte[][] board) {
         byte[][] transposedTrimmed = new byte[board[0].length][board.length];
         for (int x = 0; x < board[0].length; x++) {
             for (int y = 0; y < board.length; y++){
@@ -229,7 +372,7 @@ public abstract class Board {
         return transposedTrimmed;
     }
 
-    public byte[][] reverseRows(byte[][] board) {
+    private byte[][] reverseRows(byte[][] board) {
         int[] boundingBox = getBoundingBox(board);
         byte[][] reversedPattern = new byte[board.length][board[0].length];
         int xBack = 0;
@@ -240,30 +383,6 @@ public abstract class Board {
             xBack++;
         }
         return reversedPattern;
-    }
-
-    public void setBoardFromRLE (byte[][] importedBoard) {
-        byte[][] boardAtLoad = new byte[getWidth()][getHeight()];
-        loadedPattern = importedBoard;
-
-        //These two makes the RLE in the middle bro. remove Start X from for-loop to revert.
-        int startX = 0;
-        int startY = 0;
-        if (loadedPattern.length < boardAtLoad.length) {
-            startX = (boardAtLoad.length - loadedPattern.length) / 2;
-        }
-        if (loadedPattern[0].length < boardAtLoad[0].length) {
-            startY = (boardAtLoad[0].length - loadedPattern[0].length) / 2;
-        }
-
-
-        for (int x = 0; x < loadedPattern.length; x++) {
-            for (int y = 0; y < loadedPattern[0].length; y++) {
-                boardAtLoad[startX+x][startY+y] = loadedPattern[x][y];
-            }
-        }
-
-        loadedPatternBoundingBox = getBoundingBox(boardAtLoad);
     }
 
     public void finalizeBoard() {
@@ -294,134 +413,11 @@ public abstract class Board {
         loadedPatternBoundingBox = null;
     }
 
-    public String getBoundingBoxPattern() {
-        if(getWidth() == 0) return "";
-        int[] boundingBox = getBoundingBox();
-        String str = "";
-        for(int i = boundingBox[0]; i <= boundingBox[1]; i++) {
-            for(int j = boundingBox[2]; j <= boundingBox[3]; j++) {
-                if(getCellState(i,j) == 1) {
-                    str = str + "1";
-                } else {
-                    str = str + "0";
-                }
-            }
-        }
-        return str;
-    }
-
-    public int countCellsAlive(){
-        int count = 0;
-        for (int x = 0; x < getWidth(); x++) {
-            for (int y = 0; y < getHeight(); y++){
-                if(getCellState(x,y) == 1){
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-
-    public int getSumXYCoordinates(){
-        int xySum = 0;
-        for(int x = 0; x < getWidth(); x++){
-            for(int y = 0; y < getHeight(); y++){
-                if(getCellState(x,y) == 1){
-                    xySum += x + y;
-                }
-            }
-        }
-        return xySum;
-    }
-
     public int[] getLoadedPatternBoundingBox() {
         return loadedPatternBoundingBox;
     }
     public byte[][] getLoadedPattern() {
         return loadedPattern;
-    }
-
-    public int[] getBoundingBox() {
-        int[] boundingBox = getCurrentBoundingBox();
-        return boundingBox;
-    }
-
-    public int[] getBoundingBox(byte[][] board) {
-        int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
-        boundingBox[0] = board.length;
-        boundingBox[1] = 0;
-        boundingBox[2] = board[0].length;
-        boundingBox[3] = 0;
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[0].length; j++) {
-                if(board[i][j] == 0){
-                    continue;
-                }
-                if(i < boundingBox[0]) {
-                    boundingBox[0] = i;
-                }
-                if(i > boundingBox[1]) {
-                    boundingBox[1] = i;
-                }
-                if(j < boundingBox[2]) {
-                    boundingBox[2] = j;
-                }
-                if(j > boundingBox[3]) {
-                    boundingBox[3] = j;
-                }
-            }
-        }
-        return boundingBox;
-    }
-
-    public int[] getCurrentBoundingBox() {
-        int[] boundingBox = new int[4]; // minrow maxrow mincolumn maxcolumn
-        boundingBox[0] = getWidth();
-        boundingBox[1] = 0;
-        boundingBox[2] = getHeight();
-        boundingBox[3] = 0;
-        for(int i = 0; i < getWidth(); i++) {
-            for(int j = 0; j < getHeight(); j++) {
-                if(getCellState(i,j) == 0) continue;
-                if(i < boundingBox[0]) {
-                    boundingBox[0] = i;
-                }
-                if(i > boundingBox[1]) {
-                    boundingBox[1] = i;
-                }
-                if(j < boundingBox[2]) {
-                    boundingBox[2] = j;
-                }
-                if(j > boundingBox[3]) {
-                    boundingBox[3] = j;
-                }
-            }
-        }
-        return boundingBox;
-    }
-
-    public byte[][] trim() {
-        int[] boundingBox = getBoundingBox();
-        int x = Math.abs(boundingBox[1] - boundingBox[0] + 1);
-        int y = Math.abs(boundingBox[3] - boundingBox[2] + 1);
-
-        byte[][] trimmedBoard = new byte[x][y];
-
-        int newX = 0;
-        int newY = 0;
-
-        for (int i = boundingBox[0]; i <= boundingBox[1]; i++) {
-            for (int j = boundingBox[2]; j <= boundingBox[3]; j++) {
-                if (getCellState(i,j) == 1) {
-                    trimmedBoard[newX][newY] = 1;
-                }
-                newY++;
-            }
-            newX++;
-            newY = 0;
-        }
-
-        return trimmedBoard;
     }
 
     @Override
