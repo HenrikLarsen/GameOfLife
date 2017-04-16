@@ -194,7 +194,7 @@ public class DynamicBoardTest {
         org.junit.Assert.assertEquals(51, board.getHeight());
         org.junit.Assert.assertEquals(51, board.getWidth());
 
-        ((DynamicBoard)board).expandBoard();
+        ((DynamicBoard)board).expandBoardDuringRunTime();
 
         org.junit.Assert.assertEquals(52, board.getHeight());
         org.junit.Assert.assertEquals(53, board.getWidth());
@@ -211,7 +211,7 @@ public class DynamicBoardTest {
         org.junit.Assert.assertEquals(21, board.getHeight());
         org.junit.Assert.assertEquals(21, board.getWidth());
 
-        ((DynamicBoard)board).expandBoard();
+        ((DynamicBoard)board).expandBoardDuringRunTime();
 
         org.junit.Assert.assertEquals(23, board.getHeight());
         org.junit.Assert.assertEquals(23, board.getWidth());
@@ -225,7 +225,7 @@ public class DynamicBoardTest {
         org.junit.Assert.assertEquals(998, board.getWidth());
 
         board.setCellState(997,997, (byte)1);
-        ((DynamicBoard)board).expandBoard();
+        ((DynamicBoard)board).expandBoardDuringRunTime();
 
         org.junit.Assert.assertEquals(999, board.getHeight());
         org.junit.Assert.assertEquals(999, board.getWidth());
@@ -235,7 +235,7 @@ public class DynamicBoardTest {
     public void expandBoardTest4() {
         board = new DynamicBoard(999, 999);
         board.setCellState(0,0, (byte)1);
-        ((DynamicBoard)board).expandBoard();
+        ((DynamicBoard)board).expandBoardDuringRunTime();
 
         org.junit.Assert.assertEquals(1000, board.getHeight());
         org.junit.Assert.assertEquals(1000, board.getWidth());
@@ -247,7 +247,7 @@ public class DynamicBoardTest {
     public void expandBoardTest5() {
         board = new DynamicBoard(1000, 1000);
         board.setCellState(0,0, (byte)1);
-        ((DynamicBoard)board).expandBoard();
+        ((DynamicBoard)board).expandBoardDuringRunTime();
 
         org.junit.Assert.assertEquals(1000, board.getHeight());
         org.junit.Assert.assertEquals(1000, board.getWidth());

@@ -17,7 +17,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by Oscar_000 on 04.04.2017.
+ * The PatternSelectController allows the user to choose from a variety of predetermined patterns to load into
+ * the board. It is mostly controlled by a choice box, which updates all relevant fields on the window with
+ * information about the pattern in question.
+ * @author Oscar Vladau-Husevold
+ * @version 1.0
  */
 public class PatternSelectController implements Initializable {
     @FXML ImageView imageView;
@@ -30,23 +34,46 @@ public class PatternSelectController implements Initializable {
     @FXML Label discoveredLabel;
     @FXML TextArea descriptionArea;
 
-
     private FileHandler fileHandler;
     private File currentFile;
+
+    //The items to be set in the choice box
     private ObservableList<String> choosePatternList = FXCollections.observableArrayList("Glider", "Acorn",
             "Switch Engine", "Achim's p16", "Gosper Glider Gun", "112P51", "Penny lane", "56P6H1V0",
             "Flower of Eden", "Period-45 glider gun", "Sidecar Gun", "Moving Sawtooth", "Primer",
             "Star Gate", "p690 60P5H2V0 gun", "Turing Machine");
 
+    /**
+     * A concrete implementation of the method in interface Initializable.
+     * Initializes the pattern selector window, setting the items of the choice box and selecting an item.
+     * @param location The location used to resolve relative paths for the root object,
+     *                 or null if the location is not known.
+     * @param resources The resources used to localize the root object, or null if the root object was not localized.
+     * @see #choosePatternList
+     * @see #patternSelect
+     */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         patternSelect.setItems(choosePatternList);
         patternSelect.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Method that sets the controllers active FileHandler object
+     * @param fh - The FileHandler object to be set.
+     * @see #fileHandler
+     */
     public void setFileHandler(FileHandler fh) {
         fileHandler = fh;
     }
 
+    /**
+     * Method that calls FileHandler's readGameBoardFromDisk() method using the currentFile as the file.
+     * Will load the pattern and close the window if successful, otherwise it will produce a warning to the user.
+     * @param actionEvent - The event of the user clicking the Load Pattern button.
+     * @see #currentFile
+     * @see FileHandler#readGameBoardFromDisk(File)
+     * @see PopUpAlerts#ioAlertFromDisk()
+     */
     public void loadPatternClick(ActionEvent actionEvent) {
         try {
             fileHandler.readGameBoardFromDisk(currentFile);
@@ -57,21 +84,35 @@ public class PatternSelectController implements Initializable {
         }
     }
 
+    /**
+     * Method called when the user clicks the Cancel button. Will close the window.
+     * @param actionEvent - The event of the user clicking the Cancel button.
+     */
     public void cancelClick(ActionEvent actionEvent) {
         Stage currentStage = (Stage) imageView.getScene().getWindow();
         currentStage.close();
     }
 
-
+    /**
+     * Method called when the user chooses an item from the patternSelect choice box. Will call the
+     * newPatternInfo() method in order to update all info fields in the window.
+     * @param actionEvent - The event of the user choosing an item from the choiceBox.
+     * @see #patternSelect
+     * @see #newPatternInfo(String)
+     */
     public void patternSelectClick (ActionEvent actionEvent) {
         String pattern = (String)patternSelect.getValue();
         newPatternInfo(pattern);
-
-
     }
 
+    /**
+     * Method that updates all information about a pattern and sets the current file to be the relevant file on
+     * the disk. Consists of a switch-statement going through all possible options.
+     * @param chosenPattern - The string representing the pattern chosen from the ChoiceBox
+     */
     public void newPatternInfo(String chosenPattern) {
         switch (chosenPattern) {
+
             case "Glider":
                 titleLabel.setText("Glider");
                 rulesLabel.setText("B3/S23");

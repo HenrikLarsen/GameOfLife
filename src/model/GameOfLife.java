@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 /**
  * The GameOfLife class represents the logic behind this implementation of Conway's Game of Life. <br><br>
- * A GameOfLife object keeps track of the number of generations and decides the values of
- * the next generation board.
+ * A GameOfLife object keeps track of the number of generations, the current playing rules and decides the values of
+ * the next generations cell grid.
  *
  * @author Oscar Vladau-Husevold
  * @author Henrik Finnerud Larsen
@@ -19,14 +19,17 @@ public class GameOfLife {
     public Board playBoard;
     public byte[][] neighbourCount;
     public byte[][] newGenerationCells;
+
+    //Data fields related to the current rules.
     private String ruleString = "B3/S23";
-    private String ruleName = "Life";
     private String bornRules = "3";
     private String surviveRules = "23";
+    private String ruleName = "Life";
     private String ruleDescription = "";
+
     /**
      * Sole constructor, sets the parameter board as the current board.
-     * @param board StaticBoard - The board to be played.
+     * @param board - The board to be played.
      */
     public GameOfLife(Board board) {
         this.playBoard = board;
@@ -34,24 +37,82 @@ public class GameOfLife {
 
     /**
      * Sets the next generation of cells as the current play board.
-     * Calls on Boards countNeighbours() and sets it as a nested byte array.
+     * Calls on Boards countNeighbours() and sets it as a 2D-array.
+     * If the Board is an instance of DynamicBoard it checks if it needs to expand, and expands if yes.
      * Calls on enforceRules() and finally sets the new generation as the current play board.
      * @see #enforceRules()
-     * @see StaticBoard#setBoard(byte[][])
-     * @see StaticBoard#countNeighbours()
+     * @see Board#setBoard(byte[][])
+     * @see Board#countNeighbours()
+     * @see DynamicBoard#expandBoardDuringRunTime()
      */
     public void nextGeneration() {
         playBoard.cellsAlive = 0;
         if (playBoard instanceof DynamicBoard) {
-            ((DynamicBoard)playBoard).expandBoard();
+            ((DynamicBoard)playBoard).expandBoardDuringRunTime();
         }
         neighbourCount = playBoard.countNeighbours();
         enforceRules();
         playBoard.setBoard(newGenerationCells);
     }
 
+    /**
+     * Compares the current board with the neighbour count up against the current rules, and enforces the
+     * rules of the game, creating a new 2D-array to be the next generation's board.
+     * @see #newGenerationCells
+     * @see #neighbourCount
+     * @see #bornRules
+     * @see #surviveRules
+     * @see Board#getWidth()
+     * @see Board#getHeight()
+     * @see Board#getCellState(int, int)
+     */
+    public void enforceRules() {
+
+        //Creates a new byte[][] with the same dimensions as the current board.
+        newGenerationCells = new byte[playBoard.getWidth()][playBoard.getHeight()];
+
+        //Compares the current play board with the neighbour count.
+        //Sets the values in newGenerationCells based on the rules of the Game of Life.
+        for (int x = 0; x < playBoard.getWidth(); x++) {
+            for (int y = 0; y < playBoard.getHeight(); y++) {
+
+                //A string containing the number of neighbours for the current cell.
+                String neighbours = ""+neighbourCount[x][y];
 
 
+                //Checks if the current cell is alive
+                if (playBoard.getCellState(x, y) == 1) {
+
+                    //Checks if the surviveRules contain the number of neighbours. If yes, the cell survives.
+                    if (surviveRules.contains(neighbours)) {
+                        newGenerationCells[x][y] = 1;
+                        playBoard.cellsAlive++;
+                    } else {
+                        newGenerationCells[x][y] = 0;
+                    }
+                }
+
+                //Else it checks if the bornRules contain the number of neighbours. If yes, the cell is born.
+                else if (playBoard.getCellState(x,y) == 0) {
+                    if (bornRules.contains(neighbours)) {
+                        newGenerationCells[x][y] = 1;
+                        playBoard.cellsAlive++;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Method to set the rules from a number of presets. Checks what the user has selected, and sets the ruleString
+     * accordingly. Does a call to setRuleSet at the end to update the rules.
+     * @param input - The string containing either the name of the rule, or the rule formatted after RLE standards.
+     * @see #ruleString
+     * @see #ruleDescription
+     * @see #ruleName
+     * @see #setRuleSet(String)
+     * @exception RulesFormatException - Thrown if the rules are formatted wrong.
+     */
     public void setRuleString(String input) throws RulesFormatException{
         if(input != null){
             if(input == "Life" || input.equals("B3/S23")){
@@ -111,12 +172,14 @@ public class GameOfLife {
                         "the curve-shortening flow on the boundaries between live and dead cells.";
                 ruleName = "Anneal";
             } else{
+                //If input does not match any of the above cases, sets this as the default values
                 ruleString = input;
                 ruleDescription = "No description";
                 ruleName = "No name";
             }
         }
 
+        //Calls setRuleSet with the current ruleString if it is not empty.
         if(ruleString == ""){
             throw new  RulesFormatException();
         }else{
@@ -124,23 +187,38 @@ public class GameOfLife {
         }
     }
 
-    public void setRuleSet(String rules) throws RulesFormatException{
 
+    /**
+     * Method to set the rules from a string. Does a check for the right formatting and sets the ruleString,
+     * surviveRules and bornRules if the string contains valid information. If not, it shows a popup explaining
+     * to the user that the rules are formatted wrongly, and sets the rules to the standard Life rules.
+     * @param rules - The string containing the rules formatted in the RLE-style (Bxxx/Sxxx).
+     * @see #ruleString
+     * @see #bornRules
+     * @see #surviveRules
+     * @see PopUpAlerts#ruleAlert1()
+     */
+    public void setRuleSet(String rules) throws RulesFormatException {
+
+        //Creates patterns and matchers to check for correct formatting of the rules.
         Pattern rulePattern = Pattern.compile("[^sSbB012345678/]",Pattern.MULTILINE | Pattern.DOTALL);
         Pattern formatPattern = Pattern.compile("^[bB][0-8]*/[sS][0-8]*$");
 
         Matcher ruleMatcher = rulePattern.matcher(rules);
         Matcher formatMatcher = formatPattern.matcher(rules);
 
+        //Shows a popup to the user if the rules are wrongly formatted, and sets rules to default.
         if(ruleMatcher.find() || !formatMatcher.find()){
             PopUpAlerts.ruleAlert1();
             rules = "B3/S23";
         }
 
+        //Splits the string into two parts
         String[] bothRules = rules.split("[/]");
-
         String surviveRulesTemp = "";
         String bornRulesTemp = "";
+
+        //Removes the S and B from the rules and sets them in their own string.
         for (int i = 0; i < bothRules.length; i++) {
             bothRules[i] = bothRules[i].toUpperCase();
             if (bothRules[i].startsWith("S")) {
@@ -150,9 +228,9 @@ public class GameOfLife {
             }
         }
 
+        //Removes duplicate numbers and puts them in accending order.
         StringBuilder surviveBuilder = new StringBuilder();
         StringBuilder bornBuilder = new StringBuilder();
-
         for (int i = 0; i < 9; i ++) {
             if (surviveRulesTemp.contains(""+i)) {
                 surviveBuilder.append(i);
@@ -162,86 +240,85 @@ public class GameOfLife {
             }
         }
 
+        //Sets the surviveRules, bornRules and ruleString.
         surviveRules = surviveBuilder.toString();
         bornRules = bornBuilder.toString();
         ruleString = "B" + bornRules + "/S" + surviveRules;
     }
 
-
-
     /**
-     * Compares the current board with the neighbour count and enforces the
-     * rules of the game, creating a new nested array to be the next generation's board.
-     * @see #newGenerationCells
-     * @see #neighbourCount
-     * @see StaticBoard#cellGrid
+     * Method that returns the current ruleString.
+     * @return ruleString - The current full rule String
+     * @see #ruleString
      */
-    public void enforceRules() {
-
-        //Creates a new byte[][] with the same dimensions as the current board.
-        newGenerationCells = new byte[playBoard.getWidth()][playBoard.getHeight()];
-
-        //Compares the current play board with the neighbour count.
-        //Sets the values in newGenerationCells based on the rules of the Game of Life.
-        for (int x = 0; x < playBoard.getWidth(); x++) {
-            for (int y = 0; y < playBoard.getHeight(); y++) {
-                String neighbours = ""+neighbourCount[x][y];
-
-
-                //Checks if the current cell is alive
-                if (playBoard.getCellState(x, y) == 1) {
-
-                    //Checks if the live cell has less than two or more than three living neighbours.
-                    //If yes, the cell dies.
-                    if (surviveRules.contains(neighbours)) {
-                        newGenerationCells[x][y] = 1;
-                        playBoard.cellsAlive++;
-                    } else {
-                        newGenerationCells[x][y] = 0;
-                    }
-                }
-
-                //If the current cell is dead and has exactly three living neighbours, it comes alive.
-                else if (playBoard.getCellState(x,y) == 0) {
-                    if (bornRules.contains(neighbours)) {
-                        newGenerationCells[x][y] = 1;
-                        playBoard.cellsAlive++;
-                    }
-                }
-            }
-        }
-    }
-
     public String getRuleString(){
         return ruleString;
     }
 
+    /**
+     * Method that returns the current ruleName.
+     * @return ruleName - The current rule name.
+     * @see #ruleName
+     */
     public String getRuleName(){
         return ruleName;
     }
 
+    /**
+     * Method that returns the current ruleDescription.
+     * @return ruleDescription - The current rule description.
+     * @see #ruleDescription
+     */
     public String getRuleDescription(){
         return ruleDescription;
     }
 
-    public Board getPlayBoard() {
-        return playBoard;
-    }
-
+    /**
+     * Method that returns the current bornRules.
+     * @return bornRules - The current rule for cell birth.
+     * @see #bornRules
+     */
     public String getBornRules() {
         return bornRules;
     }
 
+    /**
+     * Method that returns the current surviveRules.
+     * @return surviveRules - The current rule for cell survival.
+     * @see #surviveRules
+     */
     public String getSurviveRules() {
         return surviveRules;
     }
 
+    /**
+     * Method that returns the current playBoard.
+     * @return playBoard - The current board that is linked to this GameOfLife.
+     * @see #playBoard
+     */
+    public Board getPlayBoard() {
+        return playBoard;
+    }
+
+    /**
+     * A method that does a deep copy of the current GameOfLife and
+     * returns it. Overrides the clone method in the Object class.
+     * @return staticBoardClone - The deep copy of the board.
+     * @see #bornRules
+     * @see #surviveRules
+     * @see #ruleString
+     * @see #ruleName
+     * @see #ruleDescription
+     * @see Object#clone()
+     */
     @Override
     public Object clone(){
         GameOfLife golClone = new GameOfLife((Board)playBoard.clone());
         golClone.bornRules = bornRules;
         golClone.surviveRules = surviveRules;
         golClone.ruleString = ruleString;
+        golClone.ruleName = ruleName;
+        golClone.ruleDescription = ruleDescription;
         return golClone;
     }
 }

@@ -2,13 +2,19 @@ package controller;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-
 import java.util.Optional;
 
 /**
- * Created by Oscar_000 on 19.03.2017.
+ * The PopUpAlerts class is a class with static methods related to showing a popup window to the user. All methods
+ * are static so that they can be accessed anywhere without the need to create an instance of the PopUpAlert class.
+ * @author Oscar Vladau-Husevold
+ * @version 1.0
  */
 public class PopUpAlerts {
+
+    /**
+     * Creates a warning when failing to load a file from disk.
+     */
     public static void ioAlertFromDisk () {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -17,6 +23,9 @@ public class PopUpAlerts {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a warning when failing to load a file from an URL.
+     */
     public static void ioAlertFromURL () {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -25,6 +34,20 @@ public class PopUpAlerts {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a warning if an FXML file could not be loaded.
+     */
+    public static void ioAlertFXML () {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Error");
+        alert.setHeaderText("Can't find FXML!");
+        alert.setContentText("The corresponding FXML document for this window could not be found.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Creates a warning when a loaded file is wrongly formatted.
+     */
     public static void patternFormatAlert () {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -34,6 +57,10 @@ public class PopUpAlerts {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a warning when a loaded file's rules are wrongly formatted, informing the user that the standard
+     * rules will be used.
+     */
     public static void ruleAlert1 () {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -43,6 +70,9 @@ public class PopUpAlerts {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a warning when the user attempts to set wrongly formatted rules. Gives formatting tips.
+     */
     public static void ruleAlert2 () {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -52,6 +82,9 @@ public class PopUpAlerts {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a warning when trying to load a pattern that exceeds the maximum bounds of the cell grid.
+     */
     public static void outOfBounds () {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -60,6 +93,9 @@ public class PopUpAlerts {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a warning when a file cannot be saved to disk.
+     */
     public static void ioeSaveError() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
@@ -68,6 +104,10 @@ public class PopUpAlerts {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a warning when trying to export a gif where the board is too big relative to the size of the gif-picture
+     * so that the cell size is less than a pixel, and therefore will not be drawn.
+     */
     public static void sizeBoardError () {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Warning!");
@@ -78,15 +118,22 @@ public class PopUpAlerts {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a warning when trying to set the number of iterations of a gif to either 0 or above 400, telling the user
+     * to select a valid value.
+     */
     public static void gifFramesAlert () {
         Alert counterAlert = new Alert(Alert.AlertType.WARNING);
         counterAlert.setTitle("Error");
-        counterAlert.setHeaderText("Number of frames is to high");
-        counterAlert.setContentText("The number of frames you have entered is too high. " +
+        counterAlert.setHeaderText("Too many iterations!");
+        counterAlert.setContentText("The number of iterations you have entered is too high. " +
                 "Please keep it between 1 and 400");
         counterAlert.showAndWait();
     }
 
+    /**
+     * Creates a warning when trying to set the fps of a gif above 60, telling the user to select a valid value.
+     */
     public static void gifFPSAlert () {
         Alert fpsAlert = new Alert(Alert.AlertType.WARNING);
         fpsAlert.setTitle("Error");
@@ -95,22 +142,10 @@ public class PopUpAlerts {
         fpsAlert.showAndWait();
     }
 
-    public static void ruleDescription (String ruleName, String ruleString, String ruleDescription) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Rule description");
-        alert.setHeaderText("Title: " + ruleName);
-        alert.setContentText("RLE rule format: " + ruleString + "\n\n" + ruleDescription);
-        alert.showAndWait();
-    }
-
-    public static void metaData (String header, String description) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Pattern Metadata");
-        alert.setHeaderText(header);
-        alert.setContentText(description);
-        alert.showAndWait();
-    }
-
+    /**
+     * Creates a warning when trying to set the size of the board to an invalid number, advising the user to
+     * set a size between 6 and 1000.
+     */
     public static void resizeAlert() {
         Alert resizeAlert = new Alert(Alert.AlertType.WARNING);
         resizeAlert.setTitle("Error");
@@ -119,6 +154,10 @@ public class PopUpAlerts {
         resizeAlert.showAndWait();
     }
 
+    /**
+     * Creates a warning when trying to expand the board by drawing and exceeding the maximum height or width.
+     * Advises the user to either continue playing within the borders, or resetting the board.
+     */
     public static void edgeAlert() {
         Alert edgeAlert = new Alert(Alert.AlertType.WARNING);
         edgeAlert.setTitle("Congratulations!");
@@ -130,6 +169,40 @@ public class PopUpAlerts {
         edgeAlert.showAndWait();
     }
 
+    /**
+     * Creates a popup window containing the description of the current playing rules.
+     * @param ruleName - The name of the rules.
+     * @param ruleString - The RLE-formatting of the current rules.
+     * @param ruleDescription - The description of the current rules.
+     */
+    public static void ruleDescription (String ruleName, String ruleString, String ruleDescription) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Rule description");
+        alert.setHeaderText("Title: " + ruleName);
+        alert.setContentText("RLE rule format: " + ruleString + "\n\n" + ruleDescription);
+        alert.showAndWait();
+    }
+
+    /**
+     * Creates a popup window containing the meta data of the currently loaded pattern.
+     * @param header - The name of the pattern.
+     * @param description - The metadata of the pattern.
+     */
+    public static void metaData (String header, String description) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Pattern Metadata");
+        alert.setHeaderText(header);
+        alert.setContentText(description);
+        alert.showAndWait();
+    }
+
+    /**
+     * Creates a popup when trying to save a gif, and the statistics have identified a high probability of a repeating
+     * pattern. It informs the user that the pattern is likely to repeat after n-number of iterations, and asks
+     * if it should set the number of images to that number. Returns true if yes or false if no.
+     * @param iterations - The number of iterations identified as a possible pattern repeat.
+     * @return b - The users answer.
+     */
     public static boolean gifSimilarityAlert(int iterations) {
         Alert gifSimilarityConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
         gifSimilarityConfirmation.setTitle("Message");
@@ -152,6 +225,12 @@ public class PopUpAlerts {
         return b;
     }
 
+    /**
+     * Creates a warning when trying to resize the board in the editor, warning the user that the currently active
+     * cells will become inactive if the board is resized. User can then choose whether or not to continue with the
+     * resizing.
+     * @return b - The users answer.
+     */
     public static boolean resizeClearAlert() {
         Alert resizeClearConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
         resizeClearConfirmation.setTitle("Warning");
@@ -171,7 +250,6 @@ public class PopUpAlerts {
             b = false;
         }
 
-        System.out.println("B = "+b);
         return b;
     }
 }
