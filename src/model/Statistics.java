@@ -1,35 +1,59 @@
 package model;
 
 /**
- * Created by henriklarsen on 20.03.2017.
+ * Statistics is a implementation of the statistics in the game.
+ * containing the a clone of the current board and calculates and saves the data from the board.
+ *
+ * @author Henrik Finnerud Larsen
+ * @version 1.0
  */
 public class Statistics{
     private  int[][] statistics;
     private GameOfLife gameOfLife;
     private double[] sim;
 
+    /**
+     * Constructor of the Statistics class.
+     */
     public Statistics(){
     }
 
+    /**
+     * Method to get the statistics data. Goes through to every generations and saves data from the generations.
+     * The number of cells alive, the difference between the cells alive to the number of cells alive in the previous generation
+     * and a similarity measure where each board will be measured with the first generation
+     * will be saved and returned as a byte array.
+     * @param game - the game.
+     * @param iterations - number of iteration to return.
+     * @return statistics - A nested byte array containing the data to the statistics.
+     * @see GameOfLife#clone()
+     * @see Board#countCellsAlive()
+     * @see Board#getSumXYCoordinates()
+     */
     public int[][] getStatistics(GameOfLife game, int iterations) {
+        // Clones the current game
         gameOfLife = (GameOfLife) game.clone();
+
         if (gameOfLife.getPlayBoard() instanceof DynamicBoard) {
             ((DynamicBoard) gameOfLife.getPlayBoard()).setExpandable(false);
         }
         statistics = new int[3][iterations + 1];
+        if(gameOfLife.getPlayBoard() instanceof DynamicBoard){
+            ((DynamicBoard) gameOfLife.getPlayBoard()).expandBoardDuringRunTime();
+        }
 
-        // First board to be measured with
+        // First playboard to be measured with
         int firstxySum = gameOfLife.playBoard.getSumXYCoordinates();
         int firstCellsAlive = gameOfLife.playBoard.countCellsAlive();
         int firstCellsDifference = 0;
         double firstReducedBoard = 0.5 * firstCellsAlive + 3.0 * firstCellsDifference + 0.25 * firstxySum;
 
-
-
+        // Loops throgh the number of generations given from the parameter.
         for(int j = 0; j < statistics[0].length; j++){
-
+            // the playboard from current generation to be measured with the first board.
             int xySum = gameOfLife.playBoard.getSumXYCoordinates();
             int cellsAlive = gameOfLife.playBoard.countCellsAlive();
+
             int cellsDifference;
             if(j == 0){
                 cellsDifference = 0;
@@ -38,13 +62,15 @@ public class Statistics{
             }
             double reducedBoard = 0.5 * cellsAlive + 3.0 * cellsDifference + 0.25 * xySum;
 
+            // Calculates the simularity measure
             double similarity = Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100;
             double similarityFloored =  Math.floor(similarity);
 
             sim = new double[statistics[0].length];
             sim[j] = similarity;
 
-            // Entering stats
+
+            // Entering statistics into the statistics array
             if(j == 0 || firstCellsAlive == 0){
                 statistics[0][j] = cellsAlive;
                 statistics[1][j] = 0;
@@ -54,10 +80,11 @@ public class Statistics{
                 statistics[1][j] = cellsDifference;
                 statistics[2][j] = (int)similarityFloored;
             }
+
+            // Loads the next generation
             gameOfLife.nextGeneration();
         }
 
-        System.out.println(statToString());
         return statistics;
     }
 
