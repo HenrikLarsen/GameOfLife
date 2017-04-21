@@ -84,7 +84,7 @@ public class Controller implements Initializable {
      * @see #fpsLabel
      * @see #fileHandler
      * @see #board
-     * @ese #gOL
+     * @see #gOL
      * @see #ruleInputField
      * @see #textInputDialogStatistics
      * @see #chooseRulesBox
@@ -151,7 +151,15 @@ public class Controller implements Initializable {
      */
     private KeyFrame addNewKeyFrame(){
         return new KeyFrame(Duration.millis(1000), e -> {
-            gOL.nextGeneration();
+
+            //Performs a check on the width of the board to see if it should run concurrently or not
+            /*if (board.getWidth() < 600) {
+                gOL.nextGeneration();
+            } else {
+                gOL.nextGenerationConcurrentPrintPerformance();
+            }*/
+            gOL.nextGenerationConcurrentPrintPerformance();
+
             draw();
             gOL.genCounter++;
             generationLabel.setText(Integer.toString(gOL.genCounter));

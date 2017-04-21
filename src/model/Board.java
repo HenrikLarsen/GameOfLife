@@ -81,6 +81,58 @@ public abstract class Board {
         return neighbourCount;
     }
 
+    public synchronized byte[][] countNeighboursConcurrent(byte[][] neighbours, int curIndex, int rowsPerWorker) {
+
+        //Iterates through the cell grid and checks whether the current cell is active.
+        for (int x = rowsPerWorker*curIndex; x < (curIndex+1)*rowsPerWorker && x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                if (getCellState(x,y) == 1) {
+
+                    //Adds a neighbour to the upper left corner cell.
+                    if (x - 1 >= 0 && y - 1 >= 0) {
+                        neighbours[x - 1][y - 1]++;
+                    }
+
+                    //Adds a neighbour to the left cell.
+                    if (x - 1 >= 0) {
+                        neighbours[x - 1][y]++;
+                    }
+
+                    //Adds a neighbour to the lower left corner cell.
+                    if (x - 1 >= 0 && y + 1 < getHeight()) {
+                        neighbours[x - 1][y + 1]++;
+                    }
+
+                    //Adds a neighbour to the cell above.
+                    if (y - 1 >= 0) {
+                        neighbours[x][y - 1]++;
+                    }
+
+                    //Adds a neighbour to the cell below.
+                    if (y + 1 < getHeight()) {
+                        neighbours[x][y + 1]++;
+                    }
+
+                    //Adds a neighbour to the upper right corner cell.
+                    if (x + 1 < getWidth() && y - 1 >= 0) {
+                        neighbours[x + 1][y - 1]++;
+                    }
+
+                    //Adds a neighbour to the right cell.
+                    if (x + 1 < getWidth()) {
+                        neighbours[x + 1][y]++;
+                    }
+
+                    //Adds a neighbour to the lower right corner cell.
+                    if (x + 1 < getWidth() && y + 1 < getHeight()) {
+                        neighbours[x + 1][y + 1]++;
+                    }
+                }
+            }
+        }
+        return neighbours;
+    }
+
     /**
      * A method for making every cell in the cell grid inactive. Iterates through the grid and
      * sets every cell to 0, sets the number of live cells to 0, as well as discarding any pattern
@@ -107,6 +159,14 @@ public abstract class Board {
      */
     public void setBoard(byte[][] newGrid) {
         for (int x = 0; x < newGrid.length; x++) {
+            for (int y = 0; y < newGrid[0].length; y++) {
+                setCellState(x,y, newGrid[x][y]);
+            }
+        }
+    }
+
+    public void setBoardConcurrent(byte[][] newGrid, int curIndex, int rowsPerWorker) {
+        for (int x = rowsPerWorker*curIndex; x < (curIndex+1)*rowsPerWorker && x < newGrid.length; x++) {
             for (int y = 0; y < newGrid[0].length; y++) {
                 setCellState(x,y, newGrid[x][y]);
             }
@@ -687,3 +747,6 @@ public abstract class Board {
     public abstract Object clone();
 
 }
+
+
+//TODO: Rydd opp i CountNeighbours concurrent og ikke, samme med set board. JavaDoc på nytt.

@@ -325,7 +325,7 @@ public class DynamicBoard extends Board{
                 expandDown = false;
             }
         }
-        System.out.println("Width = "+getWidth()+", Height = "+getHeight());
+        //System.out.println("Width = "+getWidth()+", Height = "+getHeight());
     }
 
     /**
