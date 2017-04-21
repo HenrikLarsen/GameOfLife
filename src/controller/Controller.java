@@ -16,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -66,9 +65,9 @@ public class Controller implements Initializable {
 
     private Stage editorStage;
     private EditorController editorController;
-    private Stage statisticStage;
-    private StatisticsController statisticsController;
     private Stage patternSelectStage;
+    private Stage progressStage;
+    private ProgressController progressController;
 
     private TextInputDialog textInputDialogStatistics = new TextInputDialog();
     private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
@@ -741,8 +740,8 @@ public class Controller implements Initializable {
      * @see #startButton
      * @see #isRunning
      * @see #textInputDialogStatistics
-     * @see #statisticStage
-     * @see #statisticsController
+     * @see #progressStage
+     * @see #progressController
      * @see StatisticsController#makeChart()
      * @see StatisticsController#setIterations(int)
      * @see StatisticsController#setGameOfLife(GameOfLife)
@@ -770,6 +769,22 @@ public class Controller implements Initializable {
             try {
                 //Tries to load the fxml and sets the statisticsController from that.
                 int iterations = Integer.parseInt(out);
+
+                progressStage = new Stage();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Progress.fxml"));
+                Parent root = loader.load();
+                progressController = loader.getController();
+
+                progressController.setIterations(iterations);
+                progressController.setGameOfLife(gOL);
+
+
+                //Opens and waits
+                progressStage.setTitle("Please wait");
+                progressStage.setScene(new Scene(root, 300, 200));
+                progressStage.showAndWait();
+
+                /*
                 statisticStage = new Stage();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
                 Parent root = loader.load();
@@ -784,6 +799,7 @@ public class Controller implements Initializable {
                 statisticStage.setTitle("GameOfLife");
                 statisticStage.setScene(new Scene(root, 800, 600));
                 statisticStage.showAndWait();
+                */
 
             } catch (IOException ioe){
                 //Shows a warning should the loading of the FXML fail.
