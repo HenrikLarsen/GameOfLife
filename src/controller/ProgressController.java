@@ -98,7 +98,7 @@ public class ProgressController {
                     stat = statistics.getStatistics(gameOfLife, iterations);
                 }while(i == 0);
 
-                updateMessage("Working!" + " " + i + "%");
+                updateMessage("Loading.." + " " + i + "%");
                 updateProgress(i, max);
 
                 //Block the thread for a short time, but be sure
@@ -142,14 +142,14 @@ public class ProgressController {
         @Override
         protected void cancelled() {
             super.cancelled();
-            updateMessage("Stopped!");
+            updateMessage("Loading stopped");
             Stage currentStage = (Stage) gridpane.getScene().getWindow();
             currentStage.close();
         }
 
         @Override protected void failed() {
             super.failed();
-            updateMessage("Failed!");
+            updateMessage("Loading failed");
         }
     }
 
