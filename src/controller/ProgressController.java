@@ -15,13 +15,12 @@ import model.GameOfLife;
 import model.Statistics;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by henriklarsen on 21.04.2017.
  */
 public class ProgressController {
-    private final int max = 100;
+    private final int max = 101;
     private int[][] stat;
     private int iterations;
 
@@ -29,31 +28,28 @@ public class ProgressController {
     private StatisticsController statisticsController;
     private GameOfLife gameOfLife;
     private Statistics statistics = new Statistics();
-
-    private MyTask myTask;
     private TaskService taskService;
 
     @FXML GridPane gridpane;
-    @FXML public Label lblProgress;
-    @FXML public ProgressBar pbar;
+    @FXML private Label progressLabel;
+    @FXML private ProgressBar progressBar;
 
 
     public ProgressController() {
-        myTask = new MyTask();
         taskService = new TaskService();
     }
 
     @FXML
     public void initialize() {
-        if (!lblProgress.textProperty().isBound())
+        if (!progressLabel.textProperty().isBound())
         {
             // bind the messageProperty to a TextArea in JavaFX
-            lblProgress.textProperty().bind(taskService.messageProperty());
+            progressLabel.textProperty().bind(taskService.messageProperty());
 
             // bind the progressProperty to a ProgressBar in JavaFX
-            pbar.progressProperty().bind(taskService.progressProperty());
+            progressBar.progressProperty().bind(taskService.progressProperty());
         }
-        startProgress();
+        taskService.start();
     }
 
     /**
@@ -61,10 +57,6 @@ public class ProgressController {
      */
     public void cancelClick(ActionEvent actionEvent) {
         taskService.cancel();
-    }
-
-    public void startProgress(){
-        taskService.restart();
     }
 
     /**
@@ -83,9 +75,7 @@ public class ProgressController {
         this.iterations = i;
     }
 
-    /**
-     * A class demonstrating the use of the Task class
-     */
+
     private class MyTask extends Task<Void> {
         @Override
         public Void call() {
@@ -100,16 +90,6 @@ public class ProgressController {
 
                 updateMessage("Loading.." + " " + i + "%");
                 updateProgress(i, max);
-
-                //Block the thread for a short time, but be sure
-                //to check the InterruptedException for cancellation
-                /*
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException interrupted) {
-                    if (isCancelled()) break;
-                }
-                */
             }
             return null;
         }
@@ -123,6 +103,7 @@ public class ProgressController {
                 Parent root = loader.load();
                 statisticsController = loader.getController();
 
+                //Sets the statistics data to be considered, and creates a chart of the results.
                 statisticsController.setStat(stat);
                 statisticsController.makeChart();
 
@@ -153,10 +134,6 @@ public class ProgressController {
         }
     }
 
-
-    /**
-     * A class demonstrating the use of the Service class
-     */
     private class TaskService extends Service<Void>
     {
         @Override

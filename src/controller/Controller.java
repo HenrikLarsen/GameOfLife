@@ -24,6 +24,7 @@ import model.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * The Controller class handles user-interaction within the main window of the application.
@@ -743,8 +744,8 @@ public class Controller implements Initializable {
      * @see #progressStage
      * @see #progressController
      * @see StatisticsController#makeChart()
-     * @see StatisticsController#setIterations(int)
-     * @see StatisticsController#setGameOfLife(GameOfLife)
+     * @see ProgressController#setIterations(int)
+     * @see ProgressController#setGameOfLife(GameOfLife)
      * @see PopUpAlerts#ioAlertFXML()
      */
     public void showStatistic(ActionEvent actionEvent) {
@@ -755,15 +756,14 @@ public class Controller implements Initializable {
         //Creates a text input dialog window so that the user can choose the number of iterations.
         textInputDialogStatistics.setHeaderText("Show Statistics");
         textInputDialogStatistics.setContentText("Enter statistic length");
-        textInputDialogStatistics.showAndWait();
+        Optional<String> result =textInputDialogStatistics.showAndWait();
 
         String out = "";
 
         //Checks if the input dialog is empty, and else sets the input as "out"
-        if(!textInputDialogStatistics.getResult().isEmpty()){
+        if(result.isPresent() && !textInputDialogStatistics.getResult().isEmpty()){
             out = textInputDialogStatistics.getResult();
         }
-
 
         if(out != ""){
             try {
@@ -775,31 +775,14 @@ public class Controller implements Initializable {
                 Parent root = loader.load();
                 progressController = loader.getController();
 
+                //Sets iterations and the GameOfLife object to be considered.
                 progressController.setIterations(iterations);
                 progressController.setGameOfLife(gOL);
 
-
                 //Opens and waits
-                progressStage.setTitle("Please wait");
-                progressStage.setScene(new Scene(root, 300, 200));
+                progressStage.setTitle("Loading statistics..");
+                progressStage.setScene(new Scene(root, 300, 150));
                 progressStage.showAndWait();
-
-                /*
-                statisticStage = new Stage();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
-                Parent root = loader.load();
-                statisticsController = loader.getController();
-
-                //Sets iterations and the GameOfLife object to be considered, and creates a chart of the results.
-                statisticsController.setIterations(iterations);
-                statisticsController.setGameOfLife(gOL);
-                statisticsController.makeChart();
-
-                //Opens and waits
-                statisticStage.setTitle("GameOfLife");
-                statisticStage.setScene(new Scene(root, 800, 600));
-                statisticStage.showAndWait();
-                */
 
             } catch (IOException ioe){
                 //Shows a warning should the loading of the FXML fail.
