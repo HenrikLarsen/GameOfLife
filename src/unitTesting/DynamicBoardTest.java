@@ -92,7 +92,7 @@ public class DynamicBoardTest {
         String expectedPattern = "000000000000000000000000000000000000";
         String actualPattern = board.toString();
         int expectedCells = 0;
-        int actualCells = board.cellsAlive;
+        int actualCells = board.getCellsAlive();
 
         org.junit.Assert.assertEquals(expectedPattern, actualPattern);
         org.junit.Assert.assertEquals(expectedCells, actualCells);
@@ -118,7 +118,7 @@ public class DynamicBoardTest {
         String expectedPattern = "00000000000000000000000000000000000000000000000000000000000000000000000000000000";
         String actualPattern = board.toString();
         int expectedCells = 0;
-        int actualCells = board.cellsAlive;
+        int actualCells = board.getCellsAlive();
 
         org.junit.Assert.assertEquals(expectedPattern, actualPattern);
         org.junit.Assert.assertEquals(expectedCells, actualCells);
@@ -155,7 +155,7 @@ public class DynamicBoardTest {
                 "00000000000000000000000000000000000000000000000000";
         String actualPattern = board.toString();
         int expectedCells = 0;
-        int actualCells = board.cellsAlive;
+        int actualCells = board.getCellsAlive();
 
         org.junit.Assert.assertEquals(expectedPattern, actualPattern);
         org.junit.Assert.assertEquals(expectedCells, actualCells);
@@ -339,14 +339,11 @@ public class DynamicBoardTest {
     public void expandHeightUp() {
         board = new DynamicBoard(10, 10);
         board.setCellState(9,9, (byte)1);
-        System.out.println(board.toString());
 
         ((DynamicBoard)board).expandHeightUp(4);
-        System.out.println(board.toString());
 
         org.junit.Assert.assertEquals(10, board.getWidth());
         org.junit.Assert.assertEquals(14, board.getHeight());
-        System.out.println(board.toString());
         org.junit.Assert.assertEquals(1, board.getCellState(9,13));
         org.junit.Assert.assertEquals(0, board.getCellState(9,12));
     }
@@ -769,6 +766,37 @@ public class DynamicBoardTest {
         org.junit.Assert.assertArrayEquals(expectedPatternBoundingBox, actualPatternBoundingBox);
         org.junit.Assert.assertEquals(expectedPattern, actualPattern);
     }
+
+    @Test
+    public void setOutOfBoundsTest1() {
+        board = new DynamicBoard(1000, 1000);
+
+        int actual = ((DynamicBoard)board).setOutOfBounds(1005, board.getHeight());
+        int expected = 6;
+
+        org.junit.Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void setOutOfBoundsTest2() {
+        board = new DynamicBoard(1000, 1000);
+
+        int actual = ((DynamicBoard)board).setOutOfBounds(-80, board.getHeight());
+        int expected = 80;
+
+        org.junit.Assert.assertEquals(expected, actual);
+    }
+    @Test
+
+    public void setOutOfBoundsTest3() {
+        board = new DynamicBoard(1000, 1000);
+
+        int actual = ((DynamicBoard)board).setOutOfBounds(150, board.getWidth());
+        int expected = 0;
+
+        org.junit.Assert.assertEquals(expected, actual);
+    }
+
 
     @Test
     public void cloneTest() {

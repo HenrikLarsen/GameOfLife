@@ -89,7 +89,7 @@ public class StaticBoardTest {
         String expectedPattern = "000000000000000000000000000000000000";
         String actualPattern = board.toString();
         int expectedCells = 0;
-        int actualCells = board.cellsAlive;
+        int actualCells = board.getCellsAlive();
 
         org.junit.Assert.assertEquals(expectedPattern, actualPattern);
         org.junit.Assert.assertEquals(expectedCells, actualCells);
@@ -115,7 +115,7 @@ public class StaticBoardTest {
         String expectedPattern = "00000000000000000000000000000000000000000000000000000000000000000000000000000000";
         String actualPattern = board.toString();
         int expectedCells = 0;
-        int actualCells = board.cellsAlive;
+        int actualCells = board.getCellsAlive();
 
         org.junit.Assert.assertEquals(expectedPattern, actualPattern);
         org.junit.Assert.assertEquals(expectedCells, actualCells);
@@ -152,7 +152,7 @@ public class StaticBoardTest {
                 "00000000000000000000000000000000000000000000000000";
         String actualPattern = board.toString();
         int expectedCells = 0;
-        int actualCells = board.cellsAlive;
+        int actualCells = board.getCellsAlive();
 
         org.junit.Assert.assertEquals(expectedPattern, actualPattern);
         org.junit.Assert.assertEquals(expectedCells, actualCells);

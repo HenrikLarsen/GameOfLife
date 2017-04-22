@@ -62,7 +62,7 @@ public class EditorController implements Initializable {
     private int gifSize;
     private boolean drawEntireBoard = true;
     private ObservableList<String> chooseSizeList = FXCollections.observableArrayList("640x640", "800x800",
-            "1024x1024", "1200x1200", "1600x1600", "1920x1920");
+            "1024x1024", "1200x1200", "1600x1600", "1920x1920", "2880x2880", "3840x3840");
     private ObservableList<String> chooseDrawList = FXCollections.observableArrayList("Entire Board", "Pattern Only");
 
 
@@ -341,6 +341,10 @@ public class EditorController implements Initializable {
                 break;
             case "1920x1920": gifSize = 1920;
                 break;
+            case "2880x2880": gifSize = 2880;
+                break;
+            case "3840x3840": gifSize = 3840;
+                break;
             default: gifSize = 800;
                 break;
         }
@@ -432,13 +436,7 @@ public class EditorController implements Initializable {
      * @see Statistics#getStatistics(GameOfLife, int)
      * @see Statistics#getHighestSimilarity(int[][])
      * @see GameOfLife#clone()
-     * @see GifConstructor#setGifGol(GameOfLife)
-     * @see GifConstructor#setCounter(int)
-     * @see GifConstructor#setMilliseconds(int)
-     * @see GifConstructor#setDrawEntireBoard(boolean)
-     * @see GifConstructor#setGifBackgroundColor(Color)
-     * @see GifConstructor#setGifCellColor(Color)
-     * @see GifConstructor#setGifSize(int)
+     * @see GifConstructor#GifConstructor(GameOfLife, int, int, boolean, Color, Color, int)
      * @see GifConstructor#exportGif(String)
      */
     public void saveGifClick() {
@@ -463,7 +461,7 @@ public class EditorController implements Initializable {
         int fps = 5;
         if (!fpsInputField.getText().isEmpty()) {
             fps = Integer.parseInt(fpsInputField.getText());
-            if (fps < 1 || fps > 60) {
+            if (fps < 1 || fps > 50) {
                 PopUpAlerts.gifFPSAlert();
                 return;
             }
@@ -493,19 +491,11 @@ public class EditorController implements Initializable {
         }
         String filePath = file.getPath();
 
-        //Creates a new GifConstructor object and sets all data fields.
-        GifConstructor gifConstructor = new GifConstructor();
-        gifConstructor.setGifGol((GameOfLife) gameOfLife.clone());
-        gifConstructor.setCounter(counter);
-        gifConstructor.setMilliseconds(fps);
-        gifConstructor.setDrawEntireBoard(drawEntireBoard);
-        gifConstructor.setGifBackgroundColor(currentBackgroundColor);
-        gifConstructor.setGifCellColor(currentCellColor);
-        gifConstructor.setGifSize(gifSize);
+        GameOfLife gifGol = (GameOfLife)gameOfLife.clone();
+        GifConstructor gifConstructor = new GifConstructor(gifGol, counter, fps, drawEntireBoard,
+                currentBackgroundColor, currentCellColor, gifSize);
 
         //Calls the method to export the gif.
         gifConstructor.exportGif(filePath);
     }
-    //TODO: Fix statistics integration
-    //Todo: Fiks gifConstructor rot på slutten. Kanskje legge det i konstruktøren.
 }

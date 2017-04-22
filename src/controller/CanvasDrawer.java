@@ -258,7 +258,9 @@ public class CanvasDrawer {
      * @see #yZoomOffset
      * @see #yDragOffset
      * @see #addOffsetIfExpand(int, int)
-     * @see Board#cellsAlive
+     * @see Board#getCellsAlive()
+     * @see Board#increaseCellsAlive()
+     * @see Board#decreaseCellsAlive()
      * @see Board#getCellState(int, int)
      * @see Board#setCellState(int, int, byte)
      */
@@ -286,14 +288,14 @@ public class CanvasDrawer {
             //If cell is inactive, it will become active, and Boards cellsAlive will be added 1.
             if (board.getCellState(x, y) == 0) {
                 if (board.getCellState(x, y) != 1) {
-                    board.cellsAlive++;
+                    board.increaseCellsAlive();
                 }
                 board.setCellState(x, y, (byte) 1);
 
                 //If cell is active, it will become inactive, and Boards cellsAlive will be subtracted 1.
             } else {
-                if (board.cellsAlive > 0 && board.getCellState(x, y) == 1) {
-                    board.cellsAlive--;
+                if (board.getCellsAlive() > 0 && board.getCellState(x, y) == 1) {
+                    board.decreaseCellsAlive();
                 }
                 board.setCellState(x, y, (byte) 0);
             }
@@ -314,7 +316,7 @@ public class CanvasDrawer {
             //Tries to set cell state, and adds the necessary offsets to compensate for the expansions.
             if (board instanceof DynamicBoard) {
                 board.setCellState(x, y, (byte) 1);
-                board.cellsAlive++;
+                board.increaseCellsAlive();
                 addOffsetIfExpand(x, y);
             }
         }
@@ -334,7 +336,9 @@ public class CanvasDrawer {
      * @see #yZoomOffset
      * @see #yDragOffset
      * @see #addOffsetIfExpand(int, int)
-     * @see Board#cellsAlive
+     * @see Board#getCellsAlive()
+     * @see Board#increaseCellsAlive()
+     * @see Board#decreaseCellsAlive()
      * @see Board#getCellState(int, int)
      * @see Board#setCellState(int, int, byte)
      */
@@ -356,13 +360,13 @@ public class CanvasDrawer {
             //If boolean erase is true, it sets the cell to 0. Else, sets the cell to 1. Subtracts and adds to
             //Boards cellsAlive respectively.
             if (erase) {
-                if (board.cellsAlive > 0 && board.getCellState(x, y) == 1) {
-                    board.cellsAlive--;
+                if (board.getCellsAlive() > 0 && board.getCellState(x, y) == 1) {
+                    board.decreaseCellsAlive();
                 }
                 board.setCellState(x, y, (byte) 0);
             } else {
                 if (board.getCellState(x, y) != 1) {
-                    board.cellsAlive++;
+                    board.increaseCellsAlive();
                 }
                 board.setCellState(x, y, (byte) 1);
             }
@@ -374,7 +378,7 @@ public class CanvasDrawer {
             //Tries to set cell state, and adds the necessary offsets to compensate for the expansions.
             if (board instanceof DynamicBoard) {
                 board.setCellState(x, y, (byte) 1);
-                board.cellsAlive++;
+                board.increaseCellsAlive();
                 addOffsetIfExpand(x,y);
             }
         }

@@ -28,12 +28,15 @@ public class GameOfLife {
     public byte[][] newGenerationCells;
 
     //Data fields related to concurrency
+    private Runnable countNeighboursTask;
+    private Runnable enforceRulesTask;
+    private Runnable setBoardTask;
     private int threadIndex = 0;
     private int rowsPerWorker;
-    private int numWorkers = Runtime.getRuntime().availableProcessors()*2;  //Times 2 because we assume the CPU
-                                                                            // supports hyper-threading.
-    //private ExecutorService threadPool = Executors.newFixedThreadPool(numWorkers);
 
+    //The number of threads to be used. Equal to the system's available processors times two, because we assume the CPU
+    //supports hyper-threading
+    private int numWorkers = Runtime.getRuntime().availableProcessors()*2;
 
     //Data fields related to the current rules.
     private String ruleString = "B3/S23";
@@ -56,176 +59,183 @@ public class GameOfLife {
      * If the Board is an instance of DynamicBoard it checks if it needs to expand, and expands if yes.
      * Calls on enforceRules() and finally sets the new generation as the current play board.
      * @see #enforceRules()
+     * @see #neighbourCount
+     * @see #newGenerationCells
+     * @see Board#resetCellsAlive()
      * @see Board#setBoard(byte[][])
      * @see Board#countNeighbours()
      * @see DynamicBoard#expandBoardDuringRunTime()
      */
     public void nextGeneration() {
-        playBoard.cellsAlive = 0;
+        playBoard.resetCellsAlive();
+
+        //Checks for expand and expands if necessary
         if (playBoard instanceof DynamicBoard) {
             ((DynamicBoard)playBoard).expandBoardDuringRunTime();
         }
+
+        //Does the three main tasks of each generation: Counts neighbours, compares them to the rules and sets board.
         neighbourCount = playBoard.countNeighbours();
         enforceRules();
         playBoard.setBoard(newGenerationCells);
     }
 
+    /**
+     * Sets the next generation of cells as the current play board concurrently.
+     * Creates several threads to do each task concurrently, by calling generateTasks() and createWorkerList() for
+     * each task. Between each task it waits for all active threads to finish their task before moving on to the next.
+     * Calls on Boards countNeighbours() and sets it as a 2D-array.
+     * If the Board is an instance of DynamicBoard it checks if it needs to expand, and expands if yes.
+     * Calls on enforceRules() and finally sets the new generation as the current play board.
+     * @see #newGenerationCells
+     * @see #rowsPerWorker
+     * @see #neighbourCount
+     * @see #generateTasks()
+     * @see #waitForThreads(List)
+     * @see #createWorkerList(Runnable)
+     * @see Board#resetCellsAlive()
+     * @see DynamicBoard#expandBoardDuringRunTime()
+     */
+    public void nextGenerationConcurrent() {
+        playBoard.resetCellsAlive();
+        if (playBoard instanceof DynamicBoard) {
+            ((DynamicBoard)playBoard).expandBoardDuringRunTime();
+        }
+
+        //Creates two new 2D-Arrays the size of the current cellGrid.
+        newGenerationCells = new byte[playBoard.getWidth()][playBoard.getHeight()];
+        neighbourCount = new byte[playBoard.getWidth()][playBoard.getHeight()];
+
+        //Calculates how many rows each thread will operate on.
+        rowsPerWorker = (int)Math.ceil((double)playBoard.getWidth()/(double)numWorkers);
+
+        generateTasks();
+
+        //Creates the list of threads, starts each thread and waits for all to finnish before moving on.
+        List<Thread> neighbourWorkers = createWorkerList(countNeighboursTask);
+        neighbourWorkers.forEach(Thread::start);
+        waitForThreads(neighbourWorkers);
+
+        List<Thread> enforceWorkers = createWorkerList(enforceRulesTask);
+        enforceWorkers.forEach(Thread::start);
+        waitForThreads(enforceWorkers);
+
+        List<Thread> setBoardWorkers = createWorkerList(setBoardTask);
+        setBoardWorkers.forEach(Thread::start);
+        waitForThreads(setBoardWorkers);
+    }
+
+    /**
+     * Method for printing out the time it takes for a call to nextGeneration() to finish.
+     * Used for verification and testing purposes, but not within the finished application.
+     * @see #nextGeneration()
+     */
     public void nextGenerationPrintPerformance() {
         long start = System.currentTimeMillis();
-        playBoard.cellsAlive = 0;
-        if (playBoard instanceof DynamicBoard) {
-            ((DynamicBoard)playBoard).expandBoardDuringRunTime();
-        }
-        neighbourCount = playBoard.countNeighbours();
-        enforceRules();
-        playBoard.setBoard(newGenerationCells);
+        nextGeneration();
         long elapsed = System.currentTimeMillis() - start;
         System.out.println("Counting time (ms): " + elapsed);
     }
 
+    /**
+     * Method for printing out the time it takes for a call to nextGenerationConcurrent() to finish.
+     * Used for verification and testing purposes, but not within the finished application.
+     * @see #nextGenerationConcurrent()
+     */
     public void nextGenerationConcurrentPrintPerformance() {
         long start = System.currentTimeMillis();
-        playBoard.cellsAlive = 0;
-        if (playBoard instanceof DynamicBoard) {
-            ((DynamicBoard)playBoard).expandBoardDuringRunTime();
-        }
-
-        newGenerationCells = new byte[playBoard.getWidth()][playBoard.getHeight()];
-        rowsPerWorker = (int)Math.ceil((double)playBoard.getWidth()/(double)numWorkers);
-        neighbourCount = new byte[playBoard.getWidth()][playBoard.getHeight()];
-
-        Runnable countNeighboursTask = ()-> {
-            int index = getThreadIndex();
-            neighbourCount = playBoard.countNeighboursConcurrent(neighbourCount, index, rowsPerWorker);
-        };
-
-        Runnable enforceRulesTask = ()-> {
-            int index = getThreadIndex();
-            enforceRulesConcurrent(index);
-        };
-
-        Runnable setBoardTask = ()-> {
-            int index = getThreadIndex();
-            playBoard.setBoardConcurrent(newGenerationCells, index, rowsPerWorker);
-        };
-
-
-        List<Thread> neighbourWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorkers; i++) {
-            Thread t = new Thread(countNeighboursTask);
-            neighbourWorkers.add(t);
-        }
-        neighbourWorkers.forEach(Thread::start);
-        waitForThreads(neighbourWorkers);
-
-        List<Thread> enforceWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorkers; i++) {
-            Thread t = new Thread(enforceRulesTask);
-            enforceWorkers.add(t);
-        }
-
-        enforceWorkers.forEach(Thread::start);
-        waitForThreads(enforceWorkers);
-
-        List<Thread> setBoardWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorkers; i++) {
-            Thread t = new Thread(setBoardTask);
-            setBoardWorkers.add(t);
-        }
-
-        setBoardWorkers.forEach(Thread::start);
-        waitForThreads(setBoardWorkers);
-
+        nextGenerationConcurrent();
         long elapsed = System.currentTimeMillis() - start;
         System.out.println("Counting time (ms): " + elapsed);
     }
 
-    public void nextGenerationConcurrent() {
-        playBoard.cellsAlive = 0;
-        if (playBoard instanceof DynamicBoard) {
-            ((DynamicBoard)playBoard).expandBoardDuringRunTime();
-        }
-
-        newGenerationCells = new byte[playBoard.getWidth()][playBoard.getHeight()];
-        rowsPerWorker = (int)Math.ceil((double)playBoard.getWidth()/(double)numWorkers);
-        neighbourCount = new byte[playBoard.getWidth()][playBoard.getHeight()];
-
-        Runnable countNeighboursTask = ()-> {
-            int index = getThreadIndex();
-            neighbourCount = playBoard.countNeighboursConcurrent(neighbourCount, index, rowsPerWorker);
-        };
-
-        Runnable enforceRulesTask = ()-> {
-            int index = getThreadIndex();
-            enforceRulesConcurrent(index);
-        };
-
-        Runnable setBoardTask = ()-> {
-            int index = getThreadIndex();
-            playBoard.setBoardConcurrent(newGenerationCells, index, rowsPerWorker);
-        };
-
-
-        List<Thread> neighbourWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorkers; i++) {
-            Thread t = new Thread(countNeighboursTask);
-            neighbourWorkers.add(t);
-        }
-        neighbourWorkers.forEach(Thread::start);
-        waitForThreads(neighbourWorkers);
-
-        List<Thread> enforceWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorkers; i++) {
-            Thread t = new Thread(enforceRulesTask);
-            enforceWorkers.add(t);
-        }
-
-        enforceWorkers.forEach(Thread::start);
-        waitForThreads(enforceWorkers);
-
-        List<Thread> setBoardWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorkers; i++) {
-            Thread t = new Thread(setBoardTask);
-            setBoardWorkers.add(t);
-        }
-
-        setBoardWorkers.forEach(Thread::start);
-        waitForThreads(setBoardWorkers);
-    }
-
+    /**
+     * Method that returns the current threadIndex and adds 1 to it. If it is greater or equal to the number
+     * of active threads, it resets to 0. The method is synchronized to avoid a race condition.
+     * @return threadIndex - The index of the current thread relative to the rest.
+     * @see #threadIndex
+     * @see #numWorkers
+     */
     public synchronized int getThreadIndex() {
         if (threadIndex >= numWorkers) threadIndex=0;
         return threadIndex++;
     }
 
+    /**
+     * Method for making sure that all active threads related to a task is finished. Important because every
+     * task needs to be completed before the next task is initialised. Iterates through the list of threads and
+     * calls Threads join() method before moving on. If an InterruptedException is thrown, it will interrupt that
+     * thread and print a message to the console.
+     * @param workerList - The list of threads to wait on.
+     */
     public void waitForThreads(List<Thread> workerList) {
         for (Thread t : workerList) {
             try {
                 t.join();
             } catch (InterruptedException ie) {
-                //TODO GJØR NOE HER
+                Thread.currentThread().interrupt();
+                System.out.println("Error waiting for thread");
             }
         }
     }
 
+    /**
+     * Method for generating the runnable tasks the threads needs to perform. Is updated every generation
+     * so that the rowsPerWorker is correct relative to the current cell grid. Creates three Runnable objects.
+     * @see #countNeighboursTask
+     * @see #enforceRulesTask
+     * @see #setBoardTask
+     * @see #neighbourCount
+     * @see #rowsPerWorker
+     * @see #getThreadIndex()
+     * @see Board#countNeighboursConcurrent(byte[][], int, int)
+     * @see Board#setBoardConcurrent(byte[][], int, int)
+     */
+    private void generateTasks() {
+        countNeighboursTask = ()-> {
+            int index = getThreadIndex();
+            neighbourCount = playBoard.countNeighboursConcurrent(neighbourCount, index, rowsPerWorker);
+        };
+
+        enforceRulesTask = ()-> {
+            int index = getThreadIndex();
+            enforceRulesConcurrent(index);
+        };
+
+        setBoardTask = ()-> {
+            int index = getThreadIndex();
+            playBoard.setBoardConcurrent(newGenerationCells, index, rowsPerWorker);
+        };
+    }
 
     /**
-     * Compares the current board with the neighbour count up against the current rules, and enforces the
-     * rules of the game, creating a new 2D-array to be the next generation's board.
+     * Method for generating a List of threads the size of numWorkers. The parameter task is a Runnable Object
+     * that each Thread in that list will perform.
+     * @param task - The Runnable object that each Thread in the list needs to perform.
+     * @return list - The list of threads.
+     * @see #numWorkers
+     */
+    private List<Thread> createWorkerList(Runnable task) {
+        List<Thread> list = new ArrayList<>();
+        for (int i = 0; i < numWorkers; i++) {
+            Thread t = new Thread(task);
+            list.add(t);
+        }
+        return list;
+    }
+
+
+    /**
+     * A method for enforcing the rules of the game. Iterates throughout the entire cell grid and
+     * calls updateNewGenerationCells() to enforce the rules of the game.
      * @see #newGenerationCells
-     * @see #neighbourCount
-     * @see #bornRules
-     * @see #surviveRules
      * @see Board#getWidth()
      * @see Board#getHeight()
-     * @see Board#getCellState(int, int)
      */
     public void enforceRules() {
         //Creates a new byte[][] with the same dimensions as the current board.
         newGenerationCells = new byte[playBoard.getWidth()][playBoard.getHeight()];
 
-        //Compares the current play board with the neighbour count.
-        //Sets the values in newGenerationCells based on the rules of the Game of Life.
         for (int x = 0; x < playBoard.getWidth(); x++) {
             for (int y = 0; y < playBoard.getHeight(); y++) {
                 updateNewGenerationCells(x, y);
@@ -234,15 +244,13 @@ public class GameOfLife {
     }
 
     /**
-     * Compares the current board with the neighbour count up against the current rules, and enforces the
-     * rules of the game, creating a new 2D-array to be the next generation's board.
-     * @see #newGenerationCells
-     * @see #neighbourCount
-     * @see #bornRules
-     * @see #surviveRules
+     * A method for concurrently enforcing the rules of the game. Iterates through a portion of the current cell grid
+     * based on the current cells index and rowsPerWorker, and calls updateNewGenerationCells() to enforce the
+     * rules of the game.
+     * @param curIndex - The current thread's index.
+     * @see #rowsPerWorker
      * @see Board#getWidth()
      * @see Board#getHeight()
-     * @see Board#getCellState(int, int)
      */
     public void enforceRulesConcurrent(int curIndex) {
         for (int x = rowsPerWorker*curIndex; x < (curIndex+1)*rowsPerWorker && x < playBoard.getWidth(); x++) {
@@ -252,6 +260,18 @@ public class GameOfLife {
         }
     }
 
+    /**
+     * Compares the current cell with the neighbour count up against the current rules, and enforces the
+     * rules of the game, setting the cell state of that cell in the newGenerationCells 2D-array.
+     * @param x - The x-coordinate of the current cell.
+     * @param y - The y-coordinate of the current cell.
+     * @see #newGenerationCells
+     * @see #neighbourCount
+     * @see #bornRules
+     * @see #surviveRules
+     * @see Board#getCellState(int, int)
+     * @see Board#increaseCellsAlive()
+     */
     private void updateNewGenerationCells(int x, int y) {
         //Creates a string containing the number of neighbours for the current cell.
         String neighbours = ""+neighbourCount[x][y];
@@ -262,7 +282,7 @@ public class GameOfLife {
             //Checks if the surviveRules contain the number of neighbours. If yes, the cell survives.
             if (surviveRules.contains(neighbours)) {
                 newGenerationCells[x][y] = 1;
-                playBoard.cellsAlive++;
+                playBoard.increaseCellsAlive();
             } else {
                 newGenerationCells[x][y] = 0;
             }
@@ -272,7 +292,7 @@ public class GameOfLife {
         else if (playBoard.getCellState(x,y) == 0) {
             if (bornRules.contains(neighbours)) {
                 newGenerationCells[x][y] = 1;
-                playBoard.cellsAlive++;
+                playBoard.increaseCellsAlive();
             }
         }
     }
@@ -496,10 +516,3 @@ public class GameOfLife {
         return golClone;
     }
 }
-
-//TODO: Vurder å sette det nye brettet fra EnforceRules, siden det basically er det som skjer.
-
-//TODO: Gjør Count neighbours thread safe (Synchronzied?)
-//TODO: Se på å gjøre canvas resizable ved å sette en listener på scenen.
-//TODO: Javadoc nextGenerationConcurrent, begge print-performance, enforceRules concurrent og ikke,
-// Update new generation, og getThreadIndex, Wait for threads

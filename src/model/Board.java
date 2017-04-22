@@ -11,7 +11,7 @@ package model;
  * @version 1.0
  */
 public abstract class Board {
-    public int cellsAlive = 0;
+    private int cellsAlive = 0;
 
     //These two fields are related to a loaded pattern.
     private byte[][] loadedPattern;
@@ -19,118 +19,100 @@ public abstract class Board {
 
     /**
      * A method that creates a 2D-array the size of the cell grid for counting neighbours.
-     * Iterates through the current cell grid and adds 1 to each surrounding cell if the cell is active,
-     * and returns the 2D-array with the neighbour count for each cell.
-     * @return neighbourCount - 2D-array with neighbours counted for each cell.
+     * Iterates through the entire current cell grid and calls setNeighbours if the cell is active for it
+     * to add 1 to each surrounding cell. Returns the 2D-array with the neighbour count for each cell.
+     * @return neighbours - 2D-array with neighbours counted for each cell.
      * @see #getCellState(int, int)
+     * @see #setNeighbours(byte[][], int, int)
      */
     public byte[][] countNeighbours() {
-        int xMax = getWidth();
-        int yMax = getHeight();
-
         //new 2D-array the size of the current cell grid.
-        byte[][] neighbourCount = new byte[xMax][yMax];
+        byte[][] neighbours = new byte[getWidth()][getHeight()];
 
         //Iterates through the cell grid and checks whether the current cell is active.
-        for (int x = 0; x < xMax; x++) {
-            for (int y = 0; y < yMax; y++) {
-                if (getCellState(x,y) == 1) {
-
-                    //Adds a neighbour to the upper left corner cell.
-                    if (x - 1 >= 0 && y - 1 >= 0) {
-                        neighbourCount[x - 1][y - 1]++;
-                    }
-
-                    //Adds a neighbour to the left cell.
-                    if (x - 1 >= 0) {
-                        neighbourCount[x - 1][y]++;
-                    }
-
-                    //Adds a neighbour to the lower left corner cell.
-                    if (x - 1 >= 0 && y + 1 < yMax) {
-                        neighbourCount[x - 1][y + 1]++;
-                    }
-
-                    //Adds a neighbour to the cell above.
-                    if (y - 1 >= 0) {
-                        neighbourCount[x][y - 1]++;
-                    }
-
-                    //Adds a neighbour to the cell below.
-                    if (y + 1 < yMax) {
-                        neighbourCount[x][y + 1]++;
-                    }
-
-                    //Adds a neighbour to the upper right corner cell.
-                    if (x + 1 < xMax && y - 1 >= 0) {
-                        neighbourCount[x + 1][y - 1]++;
-                    }
-
-                    //Adds a neighbour to the right cell.
-                    if (x + 1 < xMax) {
-                        neighbourCount[x + 1][y]++;
-                    }
-
-                    //Adds a neighbour to the lower right corner cell.
-                    if (x + 1 < xMax && y + 1 < yMax) {
-                        neighbourCount[x + 1][y + 1]++;
-                    }
-                }
-            }
-        }
-        return neighbourCount;
-    }
-
-    public synchronized byte[][] countNeighboursConcurrent(byte[][] neighbours, int curIndex, int rowsPerWorker) {
-
-        //Iterates through the cell grid and checks whether the current cell is active.
-        for (int x = rowsPerWorker*curIndex; x < (curIndex+1)*rowsPerWorker && x < getWidth(); x++) {
+        for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
                 if (getCellState(x,y) == 1) {
-
-                    //Adds a neighbour to the upper left corner cell.
-                    if (x - 1 >= 0 && y - 1 >= 0) {
-                        neighbours[x - 1][y - 1]++;
-                    }
-
-                    //Adds a neighbour to the left cell.
-                    if (x - 1 >= 0) {
-                        neighbours[x - 1][y]++;
-                    }
-
-                    //Adds a neighbour to the lower left corner cell.
-                    if (x - 1 >= 0 && y + 1 < getHeight()) {
-                        neighbours[x - 1][y + 1]++;
-                    }
-
-                    //Adds a neighbour to the cell above.
-                    if (y - 1 >= 0) {
-                        neighbours[x][y - 1]++;
-                    }
-
-                    //Adds a neighbour to the cell below.
-                    if (y + 1 < getHeight()) {
-                        neighbours[x][y + 1]++;
-                    }
-
-                    //Adds a neighbour to the upper right corner cell.
-                    if (x + 1 < getWidth() && y - 1 >= 0) {
-                        neighbours[x + 1][y - 1]++;
-                    }
-
-                    //Adds a neighbour to the right cell.
-                    if (x + 1 < getWidth()) {
-                        neighbours[x + 1][y]++;
-                    }
-
-                    //Adds a neighbour to the lower right corner cell.
-                    if (x + 1 < getWidth() && y + 1 < getHeight()) {
-                        neighbours[x + 1][y + 1]++;
-                    }
+                    setNeighbours(neighbours, x, y);
                 }
             }
         }
         return neighbours;
+    }
+
+    /**
+     * A method that iterates through and counts neighbours for the current cell grid concurrently. The
+     * neighbours 2D-byte array is split up according to how many active threads there are, and each thread
+     * iterates through its portion of the array. Calls setNeighbours if the cell is active for it
+     * to add 1 to each surrounding cell. Returns the 2D-array with the neighbour count for each cell.
+     * @param neighbours - 2D-byte array where new neighbours are set.
+     * @param curIndex - The current thread's index.
+     * @param rowsPerWorker - The number of rows each thread should consider.
+     * @return neighbours - 2D-array with neighbours counted for each cell.
+     * @see #getCellState(int, int)
+     * @see #setNeighbours(byte[][], int, int)
+     */
+    public byte[][] countNeighboursConcurrent(byte[][] neighbours, int curIndex, int rowsPerWorker) {
+        //Iterates through the cell grid and checks whether the current cell is active.
+        for (int x = rowsPerWorker*curIndex; x < (curIndex+1)*rowsPerWorker && x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+
+                //If active, it calls setNeighbours to assign value to nearby cells.
+                if (getCellState(x,y) == 1) {
+                    setNeighbours(neighbours, x, y);
+                }
+            }
+        }
+        return neighbours;
+    }
+
+    /**
+     * A synchronized method for adding neighbours around an active cell. Adds 1 to each cell surrounding the
+     * current cell. Is synchronized in order to avoid a race condition.
+     * @param neighbours - The 2D-array to operate on
+     * @param x - The x coordinate of the cell to be considered.
+     * @param y - The y coordinate of the cell to be considered.
+     */
+    private synchronized void setNeighbours(byte[][] neighbours, int x, int y){
+        //Adds a neighbour to the upper left corner cell.
+        if (x - 1 >= 0 && y - 1 >= 0) {
+            neighbours[x - 1][y - 1]++;
+        }
+
+        //Adds a neighbour to the left cell.
+        if (x - 1 >= 0) {
+            neighbours[x - 1][y]++;
+        }
+
+        //Adds a neighbour to the lower left corner cell.
+        if (x - 1 >= 0 && y + 1 < getHeight()) {
+            neighbours[x - 1][y + 1]++;
+        }
+
+        //Adds a neighbour to the cell above.
+        if (y - 1 >= 0) {
+            neighbours[x][y - 1]++;
+        }
+
+        //Adds a neighbour to the cell below.
+        if (y + 1 < getHeight()) {
+            neighbours[x][y + 1]++;
+        }
+
+        //Adds a neighbour to the upper right corner cell.
+        if (x + 1 < getWidth() && y - 1 >= 0) {
+            neighbours[x + 1][y - 1]++;
+        }
+
+        //Adds a neighbour to the right cell.
+        if (x + 1 < getWidth()) {
+            neighbours[x + 1][y]++;
+        }
+
+        //Adds a neighbour to the lower right corner cell.
+        if (x + 1 < getWidth() && y + 1 < getHeight()) {
+            neighbours[x + 1][y + 1]++;
+        }
     }
 
     /**
@@ -165,6 +147,16 @@ public abstract class Board {
         }
     }
 
+    /**
+     * A method for setting the cell grid from an existing 2D-array concurrently.
+     * The new grid is split into as many parts as there are threads, and each thread iterates through
+     * it's portion of the newGrid and sets the cells of the corresponding (x,y)-coordinates in the cell grid to be
+     * equal to those of newGrid.
+     * @param newGrid - The grid to be placed in the current cell grid.
+     * @param curIndex - The current thread's index.
+     * @param rowsPerWorker - The number of rows each thread should operate on.
+     * @see #setCellState(int, int, byte)
+     */
     public void setBoardConcurrent(byte[][] newGrid, int curIndex, int rowsPerWorker) {
         for (int x = rowsPerWorker*curIndex; x < (curIndex+1)*rowsPerWorker && x < newGrid.length; x++) {
             for (int y = 0; y < newGrid[0].length; y++) {
@@ -404,7 +396,7 @@ public abstract class Board {
                 }
             }
 
-        //Moves the pattern down
+            //Moves the pattern down
         } else if (direction.equals("down")) {
             if (loadedPatternBoundingBox[3] < getHeight()-1) {
                 loadedPatternBoundingBox[2] = yStart + 1;
@@ -419,7 +411,7 @@ public abstract class Board {
                 }
             }
 
-        //Moves the pattern left
+            //Moves the pattern left
         } else if (direction.equals("left")) {
             if (loadedPatternBoundingBox[0] > 0) {
                 loadedPatternBoundingBox[0] = xStart - 1;
@@ -438,7 +430,7 @@ public abstract class Board {
             if (loadedPatternBoundingBox[1] < getWidth() - 1) {
                 loadedPatternBoundingBox[0] = xStart + 1;
                 loadedPatternBoundingBox[1] = xStop + 1;
-            } else if (loadedPatternBoundingBox[1] == getWidth()-1) { //Checks if it is on the edge already.
+            } else if (loadedPatternBoundingBox[1] == getWidth() - 1) { //Checks if it is on the edge already.
 
                 //Checks if the board is an instance of DynamicBoard and the width is within the limits, and expands.
                 if (this instanceof DynamicBoard && getWidth() < 1900) {
@@ -447,10 +439,6 @@ public abstract class Board {
                     loadedPatternBoundingBox[1] = xStop + 1;
                 }
             }
-
-        //Returns if the direction is not equal to any valid direction.
-        } else {
-            return;
         }
     }
 
@@ -687,6 +675,50 @@ public abstract class Board {
     }
 
     /**
+     * Method that returns the current cellsAlive count.
+     * @return cellsAlive - The number of currently active cells.
+     * @see #cellsAlive
+     */
+    public int getCellsAlive() {
+        return cellsAlive;
+    }
+
+    /**
+     * Method to set the counter of active cells to that of the aliveCells parameter.
+     * @param aliveCells - The number of active cells to be set.
+     * @see #cellsAlive
+     */
+    public void setCellsAlive(int aliveCells) {
+        cellsAlive = aliveCells;
+    }
+
+    /**
+     * Method to set the counter of active cells to zero.
+     * @see #cellsAlive
+     */
+    public void resetCellsAlive() {
+        cellsAlive = 0;
+    }
+
+    /**
+     * Method that increases cellsAlive by 1. Synchronized to avoid a race condition.
+     * @see #cellsAlive
+     */
+    public synchronized void increaseCellsAlive() {
+        cellsAlive++;
+    }
+
+    /**
+     * Method that decreases cellsAlive by 1. Synchronized to avoid a race condition.
+     * @see #cellsAlive
+     */
+    public synchronized void decreaseCellsAlive() {
+        if (cellsAlive > 0) {
+            cellsAlive--;
+        }
+    }
+
+    /**
      * Method that returns a string representation of the current cell grid, placing each cell in a long
      * string of 1s and 0s. Overrides Objects toString method.
      * @return str.toString - The string representation of the current cellgrid.
@@ -745,8 +777,4 @@ public abstract class Board {
      */
     @Override
     public abstract Object clone();
-
 }
-
-
-//TODO: Rydd opp i CountNeighbours concurrent og ikke, samme med set board. JavaDoc på nytt.

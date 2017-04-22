@@ -142,12 +142,13 @@ public class Controller implements Initializable {
 
     /**
      * Instantiates a new KeyFrame that includes all methods needed for each frame of the game and returns it.
+     * @return KeyFrame
      * @see #generationLabel
      * @see #aliveLabel
      * @see #draw()
      * @see GameOfLife#genCounter
      * @see GameOfLife#nextGeneration()
-     * @return KeyFrame
+     * @see Board#getCellsAlive()
      */
     private KeyFrame addNewKeyFrame(){
         return new KeyFrame(Duration.millis(1000), e -> {
@@ -163,7 +164,7 @@ public class Controller implements Initializable {
             draw();
             gOL.genCounter++;
             generationLabel.setText(Integer.toString(gOL.genCounter));
-            aliveLabel.setText(Integer.toString(board.cellsAlive));
+            aliveLabel.setText(Integer.toString(board.getCellsAlive()));
         });
     }
 
@@ -230,7 +231,7 @@ public class Controller implements Initializable {
      * @see #aliveLabel
      * @see #timeline
      * @see Board#finalizeBoard()
-     * @see Board#cellsAlive
+     * @see Board#getCellsAlive()
      */
     public void startClick(ActionEvent actionEvent) {
         if(!isRunning){
@@ -238,7 +239,7 @@ public class Controller implements Initializable {
             isRunning = true;
             move = false;
             board.finalizeBoard();
-            aliveLabel.setText(Integer.toString(board.cellsAlive));
+            aliveLabel.setText(Integer.toString(board.getCellsAlive()));
             draw();
             timeline.play();
         }else{
@@ -246,7 +247,7 @@ public class Controller implements Initializable {
             isRunning = false;
             move = false;
             board.finalizeBoard();
-            aliveLabel.setText(Integer.toString(board.cellsAlive));
+            aliveLabel.setText(Integer.toString(board.getCellsAlive()));
             draw();
             timeline.pause();
         }
@@ -280,7 +281,7 @@ public class Controller implements Initializable {
      * @see #draw()
      * @see GameOfLife#genCounter
      * @see Board#resetBoard()
-     * @see Board#cellsAlive
+     * @see Board#getCellsAlive()
      * @see DynamicBoard#setGridSize(int)
      * @see CanvasDrawer#resetCellSize()
      * @see CanvasDrawer#resetOffset(Board, Canvas)
@@ -298,7 +299,7 @@ public class Controller implements Initializable {
             ((DynamicBoard)board).setGridSize(50);
             canvasDrawer.resetCellSize();
         }
-        aliveLabel.setText(Integer.toString(board.cellsAlive));
+        aliveLabel.setText(Integer.toString(board.getCellsAlive()));
         fileHandler.resetMetaData();
         canvasDrawer.resetOffset(board, canvasArea);
         draw();
@@ -358,11 +359,12 @@ public class Controller implements Initializable {
      * @see #draw()
      * @see CanvasDrawer#drawPressed(MouseEvent, Board, boolean)
      * @see CanvasDrawer#setOriginalDrag(MouseEvent)
+     * @see Board#getCellsAlive()
      */
     public void mousePressed(MouseEvent mouseEvent) {
         if (mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.drawPressed(mouseEvent, board, true);
-            aliveLabel.setText("" + board.cellsAlive);
+            aliveLabel.setText("" + board.getCellsAlive());
         }else if (mouseEvent.isSecondaryButtonDown()) {
             canvasDrawer.setOriginalDrag(mouseEvent);
             canvasArea.setCursor(Cursor.MOVE);
@@ -381,11 +383,12 @@ public class Controller implements Initializable {
      * @see #draw()
      * @see CanvasDrawer#drawDragged(MouseEvent, Board, boolean)
      * @see CanvasDrawer#setDragOffset(MouseEvent)
+     * @see Board#getCellsAlive()
      */
     public void mouseDragged(MouseEvent mouseEvent) {
         if (mouseEvent.isPrimaryButtonDown()) {
             canvasDrawer.drawDragged(mouseEvent, board, true);
-            aliveLabel.setText("" + board.cellsAlive);
+            aliveLabel.setText("" + board.getCellsAlive());
         } else if (mouseEvent.isSecondaryButtonDown()) {
             canvasDrawer.setDragOffset(mouseEvent);
         }
@@ -418,6 +421,7 @@ public class Controller implements Initializable {
      * @see FileHandler#readGameBoardFromDisk(File)
      * @see PopUpAlerts#ioAlertFromDisk()
      * @see CanvasDrawer#resetOffset(Board, Canvas)
+     * @see Board#getCellsAlive()
      */
     public void importFileClick(ActionEvent actionEvent) {
 
@@ -442,7 +446,7 @@ public class Controller implements Initializable {
             }
         }
 
-        aliveLabel.setText(Integer.toString(board.cellsAlive));
+        aliveLabel.setText(Integer.toString(board.getCellsAlive()));
         ruleLabel.setText(gOL.getRuleString().toUpperCase());
         move = true;
         canvasArea.requestFocus();
@@ -467,6 +471,7 @@ public class Controller implements Initializable {
      * @see FileHandler#readGameBoardFromURL(String)
      * @see PopUpAlerts#ioAlertFromURL()
      * @see CanvasDrawer#resetOffset(Board, Canvas)
+     * @see Board#getCellsAlive()
      */
     public void importURLClick(ActionEvent actionEvent) {
 
@@ -484,7 +489,7 @@ public class Controller implements Initializable {
             generationLabel.setText(Integer.toString(gOL.genCounter));
             try {
                 fileHandler.readGameBoardFromURL(url);
-                aliveLabel.setText(Integer.toString(board.cellsAlive));
+                aliveLabel.setText(Integer.toString(board.getCellsAlive()));
                 ruleLabel.setText(gOL.getRuleString().toUpperCase());
             } catch (IOException ie) {
                 PopUpAlerts.ioAlertFromURL();
@@ -595,6 +600,7 @@ public class Controller implements Initializable {
      * @param keyEvent - The key pressed by the user.
      * @see #move
      * @see #draw()
+     * @see Board#getCellsAlive()
      * @see Board#movePattern(String)
      * @see Board#rotate(boolean)
      * @see Board#finalizeBoard()
@@ -625,7 +631,7 @@ public class Controller implements Initializable {
         //Should the key be ENTER, it will call Board's finalizeBoard() method and update the aliveLabel.
         } else if (keyEvent.getCode() == KeyCode.ENTER) {
             board.finalizeBoard();
-            aliveLabel.setText(Integer.toString(board.cellsAlive));
+            aliveLabel.setText(Integer.toString(board.getCellsAlive()));
             move = false;
 
         //Should the key be ESCAPE, it will call Board's discardPattern() method.
@@ -693,6 +699,11 @@ public class Controller implements Initializable {
         editorStage.initModality(Modality.WINDOW_MODAL);
         editorStage.initOwner(canvasArea.getScene().getWindow());
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Editor.fxml"));
+
+        //Produces a warning to the user if the board size is larger than what the editor window can draw
+        if (board.getWidth() > 1200 || board.getHeight() > 1200) {
+            PopUpAlerts.editorSizeAlert();
+        }
 
         try {
             //Tries to load the fxml and sets editorController from that.
@@ -837,3 +848,5 @@ public class Controller implements Initializable {
         }
     }
 }
+
+//TODO: Lag en "info/controller" view som kan vises.

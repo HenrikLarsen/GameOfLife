@@ -59,7 +59,7 @@
                   <VBox>
                      <children>
                         <Label prefHeight="17.0" prefWidth="102.0" text="Set FPS" />
-                        <TextField fx:id="fpsInputField" alignment="TOP_LEFT" maxWidth="180.0" prefHeight="7.0" prefWidth="103.0" promptText="1-60">
+                        <TextField fx:id="fpsInputField" alignment="TOP_LEFT" maxWidth="180.0" prefHeight="7.0" prefWidth="103.0" promptText="1-50">
                            <HBox.margin>
                               <Insets top="12.0" />
                            </HBox.margin>

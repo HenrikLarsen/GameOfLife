@@ -27,6 +27,18 @@ public class GifConstructor {
     private java.awt.Color gifCellColor;
     private boolean drawEntireBoard;
 
+    public GifConstructor (GameOfLife gol, int iterations, int fps, boolean entireBoardBool, Color backgroundColor,
+                           Color cellColor, int size) {
+        this.gifGol = gol;
+        this.gifBoard = gifGol.playBoard;
+        this.counter = iterations;
+        this.milliseconds = 1000/fps;
+        this.drawEntireBoard = entireBoardBool;
+        this.gifBackgroundColor = convertToAwtColor(backgroundColor);
+        this.gifCellColor = convertToAwtColor(cellColor);
+        this.gifSize = size;
+    }
+
     /**
      * Method that exports a gif to file by creating a new GIFwriter and calling the writeGoLSequenceToGif method.
      * Catches an IOException if thrown, and shows a popup to the user explaining what went wrong.
@@ -173,75 +185,6 @@ public class GifConstructor {
         float blue = (float) color.getBlue();
         float opacity = (float) color.getOpacity();
 
-        java.awt.Color newColor = new java.awt.Color(red, green, blue, opacity);
-
-        return newColor;
+        return new java.awt.Color(red, green, blue, opacity);
     }
-
-    /**
-     * Method that sets the current GameOfLife to be considered when drawing the gif.
-     * @param gameOfLife - The GameOfLife to be set as current gameOfLife.
-     * @see #gifGol
-     */
-    public void setGifGol(GameOfLife gameOfLife) {
-        gifGol = gameOfLife;
-        gifBoard = gifGol.playBoard;
-    }
-
-    /**
-     * Method that sets the current counter.
-     * @param iterations - The number of iterations to be drawn.
-     * @see #counter
-     */
-    public void setCounter(int iterations) {
-        counter = iterations;
-    }
-
-    /**
-     * Method that sets the current milliseconds between each image based on the frames per second.
-     * @param fps - The number of frames to be shown per second.
-     * @see #milliseconds
-     */
-    public void setMilliseconds(int fps) {
-        milliseconds = 1000/fps;
-    }
-
-    /**
-     * Method that sets the size of the gif in pixels..
-     * @param size - The size to be set in pixels.
-     * @see #gifSize
-     */
-    public void setGifSize(int size) {
-        gifSize = size;
-    }
-
-    /**
-     * Method that sets the background color to be drawn. Calls convertToAwtColor to convert
-     * a javafx color to java.awt color.
-     * @param color - The color to be set as background color.
-     * @see #gifBackgroundColor
-     */
-    public void setGifBackgroundColor(Color color) {
-        gifBackgroundColor = convertToAwtColor(color);
-    }
-
-    /**
-     * Method that sets the cell color to be drawn. Calls convertToAwtColor to convert
-     * a javafx color to java.awt color.
-     * @param color - The color to be set as cell color.
-     * @see #gifCellColor
-     */
-    public void setGifCellColor(Color color) {
-        gifCellColor = convertToAwtColor(color);
-    }
-
-    /**
-     * Method that sets the whether or not to draw the whole board, or just the active pattern.
-     * @param b - Boolean value to be set.
-     * @see #drawEntireBoard
-     */
-    public void setDrawEntireBoard(boolean b) {
-        drawEntireBoard = b;
-    }
-
 }

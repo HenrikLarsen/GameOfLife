@@ -136,7 +136,7 @@ public class GameOfLifeTest {
                 {0, 0, 0, 0, 0, 0, 0, 0}};
 
         board.setBoard(testBoard);
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         String expectedOutput = "000000000000000000010100000001100000001000000000000000000000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
         org.junit.Assert.assertEquals(9, board.getWidth());
@@ -155,7 +155,7 @@ public class GameOfLifeTest {
         };
 
         board.setBoard(testBoard);
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         String expectedOutput = "000000010001010010100010000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
         org.junit.Assert.assertEquals(5, board.getWidth());
@@ -176,21 +176,21 @@ public class GameOfLifeTest {
         };
 
         board.setBoard(testBoard);
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         String expectedOutput = "0000000000000001010000011000001000000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
         org.junit.Assert.assertEquals(7, board.getWidth());
         org.junit.Assert.assertEquals(7, board.getHeight());
 
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         expectedOutput = "0000000000000000010000101000001100000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
 
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         expectedOutput = "0000000000000000100000001100001100000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
 
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         expectedOutput = "0000000000000000010000000100001110000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
     }
@@ -209,20 +209,20 @@ public class GameOfLifeTest {
         };
 
         board.setBoard(testBoard);
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         String expectedOutput = "0011110001011110100000111101001111001011110000010111101000111100";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
         org.junit.Assert.assertEquals(8, board.getWidth());
         org.junit.Assert.assertEquals(8, board.getHeight());
 
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         expectedOutput = "000011000000010001000010000010010010000010010000011" +
                 "0000010010000010010010000010000100010000000110000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
         org.junit.Assert.assertEquals(10, board.getWidth());
         org.junit.Assert.assertEquals(10, board.getHeight());
 
-        gol.nextGenerationConcurrentPrintPerformance();
+        gol.nextGenerationConcurrent();
         expectedOutput = "00000000000000000100000000001100000000011000000000111000" +
                 "0000011000000000000000000110000000011100000000011000000000110000000000100000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
@@ -251,7 +251,7 @@ public class GameOfLifeTest {
         String expectedOutput = board.toString();
 
         for (int x = 0; x < 600; x++) {
-            gol.nextGenerationConcurrentPrintPerformance();
+            gol.nextGenerationConcurrent();
         }
 
         String actualOutput = board.toString();
@@ -568,8 +568,8 @@ public class GameOfLifeTest {
     //There appears to be a bug that makes the popup window shown when the formatting is wrong
     //to throw NoClassDefFoundError instead of ExceptionInInitializerError when using junit.
     //As long as the error comes from a popup window, the right exception is thrown in the method.
-    //@Test(expected = NoClassDefFoundError.class)
-    @Test(expected = ExceptionInInitializerError.class)
+    @Test(expected = NoClassDefFoundError.class)
+    //@Test(expected = ExceptionInInitializerError.class)
     public void setRuleSetTest4() {
         board = new DynamicBoard(8,8);
         gol = new GameOfLife(board);

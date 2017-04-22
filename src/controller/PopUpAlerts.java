@@ -132,13 +132,13 @@ public class PopUpAlerts {
     }
 
     /**
-     * Creates a warning when trying to set the fps of a gif above 60, telling the user to select a valid value.
+     * Creates a warning when trying to set the fps of a gif above 50, telling the user to select a valid value.
      */
     public static void gifFPSAlert () {
         Alert fpsAlert = new Alert(Alert.AlertType.WARNING);
         fpsAlert.setTitle("Error");
         fpsAlert.setHeaderText("FPS too high");
-        fpsAlert.setContentText("You're going too fast! Please keep your FPS input between 1 and 60");
+        fpsAlert.setContentText("You're going too fast! Please keep your FPS input between 1 and 50");
         fpsAlert.showAndWait();
     }
 
@@ -152,6 +152,17 @@ public class PopUpAlerts {
         resizeAlert.setHeaderText("Invalid size!");
         resizeAlert.setContentText("The size you have chosen is not valid. Please write a number between 6 and 1000!");
         resizeAlert.showAndWait();
+    }
+
+    public static void editorSizeAlert() {
+        Alert editorAlert = new Alert(Alert.AlertType.WARNING);
+        editorAlert.setTitle("Warning");
+        editorAlert.setHeaderText("Board size very large!");
+        editorAlert.setContentText("The size of your board is very large. \n\nIn fact, it is so large that it might be" +
+                " difficult to draw the board on the limited size of the editor window. You will still be able to" +
+                " export the board as a GIF or RLE-file, but it might not be drawn in the editor.\n\n" +
+                "To avoid this issue in the future, try resetting the board, and export a smaller pattern.");
+        editorAlert.showAndWait();
     }
 
     /**

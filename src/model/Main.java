@@ -20,3 +20,6 @@ public class Main extends Application {
         launch(args);
     }
 }
+
+
+//TODO: Gjør stagen non-resizable evnt sett ny størrelse osv

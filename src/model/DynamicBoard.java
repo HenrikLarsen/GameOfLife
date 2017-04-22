@@ -16,6 +16,8 @@ import java.util.ArrayList;
 public class DynamicBoard extends Board{
     private ArrayList<ArrayList<Byte>> cellGrid;
     private int WIDTH, HEIGHT;
+    private int maxSize = 1900;
+    private int runTimeExpansionLimit = 1000;
 
     //Boolean value to set whether or not the board is expandable.
     private boolean expandable = true;
@@ -81,11 +83,14 @@ public class DynamicBoard extends Board{
      * @param x - the x coordinate.
      * @param y - the y coordinate.
      * @param state - The state the cell should be set to.
+     * @see #expandable
+     * @see #maxSize
      * @see #expandWidthRight(int)
      * @see #expandWidthLeft(int)
      * @see #expandHeightDown(int)
      * @see #expandHeightUp(int)
      * @see #checkForExpand(int, int)
+     * @see #setOutOfBounds(int, int)
      * @see Board#setCellState(int, int, byte)
      * @see PopUpAlerts#edgeAlert()
      */
@@ -94,10 +99,13 @@ public class DynamicBoard extends Board{
         int row = x;
         int column = y;
 
-        //Check to see if the cell is within the width limit.
-        if ((x >= getWidth() || x < 0) && (getWidth() > 1900)) { //|| Math.abs(x)+getWidth() > 1900)) {
+        //Check to see if the cell is within the width max limit.
+        int xOutOfBounds = setOutOfBounds(x, getWidth());
+        int yOutOfBounds = setOutOfBounds(y, getHeight());
+        if ((x >= getWidth() || x < 0) && (getWidth() > maxSize || xOutOfBounds > maxSize-getWidth())) {
             //If it is outside of the current board and the limit, it will show a notification to the user.
             PopUpAlerts.edgeAlert();
+            System.out.println("x = "+x+"\nWidth = "+getWidth());
             return;
 
         //Checks if it is outside of the current board and the grid is expandable, and expands if it is.
@@ -110,10 +118,11 @@ public class DynamicBoard extends Board{
             row = 0;
         }
 
-        //Check to see if the cell is within the height limit.
-        if ((y >= getHeight() || y < 0) && (getHeight() > 1900)) {// || Math.abs(y)+getHeight() > 1900)) {
+        //Check to see if the cell is within the height max limit.
+        if ((y >= getHeight() || y < 0) && (getHeight() > maxSize || yOutOfBounds > maxSize-getHeight())) {
             //If it is outside of the current board and the limit, it will show a notification to the user.
             PopUpAlerts.edgeAlert();
+            System.out.println("y = "+y+"\nHeight = "+getHeight());
             return;
 
         //Checks if it is outside of the current board and the grid is expandable, and expands if it is.
@@ -135,7 +144,6 @@ public class DynamicBoard extends Board{
         if (state == 1) {
             checkForExpand(x, y);
         }
-        //TODO: Fiks limitern (DEN FORRIGE HADDE RÆVVA BØGG)
     }
 
     /**
@@ -181,7 +189,7 @@ public class DynamicBoard extends Board{
      * Concrete implementation of clone in the Board class. Does a deep copy of the current DynamicBoard and
      * returns it. Overrides the clone method in the Object class.
      * @return dynamicBoardClone - The deep copy of the board.
-     * @see Board#cellsAlive
+     * @see Board#getCellsAlive()
      * @see Board#clone()
      * @see Object#clone()
      */
@@ -195,7 +203,7 @@ public class DynamicBoard extends Board{
             }
         }
         DynamicBoard dynamicBoardClone = new DynamicBoard(cloneGrid, getWidth(), getHeight());
-        dynamicBoardClone.cellsAlive = countCellsAlive();
+        dynamicBoardClone.setCellsAlive(countCellsAlive());
         return dynamicBoardClone;
     }
 
@@ -260,7 +268,6 @@ public class DynamicBoard extends Board{
      * @see #getHeight()
      */
     private void checkForExpand(int x, int y) {
-
         //checks if the cell is on the left border
         if (x == 0) {
             expandLeft = true;
@@ -287,6 +294,7 @@ public class DynamicBoard extends Board{
      * expansions, and if it is expandable. Checks each boolean for expansion, and expands if true.
      * If it has expanded upward or left, it will set the corresponding "hasExpanded" boolean to true, so
      * that the CanvasDrawer can check to adjust its offset.
+     * @see #runTimeExpansionLimit
      * @see #expandLeft
      * @see #expandRight
      * @see #expandUp
@@ -296,12 +304,12 @@ public class DynamicBoard extends Board{
      */
     public void expandBoardDuringRunTime() {
         //Checks if the board is non-expandable or bigger than the runtime-expansion limit and returns if yes.
-        if ((getHeight() >= 1000 && getWidth() >= 1000) || !expandable) {
+        if ((getHeight() >= runTimeExpansionLimit && getWidth() >= runTimeExpansionLimit) || !expandable) {
             return;
         }
 
         //Checks that width is within run-time expansion limit, and expands if the corresponding boolean is true.
-        if (getWidth() < 1000) {
+        if (getWidth() < runTimeExpansionLimit) {
             if (expandLeft) {
                 expandWidthLeft(1);
                 hasExpandedLeft = true;
@@ -314,7 +322,7 @@ public class DynamicBoard extends Board{
         }
 
         //Checks that height is within run-time expansion limit, and expands if the corresponding boolean is true.
-        if (getHeight() < 1000) {
+        if (getHeight() < runTimeExpansionLimit) {
             if (expandUp) {
                 expandHeightUp(1);
                 expandUp = false;
@@ -419,6 +427,26 @@ public class DynamicBoard extends Board{
     }
 
     /**
+     * Method that checks how far outside the board a cell is in one axis. Checks the cells relevant coordinate with
+     * either the height or width of the board and returns a value representing how far out of the border it is.
+     * Returns 0 if the cell is within the current grid size.
+     * @param i - The x or y coordinate of the cell.
+     * @param widthOrHeight - The current boards width or height, depending on which axis it checks.
+     * @return value - The absolute value of how far outside the cell is.
+     */
+    public int setOutOfBounds(int i, int widthOrHeight) {
+        int value;
+        if (i < 0) {
+            value = Math.abs(i);
+        } else if (i >= widthOrHeight) {
+            value = i-widthOrHeight+1;
+        } else {
+            value = 0;
+        }
+        return value;
+    }
+
+    /**
      * Method that sets a boolean value to hasExpandedUp.
      * @param b - boolean value to be assigned.
      * @see #hasExpandedUp
@@ -458,7 +486,7 @@ public class DynamicBoard extends Board{
     }
 
     /**
-     * Method that returns a boolean representing if the grid has been expanded upward, and then sets hasExpandedUp
+     * Method that returns a boolean representing if the grid has been expanded upwards, and then sets hasExpandedUp
      * to false. Needed for CanvasDrawer to be able to adjust offset if the grid has expanded upwards.
      * @return returnValue = The value of boolean hasExpandedUp
      * @see #hasExpandedUp
@@ -468,6 +496,4 @@ public class DynamicBoard extends Board{
         hasExpandedUp = false;
         return returnValue;
     }
-
-
 }
