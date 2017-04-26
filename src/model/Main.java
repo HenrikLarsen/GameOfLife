@@ -18,8 +18,8 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();
         primaryStage.show();
-        //ThreadWorker workers = ThreadWorker.getInstance();
-        //primaryStage.setOnCloseRequest(event -> workers.shutDownExecutor());
+        ThreadWorker workers = ThreadWorker.getInstance();
+        primaryStage.setOnCloseRequest(event -> workers.shutDownExecutor());
     }
     public static void main(String[] args) {
         launch(args);
