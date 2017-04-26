@@ -69,6 +69,11 @@ public class ThreadWorker {
      * @param callableList - The list of Callable objects to be executed.
      */
     private void runCallableList(List<Callable<Void>> callableList) {
+        if (threadPool.isShutdown()) {
+            System.out.println("Shutting down");
+            return;
+        }
+
         try {
             threadPool.invokeAll(callableList);
         } catch (InterruptedException ie) {
