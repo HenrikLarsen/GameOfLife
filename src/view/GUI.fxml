@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-Skrevet av Oscar Vladau-Husevold og Henrik Finnerud Larsen.
-Layout er konstruert ved bruk av scenebuilder.
--->
-
-<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
@@ -30,6 +24,11 @@ Layout er konstruert ved bruk av scenebuilder.
                         <MenuItem mnemonicParsing="false" onAction="#showRuleDescription" text="Show rules description" />
                         <MenuItem mnemonicParsing="false" onAction="#showMetadata" text="Show pattern metadata" />
                         <MenuItem mnemonicParsing="false" onAction="#showStatistic" text="Show statistic" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="About">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About / Help" />
                     </items>
                 </Menu>
             </menus>
@@ -102,28 +101,28 @@ Layout er konstruert ved bruk av scenebuilder.
                         <Insets right="10.0" />
                     </VBox.margin>
                 </TextField>
-            <Label text="Rules">
-               <VBox.margin>
-                  <Insets top="30.0" />
-               </VBox.margin>
-            </Label>
-            <ChoiceBox fx:id="chooseRulesBox" onAction="#chooseRulesClick" prefHeight="27.0" prefWidth="81.0" />
-            <Label text="Rules:">
-               <font>
-                  <Font size="12.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="80.0" />
-               </VBox.margin>
-            </Label>
-            <Label fx:id="ruleLabel" prefHeight="15.0" prefWidth="76.0" text="B3/S23">
-               <font>
-                  <Font size="12.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin>
-            </Label>
+                <Label text="Rules">
+                    <VBox.margin>
+                        <Insets top="30.0" />
+                    </VBox.margin>
+                </Label>
+                <ChoiceBox fx:id="chooseRulesBox" onAction="#chooseRulesClick" prefHeight="27.0" prefWidth="81.0" />
+                <Label text="Rules:">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="80.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="ruleLabel" prefHeight="15.0" prefWidth="76.0" text="B3/S23">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="5.0" />
+                    </VBox.margin>
+                </Label>
                 <Label text="Generation:">
                     <font>
                         <Font size="12.0" />

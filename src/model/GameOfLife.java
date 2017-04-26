@@ -2,13 +2,7 @@ package model;
 
 import controller.PopUpAlerts;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,19 +18,16 @@ import java.util.regex.Pattern;
 public class GameOfLife {
     public int genCounter = 0;
     public Board playBoard;
+    private ThreadWorker workers;
     public byte[][] neighbourCount;
     public byte[][] newGenerationCells;
 
-    //Data fields related to concurrency
-    private Runnable countNeighboursTask;
-    private Runnable enforceRulesTask;
-    private Runnable setBoardTask;
-    private int threadIndex = 0;
-    private int rowsPerWorker;
+    //Callable objects containing the tasks needed for each generation. Used when running concurrently.
+    private Callable<Void> countNeighboursCallable;
+    private Callable<Void> enforceAndSetCallable;
 
-    //The number of threads to be used. Equal to the system's available processors times two, because we assume the CPU
-    //supports hyper-threading
-    private int numWorkers = Runtime.getRuntime().availableProcessors()*2;
+    //The number of rows each thread should operate on when running concurrently.
+    private int rowsPerWorker;
 
     //Data fields related to the current rules.
     private String ruleString = "B3/S23";
@@ -47,7 +38,7 @@ public class GameOfLife {
 
     /**
      * Sole constructor, sets the parameter board as the current board.
-     * @param board - The board to be played.
+     * @param board - The board to be used.
      */
     public GameOfLife(Board board) {
         this.playBoard = board;
@@ -81,18 +72,17 @@ public class GameOfLife {
     }
 
     /**
-     * Sets the next generation of cells as the current play board concurrently.
-     * Creates several threads to do each task concurrently, by calling generateTasks() and createWorkerList() for
-     * each task. Between each task it waits for all active threads to finish their task before moving on to the next.
-     * Calls on Boards countNeighbours() and sets it as a 2D-array.
-     * If the Board is an instance of DynamicBoard it checks if it needs to expand, and expands if yes.
-     * Calls on enforceRules() and finally sets the new generation as the current play board.
+     * Sets the next generation of cells as the current play board concurrently. If the Board is an instance of
+     * DynamicBoard it checks if it needs to expand, and expands if yes. Calculates the number of rows
+     * each thread should consider, and calls generateCallables() to update the Callable objects for this generation.
+     * Because of how Board's countNeighbours method works, it needs to make sure that the neighbours have been
+     * counted before enforcing the rules and setting the new board. Therefore there are two calls to ThreadWorker'
+     * runWorkers() method, which will execute all threads and wait for them to finish.
      * @see #newGenerationCells
      * @see #rowsPerWorker
      * @see #neighbourCount
-     * @see #generateTasks()
-     * @see #waitForThreads(List)
-     * @see #createWorkerList(Runnable)
+     * @see #generateCallables()
+     * @see ThreadWorker#runWorkers(Callable)
      * @see Board#resetCellsAlive()
      * @see DynamicBoard#expandBoardDuringRunTime()
      */
@@ -107,22 +97,14 @@ public class GameOfLife {
         neighbourCount = new byte[playBoard.getWidth()][playBoard.getHeight()];
 
         //Calculates how many rows each thread will operate on.
-        rowsPerWorker = (int)Math.ceil((double)playBoard.getWidth()/(double)numWorkers);
+        rowsPerWorker = (int)Math.ceil((double)playBoard.getWidth()/(double) workers.getNumWorkers());
 
-        generateTasks();
+        //Updates the Callable objects for this generation
+        generateCallables();
 
-        //Creates the list of threads, starts each thread and waits for all to finnish before moving on.
-        List<Thread> neighbourWorkers = createWorkerList(countNeighboursTask);
-        neighbourWorkers.forEach(Thread::start);
-        waitForThreads(neighbourWorkers);
-
-        List<Thread> enforceWorkers = createWorkerList(enforceRulesTask);
-        enforceWorkers.forEach(Thread::start);
-        waitForThreads(enforceWorkers);
-
-        List<Thread> setBoardWorkers = createWorkerList(setBoardTask);
-        setBoardWorkers.forEach(Thread::start);
-        waitForThreads(setBoardWorkers);
+        //Runs both Callable objects and waits till all threads are done before continuing.
+        workers.runWorkers(countNeighboursCallable);
+        workers.runWorkers(enforceAndSetCallable);
     }
 
     /**
@@ -149,79 +131,33 @@ public class GameOfLife {
         System.out.println("Counting time (ms): " + elapsed);
     }
 
-    /**
-     * Method that returns the current threadIndex and adds 1 to it. If it is greater or equal to the number
-     * of active threads, it resets to 0. The method is synchronized to avoid a race condition.
-     * @return threadIndex - The index of the current thread relative to the rest.
-     * @see #threadIndex
-     * @see #numWorkers
-     */
-    public synchronized int getThreadIndex() {
-        if (threadIndex >= numWorkers) threadIndex=0;
-        return threadIndex++;
-    }
 
     /**
-     * Method for making sure that all active threads related to a task is finished. Important because every
-     * task needs to be completed before the next task is initialised. Iterates through the list of threads and
-     * calls Threads join() method before moving on. If an InterruptedException is thrown, it will interrupt that
-     * thread and print a message to the console.
-     * @param workerList - The list of threads to wait on.
-     */
-    public void waitForThreads(List<Thread> workerList) {
-        for (Thread t : workerList) {
-            try {
-                t.join();
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-                System.out.println("Error waiting for thread");
-            }
-        }
-    }
-
-    /**
-     * Method for generating the runnable tasks the threads needs to perform. Is updated every generation
-     * so that the rowsPerWorker is correct relative to the current cell grid. Creates three Runnable objects.
-     * @see #countNeighboursTask
-     * @see #enforceRulesTask
-     * @see #setBoardTask
+     * Method for generating the Callable tasks the ThreadWorker class needs to perform. Is updated every generation
+     * so that the rowsPerWorker is correct relative to the current cell grid. Because of how countNeighbours() in
+     * Board is implemented, there are two separate Callable objects. This is because countNeighbours()
+     * needs to be complete before the rules are enforced and the new board is set.
+     * @see #countNeighboursCallable
+     * @see #enforceAndSetCallable
      * @see #neighbourCount
      * @see #rowsPerWorker
-     * @see #getThreadIndex()
+     * @see ThreadWorker#getThreadIndex()
      * @see Board#countNeighboursConcurrent(byte[][], int, int)
      * @see Board#setBoardConcurrent(byte[][], int, int)
      */
-    private void generateTasks() {
-        countNeighboursTask = ()-> {
-            int index = getThreadIndex();
+    private void generateCallables() {
+        countNeighboursCallable = ()-> {
+            int index = workers.getThreadIndex();
             neighbourCount = playBoard.countNeighboursConcurrent(neighbourCount, index, rowsPerWorker);
+            return null;
         };
 
-        enforceRulesTask = ()-> {
-            int index = getThreadIndex();
+        enforceAndSetCallable = ()-> {
+            int index = workers.getThreadIndex();
             enforceRulesConcurrent(index);
-        };
-
-        setBoardTask = ()-> {
-            int index = getThreadIndex();
             playBoard.setBoardConcurrent(newGenerationCells, index, rowsPerWorker);
+            return null;
         };
-    }
-
-    /**
-     * Method for generating a List of threads the size of numWorkers. The parameter task is a Runnable Object
-     * that each Thread in that list will perform.
-     * @param task - The Runnable object that each Thread in the list needs to perform.
-     * @return list - The list of threads.
-     * @see #numWorkers
-     */
-    private List<Thread> createWorkerList(Runnable task) {
-        List<Thread> list = new ArrayList<>();
-        for (int i = 0; i < numWorkers; i++) {
-            Thread t = new Thread(task);
-            list.add(t);
-        }
-        return list;
     }
 
 
@@ -445,6 +381,15 @@ public class GameOfLife {
      * @return ruleString - The current full rule String
      * @see #ruleString
      */
+    public void setThreadWorkers(ThreadWorker tw){
+        this.workers = tw;
+    }
+
+    /**
+     * Method that returns the current ruleString.
+     * @return ruleString - The current full rule String
+     * @see #ruleString
+     */
     public String getRuleString(){
         return ruleString;
     }
@@ -513,6 +458,7 @@ public class GameOfLife {
         golClone.ruleString = ruleString;
         golClone.ruleName = ruleName;
         golClone.ruleDescription = ruleDescription;
+        golClone.workers = workers;
         return golClone;
     }
 }

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AboutController">
+   <bottom>
+      <Button fx:id="aboutCloseButton" mnemonicParsing="false" onAction="#aboutCloseClick" prefWidth="90.0" text="Close" BorderPane.alignment="BOTTOM_RIGHT">
+         <BorderPane.margin>
+            <Insets bottom="5.0" right="10.0" top="5.0" />
+         </BorderPane.margin>
+      </Button>
+   </bottom>
+   <center>
+      <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" styleClass="edge-to-edge" BorderPane.alignment="CENTER">
+         <content>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="About The Game of Life" textAlignment="CENTER" wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" right="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The Game of Life is a cellular automaton created by John Horton Conway in 1970. It is effectively a zero-player game, meaning that it needs no further input after start." wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="How to play" textAlignment="CENTER" wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="20.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Either load a pattern into the game using a file, an URL or the built in pre-sets, or use the left mouse button to draw a pattern on the play board. Then you can press start to start the game, or reset board to go back to a blank slate. &#10;&#10;The center view button will take you back to the middle of the board (The center is subject to change whilst the game is running.)&#10;&#10;The speed slider-bar will allow you to manipulate the speed of the animation, from 1 to 30 frames per second (FPS)" wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin></Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rules" textAlignment="CENTER" wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="20.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The initial rules are quite simple: If a live cell has two or three neighbours, it survives to the next generation. If a dead cell has exactly three neighbours, it is born. All other conditions result in dead cells. &#10;&#10;There are several other rules. You can use the rule drop-down menu to choose from a list of already created rules, or you can experiment with your own combination by writing in the Set Rules box and pressing enter. &#10;&#10;Remember that the rules must be formatted such:&#10;Bxx/Sxx – Where the B stands for when a cell is born, and S for when a cell survives. " wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin></Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" textAlignment="CENTER" wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="20.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scroll Wheel &#9;&#9;&#9;– Zoom in and out. &#10;Left Mouse Button &#9;&#9;– Draw and erase cells from the board.&#10;Right Mouse Button &#9;– Drag the board to look around. &#10;&#9;&#9;&#9;&#9;&#9;   (PS: If you get lost, press the center view button)" wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin></Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="After loading a pattern:" wrappingWidth="550.0">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" top="10.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Arrow Keys or WASD&#9;– Move the Pattern around&#10;ENTER or Q &#9;&#9;&#9;– Rotate the loaded pattern counter clockwise&#10;MINUS or E &#9;&#9;&#9;– Rotate the loaded pattern clockwise.&#10;ENTER &#9;&#9;&#9;&#9;– Finalises the pattern and puts it as a permanent part of the board&#10;ESC &#9;&#9;&#9;&#9;&#9;– Discards the loaded pattern. " wrappingWidth="550.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Implemented by Henrik Finnerud Larsen and Oscar Vladau-Husevold.&#10;All information regarding rules, patterns etc and pattern presets are taken from LifeWiki.com." textAlignment="CENTER" wrappingWidth="550.0">
+                     <VBox.margin>
+                        <Insets top="50.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                  </Text>
+               </children>
+               <padding>
+                  <Insets left="20.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </content>
+         <BorderPane.margin>
+            <Insets top="10.0" />
+         </BorderPane.margin>
+      </ScrollPane>
+   </center>
+</BorderPane>

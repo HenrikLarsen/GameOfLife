@@ -1,6 +1,5 @@
 package unitTesting;
 
-import javafx.scene.control.Alert;
 import model.*;
 import org.junit.Test;
 
@@ -11,6 +10,7 @@ import java.io.IOException;
 public class GameOfLifeTest {
     private Board board;
     private GameOfLife gol;
+    private ThreadWorker threadWorker = ThreadWorker.getInstance();
 
     @Test
     public void nextGenerationTest1() {
@@ -136,6 +136,7 @@ public class GameOfLifeTest {
                 {0, 0, 0, 0, 0, 0, 0, 0}};
 
         board.setBoard(testBoard);
+        gol.setThreadWorkers(threadWorker);
         gol.nextGenerationConcurrent();
         String expectedOutput = "000000000000000000010100000001100000001000000000000000000000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
@@ -155,6 +156,7 @@ public class GameOfLifeTest {
         };
 
         board.setBoard(testBoard);
+        gol.setThreadWorkers(threadWorker);
         gol.nextGenerationConcurrent();
         String expectedOutput = "000000010001010010100010000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
@@ -176,6 +178,7 @@ public class GameOfLifeTest {
         };
 
         board.setBoard(testBoard);
+        gol.setThreadWorkers(threadWorker);
         gol.nextGenerationConcurrent();
         String expectedOutput = "0000000000000001010000011000001000000000000000000";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
@@ -209,6 +212,7 @@ public class GameOfLifeTest {
         };
 
         board.setBoard(testBoard);
+        gol.setThreadWorkers(threadWorker);
         gol.nextGenerationConcurrent();
         String expectedOutput = "0011110001011110100000111101001111001011110000010111101000111100";
         org.junit.Assert.assertEquals(expectedOutput, gol.playBoard.toString());
@@ -248,9 +252,39 @@ public class GameOfLifeTest {
         }
 
         board.finalizeBoard();
+        gol.setThreadWorkers(threadWorker);
         String expectedOutput = board.toString();
 
-        for (int x = 0; x < 600; x++) {
+        for (int x = 0; x < 1200; x++) {
+            gol.nextGenerationConcurrent();
+        }
+
+        String actualOutput = board.toString();
+        org.junit.Assert.assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    public void nextGenerationConcurrentTest6 () {
+        board = new DynamicBoard(20, 20);
+        gol = new GameOfLife(board);
+        FileHandler fileHandler = new FileHandler();
+        fileHandler.setBoard(board);
+        fileHandler.setGol(gol);
+
+        //An RLE-file that oscillates every 16 generations.
+        File file = new File("src/resources/testFiles/achimTest.rle");
+
+        try{
+            fileHandler.readGameBoardFromDisk(file);
+        } catch (IOException ioe) {
+            org.junit.Assert.fail();
+        }
+
+        board.finalizeBoard();
+        gol.setThreadWorkers(threadWorker);
+        String expectedOutput = board.toString();
+
+        for (int x = 0; x < 1600; x++) {
             gol.nextGenerationConcurrent();
         }
 
@@ -568,8 +602,8 @@ public class GameOfLifeTest {
     //There appears to be a bug that makes the popup window shown when the formatting is wrong
     //to throw NoClassDefFoundError instead of ExceptionInInitializerError when using junit.
     //As long as the error comes from a popup window, the right exception is thrown in the method.
-    @Test(expected = NoClassDefFoundError.class)
-    //@Test(expected = ExceptionInInitializerError.class)
+    //@Test(expected = NoClassDefFoundError.class)
+    @Test(expected = ExceptionInInitializerError.class)
     public void setRuleSetTest4() {
         board = new DynamicBoard(8,8);
         gol = new GameOfLife(board);

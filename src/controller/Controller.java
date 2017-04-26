@@ -59,6 +59,7 @@ public class Controller implements Initializable {
     private GameOfLife gOL = new GameOfLife(board);
     private CanvasDrawer canvasDrawer = new CanvasDrawer();
     private FileHandler fileHandler = new FileHandler();
+    private ThreadWorker threadWorker = ThreadWorker.getInstance();
     private Timeline timeline;
     private boolean gridToggle = true;
     private boolean isRunning = false;
@@ -96,6 +97,7 @@ public class Controller implements Initializable {
      * @see CanvasDrawer#setZoomOffset(Board, Canvas)
      * @see FileHandler#setBoard(Board)
      * @see FileHandler#setGol(GameOfLife)
+     * @see GameOfLife#setThreadWorkers(ThreadWorker)
      * @param location The location used to resolve relative paths for the root object,
      *                 or null if the location is not known.
      * @param resources The resources used to localize the root object, or null if the root object was not localized.
@@ -111,6 +113,8 @@ public class Controller implements Initializable {
         //Sets the initial values and text of the FPS-label and the slider controlling it.
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
         speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {setFPS();});
+
+        gOL.setThreadWorkers(threadWorker);
 
         //Sets the current board and gol to be linked with the file handler
         fileHandler.setBoard(board);
@@ -310,6 +314,8 @@ public class Controller implements Initializable {
      * @param actionEvent - The event where the user clicks on the "exit"-button.
      */
     public void closeClick(ActionEvent actionEvent) {
+        timeline.stop();
+        threadWorker.shutDownExecutor();
         Platform.exit();
     }
 
@@ -847,6 +853,28 @@ public class Controller implements Initializable {
             PopUpAlerts.ioAlertFXML();
         }
     }
-}
 
-//TODO: Lag en "info/controller" view som kan vises.
+    /**
+     * Method called when the user presses the "About / Help" button. Opens an informational window with
+     * information about the game and how to play it.
+     * @see #fileHandler
+     * @see AboutController
+     */
+    public void showAbout() {
+        Stage aboutStage = new Stage();
+        FXMLLoader aboutLoader = new FXMLLoader(getClass().getResource("../view/About.fxml"));
+        try {
+            //Tries to load the fxml for the about window
+            Parent root = aboutLoader.load();
+
+            //Opens and waits
+            aboutStage.setTitle("About");
+            aboutStage.setScene(new Scene(root, 600, 500));
+            aboutStage.showAndWait();
+
+        }catch (IOException ioe){
+            //Shows a warning should the loading of the FXML fail.
+            PopUpAlerts.ioAlertFXML();
+        }
+    }
+}
