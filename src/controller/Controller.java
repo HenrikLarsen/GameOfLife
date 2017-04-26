@@ -9,6 +9,7 @@ import javafx.event.*;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.*;
@@ -24,6 +25,10 @@ import model.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Key;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -52,6 +57,12 @@ public class Controller implements Initializable {
     @FXML private Label ruleLabel;
     @FXML private ChoiceBox chooseRulesBox;
     @FXML private Button startButton;
+    @FXML private Button centerButton;
+    @FXML private Button resetButton;
+    @FXML private Button gridToggleButton;
+
+    //List of all traversable nodes
+    private List<Node> nodes = new ArrayList<>();
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
@@ -138,6 +149,11 @@ public class Controller implements Initializable {
         chooseRulesBox.getSelectionModel().selectFirst();
         cellColorPicker.setValue(currentCellColor);
         backgroundColorPicker.setValue(currentBackgroundColor);
+
+        Node[] traversableNodes = {canvasArea, speedSlider, cellColorPicker, backgroundColorPicker, startButton,
+                sizeInputField, ruleInputField, chooseRulesBox, centerButton, resetButton, gridToggleButton};
+        nodes.addAll(Arrays.asList(traversableNodes));
+        setFocusTraversable(true);
 
         //Sets the initial zoomOffset and draws the board onto the canvas.
         canvasDrawer.setZoomOffset(board, canvasArea);
@@ -243,6 +259,7 @@ public class Controller implements Initializable {
             isRunning = true;
             move = false;
             board.finalizeBoard();
+            setFocusTraversable(true);
             aliveLabel.setText(Integer.toString(board.getCellsAlive()));
             draw();
             timeline.play();
@@ -251,6 +268,7 @@ public class Controller implements Initializable {
             isRunning = false;
             move = false;
             board.finalizeBoard();
+            setFocusTraversable(true);
             aliveLabel.setText(Integer.toString(board.getCellsAlive()));
             draw();
             timeline.pause();
@@ -409,7 +427,15 @@ public class Controller implements Initializable {
     public void mouseDragOver() {
         canvasDrawer.setEraseFalse();
         canvasArea.setCursor(Cursor.DEFAULT);
+    }
 
+    /**
+     * Method for setting forcus traversable for all traversable nodes. Used when importing a
+     * pattern to allow the arrow keys to move the pattern without moving the focus.
+     * @param b - The value to set the node's traversable property.
+     */
+    public void setFocusTraversable(boolean b) {
+        for (Node n : nodes) n.setFocusTraversable(b);
     }
 
     /**
@@ -456,6 +482,7 @@ public class Controller implements Initializable {
         ruleLabel.setText(gOL.getRuleString().toUpperCase());
         move = true;
         canvasArea.requestFocus();
+        setFocusTraversable(false);
 
         //Resets offset to accommodate for the new pattern and calls draw().
         canvasDrawer.resetOffset(board, canvasArea);
@@ -503,6 +530,7 @@ public class Controller implements Initializable {
         }
         move = true;
         canvasArea.requestFocus();
+        setFocusTraversable(false);
 
         //Resets offset to accommodate for the new pattern and calls draw().
         canvasDrawer.resetOffset(board, canvasArea);
@@ -618,20 +646,20 @@ public class Controller implements Initializable {
             return;
         }
 
-        //Calls movePattern() from Board if the keys correspond with pattern movement (WASD)
-        if(keyEvent.getCode() == KeyCode.W) {
+        //Calls movePattern() from Board if the keys correspond with pattern movement (arrow or WASD)
+        if(keyEvent.getCode() == KeyCode.W || keyEvent.getCode() == KeyCode.UP) {
             board.movePattern("up");
-        } else if (keyEvent.getCode() == KeyCode.S) {
+        } else if (keyEvent.getCode() == KeyCode.S || keyEvent.getCode() == KeyCode.DOWN) {
             board.movePattern("down");
-        } else if (keyEvent.getCode() == KeyCode.A){
+        } else if (keyEvent.getCode() == KeyCode.A || keyEvent.getCode() == KeyCode.LEFT){
             board.movePattern("left");
-        } else if (keyEvent.getCode() == KeyCode.D) {
+        } else if (keyEvent.getCode() == KeyCode.D || keyEvent.getCode() == KeyCode.RIGHT) {
             board.movePattern("right");
 
         //If the key is Q or E, it will call method to rotate counter-clockwise or clockwise respectively.
-        } else if (keyEvent.getCode() == KeyCode.Q) {
+        } else if (keyEvent.getCode() == KeyCode.Q || keyEvent.getCode() == KeyCode.PERIOD) {
             board.rotate(false);
-        } else if (keyEvent.getCode() == KeyCode.E) {
+        } else if (keyEvent.getCode() == KeyCode.E || keyEvent.getCode() == KeyCode.MINUS) {
             board.rotate(true);
 
         //Should the key be ENTER, it will call Board's finalizeBoard() method and update the aliveLabel.
@@ -639,11 +667,13 @@ public class Controller implements Initializable {
             board.finalizeBoard();
             aliveLabel.setText(Integer.toString(board.getCellsAlive()));
             move = false;
+            setFocusTraversable(true);
 
         //Should the key be ESCAPE, it will call Board's discardPattern() method.
         } else if (keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.ESCAPE) {
             board.discardPattern();
             move = false;
+            setFocusTraversable(true);
         }
         draw();
     }
@@ -719,6 +749,7 @@ public class Controller implements Initializable {
             //Finalizes any loaded patterns
             board.finalizeBoard();
             board.discardPattern();
+            setFocusTraversable(true);
 
             //Re-sizes the board quadratically to fit within the editor.
             if (board.getHeight() > board.getWidth() && board instanceof DynamicBoard) {
@@ -848,6 +879,7 @@ public class Controller implements Initializable {
             canvasDrawer.resetOffset(board, canvasArea);
             draw();
             canvasArea.requestFocus();
+            setFocusTraversable(false);
         }catch (IOException ioe){
             //Shows a warning should the loading of the FXML fail.
             PopUpAlerts.ioAlertFXML();
