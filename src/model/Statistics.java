@@ -9,7 +9,6 @@ package model;
  */
 public class Statistics{
     private  int[][] statistics;
-    private GameOfLife gameOfLife;
     private double[] sim;
 
     /**
@@ -33,25 +32,25 @@ public class Statistics{
      */
     public int[][] getStatistics(GameOfLife game, int iterations) {
         // Clones the current game
-        gameOfLife = (GameOfLife) game.clone();
+        GameOfLife gameOfLife = (GameOfLife) game.clone();
 
         if (gameOfLife.getPlayBoard() instanceof DynamicBoard) {
-            ((DynamicBoard) gameOfLife.getPlayBoard()).setExpandable(false);
+            ((DynamicBoard) gameOfLife.getPlayBoard()).setNonExpandable();
         }
         statistics = new int[3][iterations + 1];
         if(gameOfLife.getPlayBoard() instanceof DynamicBoard){
             ((DynamicBoard) gameOfLife.getPlayBoard()).expandBoardDuringRunTime();
         }
 
-        // First playboard to be measured with
-        int firstxySum = gameOfLife.getPlayBoard().getSumXYCoordinates();
+        // First playBoard to be measured with
+        int firstXYSum = gameOfLife.getPlayBoard().getSumXYCoordinates();
         int firstCellsAlive = gameOfLife.getPlayBoard().countCellsAlive();
         int firstCellsDifference = 0;
-        double firstReducedBoard = 0.5 * firstCellsAlive + 3.0 * firstCellsDifference + 0.25 * firstxySum;
+        double firstReducedBoard = 0.5 * firstCellsAlive + 3.0 * firstCellsDifference + 0.25 * firstXYSum;
 
-        // Loops throgh the number of generations given from the parameter.
+        // Loops through the number of generations given from the parameter.
         for(int j = 0; j < statistics[0].length; j++){
-            // the playboard from current generation to be measured with the first board.
+            // the playBoard from current generation to be measured with the first board.
             int xySum = gameOfLife.getPlayBoard().getSumXYCoordinates();
             int cellsAlive = gameOfLife.getPlayBoard().countCellsAlive();
 
@@ -63,7 +62,7 @@ public class Statistics{
             }
             double reducedBoard = 0.5 * cellsAlive + 3.0 * cellsDifference + 0.25 * xySum;
 
-            // Calculates the simularity measure
+            // Calculates the similarity measure
             double similarity = Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100;
             double similarityFloored =  Math.floor(similarity);
 
@@ -118,7 +117,6 @@ public class Statistics{
             similarityMeasure += " " + statistics[2][j];
         }
 
-        String out = CellsAlive + "\n" + cellsDiff + "\n" + similarityMeasure;
-        return  out;
+        return CellsAlive + "\n" + cellsDiff + "\n" + similarityMeasure;
     }
 }

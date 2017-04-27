@@ -1,14 +1,5 @@
 package model;
 
-/**
- * The FileHandler class handles the reading and writing of RLE-files from and to disk. It also contains
- * the metadata of a loaded file.
- *
- * @author Oscar Vladau-Husevold
- * @author Henrik Finnerud Larsen
- * @version 1.0
- */
-
 import controller.PopUpAlerts;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
@@ -23,10 +14,18 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The FileHandler class handles the reading and writing of RLE-files from and to disk. It also contains
+ * the metadata of a loaded file.
+ *
+ * @author Oscar Vladau-Husevold
+ * @author Henrik Finnerud Larsen
+ * @version 1.0
+ */
 public class FileHandler {
 
-    public Board playBoard;
-    public GameOfLife gameOfLife;
+    private Board playBoard;
+    private GameOfLife gameOfLife;
 
     //Data fields relating to the metadata of loaded files
     public String metaTitle = "";
@@ -283,12 +282,12 @@ public class FileHandler {
         String metaTitleString = metaDataTitle.toString();
 
         //Removes all metadata annotations (# followed by a character)
-        String formatedMetaTitle = metaTitleString.replaceAll("[#]\\S\\s","");
-        String formatedMetadata = metaDataString.replaceAll("[#]\\S\\s","");
+        String formattedMetaTitle = metaTitleString.replaceAll("[#]\\S\\s","");
+        String formattedMetadata = metaDataString.replaceAll("[#]\\S\\s","");
 
-        //Sets metaTitle and metaData from the formated metadata.
-        this.metaTitle = formatedMetaTitle;
-        this.metaData = formatedMetadata;
+        //Sets metaTitle and metaData from the formatted metadata.
+        this.metaTitle = formattedMetaTitle;
+        this.metaData = formattedMetadata;
     }
 
     /**
@@ -303,10 +302,10 @@ public class FileHandler {
 
     /**
      * A method to convert a 2D-array to a string according to RLE standards, but without the encoding of
-     * leading numbers before a character. Iterates through the 2D-array and appends the stringbuilder according
+     * leading numbers before a character. Iterates through the 2D-array and appends the stringBuilder according
      * to the cell state.
      * @param pattern - The pattern to be converted into a string
-     * @return patternString.toString() - The string represantation of the pattern.
+     * @return patternString.toString() - The string representation of the pattern.
      */
     public String patternExportToString(byte[][] pattern) {
         StringBuilder patternString = new StringBuilder();
@@ -406,15 +405,6 @@ public class FileHandler {
         //Writes the RLE-version of the pattern to file.
         printWriter.println(splitString);
         printWriter.close();
-    }
-
-    /**
-     * Method that returns the current playBoard.
-     * @return playBoard - The current board that is linked to this GameOfLife.
-     * @see #playBoard
-     */
-    public Board getBoard () {
-        return playBoard;
     }
 
     /**

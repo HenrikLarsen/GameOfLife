@@ -6,7 +6,13 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-
+/**
+ * JUnit class for unit testing of methods in the GameOfLife class.
+ *
+ * @author Oscar Vladau-Husevold
+ * @author Henrik Finnerud Larsen
+ * @version 1.0
+ */
 public class GameOfLifeTest {
     private Board board;
     private GameOfLife gol;
@@ -536,7 +542,9 @@ public class GameOfLifeTest {
         try {
             gol.setRuleString("");
             org.junit.Assert.fail();
-        } catch (RulesFormatException rfe) {}
+        } catch (RulesFormatException rfe) {
+            System.out.println("Success");
+        }
     }
 
     @Test
@@ -611,7 +619,9 @@ public class GameOfLifeTest {
         try {
             gol.setRuleSet("B3/S9");
             org.junit.Assert.fail();
-        } catch (RulesFormatException rfe) {}
+        } catch (RulesFormatException rfe) {
+            System.out.println("Success");
+        }
     }
 
     @Test

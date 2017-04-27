@@ -5,8 +5,8 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.GridPane?>
 
-<GridPane fx:id="gridpane" alignment="center" hgap="10" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"  vgap="10" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ProgressController">
-    <Button fx:id="cancelButton" onAction="#cancelClick" text="Cancel" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+<GridPane fx:id="gridPane" alignment="center" hgap="10" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"  vgap="10" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ProgressController">
+    <Button onAction="#cancelClick" text="Cancel" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
     <Label fx:id="progressLabel" alignment="CENTER" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
     <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0" GridPane.columnSpan="2147483647" />
 </GridPane>

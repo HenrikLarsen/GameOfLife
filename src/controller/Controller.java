@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import javafx.event.*;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -25,7 +24,6 @@ import model.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,15 +60,15 @@ public class Controller implements Initializable {
     @FXML private Button gridToggleButton;
 
     //List of all traversable nodes
-    private List<Node> nodes = new ArrayList<>();
+    private final List<Node> nodes = new ArrayList<>();
 
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
-    private Board board = new DynamicBoard(50, 50);
-    private GameOfLife gOL = new GameOfLife(board);
-    private CanvasDrawer canvasDrawer = new CanvasDrawer();
-    private FileHandler fileHandler = new FileHandler();
-    private ThreadWorker threadWorker = ThreadWorker.getInstance();
+    private final Board board = new DynamicBoard(50, 50);
+    private final GameOfLife gOL = new GameOfLife(board);
+    private final CanvasDrawer canvasDrawer = new CanvasDrawer();
+    private final FileHandler fileHandler = new FileHandler();
+    private final ThreadWorker threadWorker = ThreadWorker.getInstance();
     private Timeline timeline;
     private boolean gridToggle = true;
     private boolean isRunning = false;
@@ -82,8 +80,8 @@ public class Controller implements Initializable {
     private Stage progressStage;
     private ProgressController progressController;
 
-    private TextInputDialog textInputDialogStatistics = new TextInputDialog();
-    private ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
+    private final TextInputDialog textInputDialogStatistics = new TextInputDialog();
+    private final ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
             "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
 
 
@@ -123,7 +121,7 @@ public class Controller implements Initializable {
 
         //Sets the initial values and text of the FPS-label and the slider controlling it.
         fpsLabel.setText(Integer.toString((int)speedSlider.getValue()) + " FPS");
-        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {setFPS();});
+        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> setFPS());
 
         gOL.setThreadWorkers(threadWorker);
 
@@ -132,13 +130,13 @@ public class Controller implements Initializable {
         fileHandler.setGol(gOL);
 
         //Sets formatting for the text-input fields.
-        TextFormatter<String> formatter = new TextFormatter<String>( change -> {
+        TextFormatter<String> formatter = new TextFormatter<>(change -> {
             change.setText(change.getText().replaceAll("[^sSbB012345678/]", ""));
             return change;
         });
         ruleInputField.setTextFormatter(formatter);
 
-        TextFormatter<String> onlyNumbers = new TextFormatter<String>( change -> {
+        TextFormatter<String> onlyNumbers = new TextFormatter<>(change -> {
             change.setText(change.getText().replaceAll("[^\\d]", ""));
             return change;
         });
@@ -178,6 +176,9 @@ public class Controller implements Initializable {
             if (board.getWidth() < 600) {
                 gOL.nextGeneration();
             } else {
+
+                //Does a check to see if threadWorkers executorService has been shut down for any reason.
+                //Runs nextGenerationConcurrent if it is still active, or normally if not.
                 if (!threadWorker.getShutDownStatus()) {
                     gOL.nextGenerationConcurrentPrintPerformance();
                 } else {
@@ -248,7 +249,6 @@ public class Controller implements Initializable {
      * set the text on the button to pause, the boolean to true and finalize any loaded patterns, before starting the
      * game. If it is already running, it will change the button to "start" and set relevant values before pausing
      * the timeline.
-     * @param actionEvent - The event where the user clicks on the "start/pause"-button.
      * @see #isRunning
      * @see #startButton
      * @see #move
@@ -257,7 +257,7 @@ public class Controller implements Initializable {
      * @see Board#finalizeBoard()
      * @see Board#getCellsAlive()
      */
-    public void startClick(ActionEvent actionEvent) {
+    public void startClick() {
         if(!isRunning){
             startButton.setText("Pause");
             isRunning = true;
@@ -282,13 +282,12 @@ public class Controller implements Initializable {
     /**
      * Method called when the user clicks the "center view" button within the game. Will call CanvasDrawer's
      * resetOffset() method so that the view will be back on the center of the board, and call draw().
-     * @param actionEvent - The event where the user clicks on the "Center View"-button.
      * @see #board
      * @see #canvasArea
      * @see #draw()
      * @see CanvasDrawer#resetOffset(Board, Canvas)
      */
-    public void backToCenterClick(ActionEvent actionEvent) {
+    public void backToCenterClick() {
         canvasDrawer.resetOffset(board, canvasArea);
         draw();
     }
@@ -297,7 +296,6 @@ public class Controller implements Initializable {
      * Method to reset the game. Is called when the user clicks on the "reset"-button. Stops
      * the animation, sets the number of generations to 0 and makes all cells dead. Should the Board be an
      * instance of DynamicBoard, it will reset the grid to the default value.
-     * @param actionEvent - The event where the user clicks on the "reset"-button.
      * @see #timeline
      * @see #startButton
      * @see #isRunning
@@ -314,7 +312,7 @@ public class Controller implements Initializable {
      * @see CanvasDrawer#resetOffset(Board, Canvas)
      * @see FileHandler#resetMetaData()
      */
-    public void resetClick(ActionEvent actionEvent) {
+    public void resetClick() {
         timeline.stop();
         startButton.setText("Start");
         isRunning = false;
@@ -334,9 +332,8 @@ public class Controller implements Initializable {
 
     /**
      * Method to exit the application. Is called when the user clicks on the "exit"-button.
-     * @param actionEvent - The event where the user clicks on the "exit"-button.
      */
-    public void closeClick(ActionEvent actionEvent) {
+    public void closeClick() {
         timeline.stop();
         threadWorker.shutDownExecutor();
         Platform.exit();
@@ -344,11 +341,10 @@ public class Controller implements Initializable {
 
     /**
      * Method used to toggle the grid on of off. Is called when user clicks on the "grid"-button.
-     * @param actionEvent - The event where the user clicks on the "grid"-button.
      * @see #gridToggle
      * @see #draw()
      */
-    public void gridClick(ActionEvent actionEvent) {
+    public void gridClick() {
         gridToggle = !gridToggle;
         draw();
     }
@@ -356,13 +352,12 @@ public class Controller implements Initializable {
     /**
      * Method that sets the size the size of the cellGrid quadratically. Is called when the user presses enter
      * while within the sizeInputField textfield.
-     * @param actionEvent - The event where the user presses enter when within the Textfield box.
      * @see #sizeInputField
      * @see #draw()
      * @see DynamicBoard#setGridSize(int)
      * @see CanvasDrawer#resetOffset(Board, Canvas)
      */
-    public void cellSizeOnEnter(ActionEvent actionEvent) {
+    public void cellSizeOnEnter() {
 
         //Checks that the input contains something and that the board is an instance of DynamicBoard
         if (!sizeInputField.getText().isEmpty() && board instanceof DynamicBoard) {
@@ -435,11 +430,11 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Method for setting forcus traversable for all traversable nodes. Used when importing a
+     * Method for setting focus traversable for all traversable nodes. Used when importing a
      * pattern to allow the arrow keys to move the pattern without moving the focus.
      * @param b - The value to set the node's traversable property.
      */
-    public void setFocusTraversable(boolean b) {
+    private void setFocusTraversable(boolean b) {
         for (Node n : nodes) n.setFocusTraversable(b);
     }
 
@@ -447,7 +442,6 @@ public class Controller implements Initializable {
      * Method that allows for importing an RLE-file from disk. Lets the user choose a file-path to load and
      * if valid will load that file through the FileHandler object. Will produce a warning if the file location
      * is invalid.
-     * @param actionEvent - The event in which the user clicks the import from file button
      * @see #timeline
      * @see #generationLabel
      * @see #aliveLabel
@@ -461,7 +455,7 @@ public class Controller implements Initializable {
      * @see CanvasDrawer#resetOffset(Board, Canvas)
      * @see Board#getCellsAlive()
      */
-    public void importFileClick(ActionEvent actionEvent) {
+    public void importFileClick() {
 
         //Lets the user choose a file location
         FileChooser fileChooser = new FileChooser();
@@ -499,7 +493,6 @@ public class Controller implements Initializable {
      * Method that allows for importing an RLE-file from an URL. Lets the user input an URL and
      * if valid will load the URL through the FileHandler object. Will produce a warning if the URL is
      * is invalid, or does not contain an RLE file.
-     * @param actionEvent - The event in which the user clicks the import from URL button
      * @see #timeline
      * @see #generationLabel
      * @see #aliveLabel
@@ -513,7 +506,7 @@ public class Controller implements Initializable {
      * @see CanvasDrawer#resetOffset(Board, Canvas)
      * @see Board#getCellsAlive()
      */
-    public void importURLClick(ActionEvent actionEvent) {
+    public void importURLClick() {
 
         //Creates an input dialog for the user to write an URL
         TextInputDialog textInputDialog = new TextInputDialog();
@@ -548,14 +541,13 @@ public class Controller implements Initializable {
      * Method called when pressing enter within the rules input box. Allows for inputting custom rules, and will
      * try setting them. Checks the predefined set of rules to take metadata from.
      * Produces a warning if the formatting is wrong.
-     * @param actionEvent - The event in which the user presses enter while in the text-input field
      * @see #ruleInputField
      * @see #ruleLabel
      * @see #chooseRulesBox
      * @see GameOfLife#setRuleString(String)
      * @see PopUpAlerts#ruleAlert2()
      */
-    public void rulesOnEnter(ActionEvent actionEvent) {
+    public void rulesOnEnter() {
         try {
             String ruleString = ruleInputField.getText().toUpperCase();
             gOL.setRuleString(ruleString);
@@ -579,14 +571,13 @@ public class Controller implements Initializable {
      * Method called when choosing an element in the rule choice box. Sets the current playing rules to
      * what is chosen.
      * Produces a warning if something goes wrong.
-     * @param actionEvent - The event in which the user selects an element in the choice box.
      * @see #chooseRulesBox
      * @see #ruleLabel
      * @see GameOfLife#getRuleString()
      * @see GameOfLife#setRuleString(String)
      * @see PopUpAlerts#ruleAlert2()
      */
-    public void chooseRulesClick(ActionEvent actionEvent){
+    public void chooseRulesClick(){
         String rules = (String)chooseRulesBox.getValue();
         try{
             gOL.setRuleString(rules);
@@ -599,25 +590,23 @@ public class Controller implements Initializable {
     /**
      * Method called when the user clicks the view rules description button. Calls the ruleDescription() method
      * from PopUpAlerts to produce a popup window containing a description of the selected rules.
-     * @param actionEvent - The event in which the user clicks the view Rules Description button
      * @see GameOfLife#getRuleName()
      * @see GameOfLife#getRuleString()
      * @see GameOfLife#getRuleDescription()
      * @see PopUpAlerts#ruleDescription(String, String, String)
      */
-    public void showRuleDescription(ActionEvent actionEvent) {
+    public void showRuleDescription() {
         PopUpAlerts.ruleDescription(gOL.getRuleName(), gOL.getRuleString(), gOL.getRuleDescription());
     }
 
     /**
      * Method called when the user clicks the view metadata button. Calls the metaData method
      * from PopUpAlerts to produce a popup window containing a description of the selected rules.
-     * @param actionEvent - The event in which the user clicks the view metadata button
      * @see FileHandler#getMetaTitle()
      * @see FileHandler#getMetaData()
      * @see PopUpAlerts#metaData(String, String)
      */
-    public void showMetadata(ActionEvent actionEvent) {
+    public void showMetadata() {
         String title;
         String description;
         if (fileHandler.metaTitle.equals("")) {
@@ -717,7 +706,6 @@ public class Controller implements Initializable {
      * Method called when the user presses the "export" button. Pauses the game and opens the export/editor window.
      * Sets the GameOfLife and Board objects, and re-sizes the board if it is non-quadratically and instance of
      * DynamicBoard. Should the operation fail, the user will get a message.
-     * @param actionEvent - The event in which the user presses the export button.
      * @see #timeline
      * @see #editorStage
      * @see #editorController
@@ -734,7 +722,7 @@ public class Controller implements Initializable {
      * @see CanvasDrawer#resetOffset(Board, Canvas)
      * @see PopUpAlerts#ioAlertFXML()
      */
-    public void editorButtonClick(ActionEvent actionEvent) {
+    public void editorButtonClick() {
         timeline.pause();
 
         //Creates a new Stage and loader. Sets Modality to WINDOW_MODAL.
@@ -791,7 +779,6 @@ public class Controller implements Initializable {
     /**
      * Method called when the user presses the "Show Statistics" button. Pauses the game and opens a text input dialog
      * for the user to choose how many iterations to show statistics for.
-     * @param actionEvent - The event in which the user presses the show statistics button.
      * @see #timeline
      * @see #startButton
      * @see #isRunning
@@ -803,7 +790,7 @@ public class Controller implements Initializable {
      * @see ProgressController#setGameOfLife(GameOfLife)
      * @see PopUpAlerts#ioAlertFXML()
      */
-    public void showStatistic(ActionEvent actionEvent) {
+    public void showStatistic() {
         timeline.pause();
         startButton.setText("Start");
         isRunning = false;
@@ -820,7 +807,7 @@ public class Controller implements Initializable {
             out = textInputDialogStatistics.getResult();
         }
 
-        if(out != ""){
+        if(!out.equals("")){
             try {
                 //Tries to load the fxml and sets the statisticsController from that.
                 int iterations = Integer.parseInt(out);
@@ -849,7 +836,6 @@ public class Controller implements Initializable {
     /**
      * Method called when the user presses the "Import from Preset" button. Pauses the game and opens the import
      * from preset.
-     * @param actionEvent - The event in which the user presses the Import from preset button.
      * @see #timeline
      * @see #startButton
      * @see #isRunning
@@ -860,7 +846,7 @@ public class Controller implements Initializable {
      * @see CanvasDrawer#resetOffset(Board, Canvas)
      * @see PopUpAlerts#ioAlertFXML()
      */
-    public void openPatternSelect(ActionEvent actionEvent) {
+    public void openPatternSelect() {
         timeline.pause();
         startButton.setText("Start");
         isRunning = false;

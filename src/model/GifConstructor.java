@@ -16,7 +16,6 @@ import java.io.IOException;
  * @version 1.0
  */
 public class GifConstructor {
-    private lieng.GIFWriter gifWriter;
     private double gifCellSize;
     private int gifSize;
     private Board gifBoard;
@@ -27,7 +26,25 @@ public class GifConstructor {
     private java.awt.Color gifCellColor;
     private boolean drawEntireBoard;
 
-    //TODO JAVADOC DENNE
+    /**
+     * Sole constructor for a GifConstructor object. Sets all needed parameters to create a
+     * GifConstructor object.
+     * @param gol - The GameOfLife object to be considered.
+     * @param iterations - The number of iterations to create a gif with.
+     * @param fps - The number of images per seconds to produce.
+     * @param entireBoardBool - Boolean representing whether to draw the entire board, or just the active pattern.
+     * @param backgroundColor - The background color to be drawn in the gif.
+     * @param cellColor - The color of the cells to be drawn in the gif.
+     * @param size - The size of the gif in pixels.
+     * @see #gifGol
+     * @see #gifBoard
+     * @see #counter
+     * @see #milliseconds
+     * @see #drawEntireBoard
+     * @see #gifBackgroundColor
+     * @see #gifCellColor
+     * @see #gifSize
+     */
     public GifConstructor (GameOfLife gol, int iterations, int fps, boolean entireBoardBool, Color backgroundColor,
                            Color cellColor, int size) {
         this.gifGol = gol;
@@ -41,7 +58,7 @@ public class GifConstructor {
     }
 
     /**
-     * Method that exports a gif to file by creating a new GIFwriter and calling the writeGoLSequenceToGif method.
+     * Method that exports a gif to file by creating a new GIFWriter and calling the writeGoLSequenceToGif method.
      * Catches an IOException if thrown, and shows a popup to the user explaining what went wrong.
      * @param filePath - The filepath to write the new file in.
      * @see #writeGoLSequenceToGIF(GIFWriter, GameOfLife, int, java.awt.Color)
@@ -51,7 +68,7 @@ public class GifConstructor {
      */
     public void exportGif(String filePath) {
         try {
-            gifWriter = new GIFWriter(gifSize, gifSize, filePath, milliseconds);
+            GIFWriter gifWriter = new GIFWriter(gifSize, gifSize, filePath, milliseconds);
             gifWriter.setBackgroundColor(gifBackgroundColor);
             writeGoLSequenceToGIF(gifWriter, gifGol, counter, gifCellColor);
         } catch (IOException ioe) {
@@ -77,7 +94,7 @@ public class GifConstructor {
      * @see GIFWriter#insertCurrentImage()
      * @see GIFWriter#close()
      */
-    void writeGoLSequenceToGIF(GIFWriter writer, GameOfLife game, int counter, java.awt.Color cellColor)
+    private void writeGoLSequenceToGIF(GIFWriter writer, GameOfLife game, int counter, java.awt.Color cellColor)
             throws IOException {
         if (counter == 0) {
             writer.close();
@@ -113,7 +130,7 @@ public class GifConstructor {
      * @see Board#getCellState(int, int)
      * @see GIFWriter#fillRect(int, int, int, int, java.awt.Color)
      */
-    public void drawGifEntireBoard(GIFWriter writer, java.awt.Color cellColor) {
+    private void drawGifEntireBoard(GIFWriter writer, java.awt.Color cellColor) {
         gifCellSize = gifSize/gifBoard.getWidth();
         int cellDrawSize = (int) gifCellSize - 1;
 
@@ -145,7 +162,7 @@ public class GifConstructor {
      * @see Board#getCellState(int, int)
      * @see GIFWriter#fillRect(int, int, int, int, java.awt.Color)
      */
-    public void drawGifPatternOnly(GIFWriter writer, java.awt.Color cellColor) {
+    private void drawGifPatternOnly(GIFWriter writer, java.awt.Color cellColor) {
         byte[][] trimmed = gifBoard.trim();
         int cellDrawSize;
 
@@ -180,7 +197,7 @@ public class GifConstructor {
      * @param color - The javafx color to be converted
      * @return newColor - The converted color.
      */
-    public java.awt.Color convertToAwtColor(Color color) {
+    private java.awt.Color convertToAwtColor(Color color) {
         float red = (float) color.getRed();
         float green = (float) color.getGreen();
         float blue = (float) color.getBlue();

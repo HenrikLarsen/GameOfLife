@@ -2,7 +2,6 @@ package controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -38,7 +37,7 @@ public class PatternSelectController implements Initializable {
     private File currentFile;
 
     //The items to be set in the choice box
-    private ObservableList<String> choosePatternList = FXCollections.observableArrayList("Glider", "Acorn",
+    private final ObservableList<String> choosePatternList = FXCollections.observableArrayList("Glider", "Acorn",
             "Switch Engine", "Achim's p16", "Gosper Glider Gun", "112P51", "Penny lane", "56P6H1V0",
             "Flower of Eden", "Period-45 glider gun", "Sidecar Gun", "Moving Sawtooth", "Primer",
             "Star Gate", "p690 60P5H2V0 gun", "Turing Machine");
@@ -69,12 +68,11 @@ public class PatternSelectController implements Initializable {
     /**
      * Method that calls FileHandler's readGameBoardFromDisk() method using the currentFile as the file.
      * Will load the pattern and close the window if successful, otherwise it will produce a warning to the user.
-     * @param actionEvent - The event of the user clicking the Load Pattern button.
      * @see #currentFile
      * @see FileHandler#readGameBoardFromDisk(File)
      * @see PopUpAlerts#ioAlertFromDisk()
      */
-    public void loadPatternClick(ActionEvent actionEvent) {
+    public void loadPatternClick() {
         try {
             fileHandler.readGameBoardFromDisk(currentFile);
             Stage currentStage = (Stage) imageView.getScene().getWindow();
@@ -86,9 +84,8 @@ public class PatternSelectController implements Initializable {
 
     /**
      * Method called when the user clicks the Cancel button. Will close the window.
-     * @param actionEvent - The event of the user clicking the Cancel button.
      */
-    public void cancelClick(ActionEvent actionEvent) {
+    public void cancelClick() {
         Stage currentStage = (Stage) imageView.getScene().getWindow();
         currentStage.close();
     }
@@ -96,11 +93,10 @@ public class PatternSelectController implements Initializable {
     /**
      * Method called when the user chooses an item from the patternSelect choice box. Will call the
      * newPatternInfo() method in order to update all info fields in the window.
-     * @param actionEvent - The event of the user choosing an item from the choiceBox.
      * @see #patternSelect
      * @see #newPatternInfo(String)
      */
-    public void patternSelectClick (ActionEvent actionEvent) {
+    public void patternSelectClick() {
         String pattern = (String)patternSelect.getValue();
         newPatternInfo(pattern);
     }
@@ -110,7 +106,7 @@ public class PatternSelectController implements Initializable {
      * the disk. Consists of a switch-statement going through all possible options.
      * @param chosenPattern - The string representing the pattern chosen from the ChoiceBox
      */
-    public void newPatternInfo(String chosenPattern) {
+    private void newPatternInfo(String chosenPattern) {
         switch (chosenPattern) {
 
             case "Glider":

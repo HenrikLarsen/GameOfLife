@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public class DynamicBoard extends Board{
     private ArrayList<ArrayList<Byte>> cellGrid;
     private int WIDTH, HEIGHT;
-    private int maxSize = 1900;
-    private int runTimeExpansionLimit = 1000;
+    private final int maxSize = 1900;
+    private final int runTimeExpansionLimit = 1000;
 
     //Boolean value to set whether or not the board is expandable.
     private boolean expandable = true;
@@ -35,13 +35,13 @@ public class DynamicBoard extends Board{
 
 
     /**
-     * Constructor that takes an 2D-ArrayList, width and height as parameters, and sets it as the new board with
-     * width and height as the width and height.
+     * Private Constructor that takes an 2D-ArrayList, width and height as parameters, and sets it as the
+     * new board with parameters width and height as the width and height.
      * @param newBoard - 2D-ArrayList to be set as the new board
      * @param x - The width of the playing board.
      * @param y - The width of the playing board.
      */
-    public DynamicBoard(ArrayList<ArrayList<Byte>> newBoard, int x, int y){
+    private DynamicBoard(ArrayList<ArrayList<Byte>> newBoard, int x, int y){
         this.cellGrid = newBoard;
         this.WIDTH = x;
         this.HEIGHT = y;
@@ -195,7 +195,7 @@ public class DynamicBoard extends Board{
      */
     @Override
     public Object clone(){
-        ArrayList<ArrayList<Byte>> cloneGrid = new ArrayList<ArrayList<Byte>>();
+        ArrayList<ArrayList<Byte>> cloneGrid = new ArrayList<>();
         for (int x = 0; x < getWidth(); x++) {
             cloneGrid.add(new ArrayList<>());
             for (int y = 0; y < getHeight(); y++) {
@@ -210,7 +210,6 @@ public class DynamicBoard extends Board{
     /**
      * Method to resize the grid size quadratically. Takes a size parameter, and creates a new 2D-arrayList of
      * that dimension filled with inactive cells and sets it as the new cellGrid.
-     * @return staticBoardClone - The deep copy of the board.
      * @param size - The size the quadratic grid should be.
      * @see #WIDTH
      * @see #HEIGHT
@@ -257,7 +256,7 @@ public class DynamicBoard extends Board{
     /**
      * Method that flags the grid for an increase on each of the borders during run time. Checks if the cell is on
      * the borders of the grid, and if it is, it sets the corresponding boolean to true so that
-     * the program knows to increase during a call to nextGeneration (GameofLife)
+     * the program knows to increase during a call to nextGeneration (GameOfLife)
      * @param x - The x-coordinate of the cell.
      * @param y - The y-coordinate of the cell.
      * @see #expandLeft
@@ -447,30 +446,27 @@ public class DynamicBoard extends Board{
     }
 
     /**
-     * Method that sets a boolean value to hasExpandedUp.
-     * @param b - boolean value to be assigned.
+     * Method that sets boolean hasExpandedUp to true.
      * @see #hasExpandedUp
      */
-    public void setHasExpandedUp(Boolean b) {
-        hasExpandedUp = b;
+    public void setHasExpandedUpTrue() {
+        hasExpandedUp = true;
     }
 
     /**
-     * Method that sets a boolean value to hasExpandedLeft.
-     * @param b - boolean value to be assigned.
+     * Method that sets boolean hasExpandedLeft to true.
      * @see #hasExpandedLeft
      */
-    public void setHasExpandedLeft(Boolean b) {
-        hasExpandedLeft = b;
+    public void setHasExpandedLeftTrue() {
+        hasExpandedLeft = true;
     }
 
     /**
-     * Method that sets a boolean value to expandable, determining whether or not the grid can be expanded.
-     * @param b - boolean value to be assigned.
+     * Method that sets boolean expandable, which determines whether or not the grid can be expanded, to false.
      * @see #expandable
      */
-    public void setExpandable(Boolean b) {
-        expandable = b;
+    public void setNonExpandable() {
+        expandable = false;
     }
 
     /**

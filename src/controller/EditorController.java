@@ -2,7 +2,6 @@ package controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -12,8 +11,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.control.TextField;
-import javafx.scene.control.CheckBox;
 import model.*;
 
 import java.io.File;
@@ -53,17 +50,16 @@ public class EditorController implements Initializable {
     private Board exportBoard;
     private Board stripBoard;
     private GameOfLife gameOfLife;
-    private GameOfLife stripGol;
-    private FileHandler fileHandler = new FileHandler();
-    private CanvasDrawer canvasDrawer = new CanvasDrawer();
+    private final FileHandler fileHandler = new FileHandler();
+    private final CanvasDrawer canvasDrawer = new CanvasDrawer();
     private Color currentCellColor = Color.LIMEGREEN;
     private Color currentBackgroundColor = Color.LIGHTGRAY;
     private boolean grid = false;
     private int gifSize;
     private boolean drawEntireBoard = true;
-    private ObservableList<String> chooseSizeList = FXCollections.observableArrayList("640x640", "800x800",
+    private final ObservableList<String> chooseSizeList = FXCollections.observableArrayList("640x640", "800x800",
             "1024x1024", "1200x1200", "1600x1600", "1920x1920", "2880x2880", "3840x3840");
-    private ObservableList<String> chooseDrawList = FXCollections.observableArrayList("Entire Board", "Pattern Only");
+    private final ObservableList<String> chooseDrawList = FXCollections.observableArrayList("Entire Board", "Pattern Only");
 
 
     /**
@@ -93,26 +89,26 @@ public class EditorController implements Initializable {
         chooseDrawBox.getSelectionModel().selectFirst();
 
         //Sets formatting for the text-input fields
-        TextFormatter<String> ruleFormatter = new TextFormatter<String>(change -> {
+        TextFormatter<String> ruleFormatter = new TextFormatter<>(change -> {
             change.setText(change.getText().replaceAll("[^sSbB012345678/]", ""));
             return change;
         });
-        TextFormatter<String> fpsFormatter = new TextFormatter<String>( change -> {
+        TextFormatter<String> fpsFormatter = new TextFormatter<>(change -> {
             change.setText(change.getText().replaceAll("[^\\d]", ""));
             return change;
         });
-        TextFormatter<String> numFramesFormater = new TextFormatter<String>( change -> {
+        TextFormatter<String> numFramesFormatter = new TextFormatter<>(change -> {
             change.setText(change.getText().replaceAll("[^\\d]", ""));
             return change;
         });
-        TextFormatter<String> boardResizeFormatter = new TextFormatter<String>( change -> {
+        TextFormatter<String> boardResizeFormatter = new TextFormatter<>(change -> {
             change.setText(change.getText().replaceAll("[^\\d]", ""));
             return change;
         });
         ruleInputField.setTextFormatter(ruleFormatter);
         resizeBoardInput.setTextFormatter(boardResizeFormatter);
         fpsInputField.setTextFormatter(fpsFormatter);
-        numFramesInputField.setTextFormatter(numFramesFormater);
+        numFramesInputField.setTextFormatter(numFramesFormatter);
     }
 
     /**
@@ -149,17 +145,16 @@ public class EditorController implements Initializable {
      * @see CanvasDrawer#drawStripBoard(GameOfLife, Board, Canvas, Color)
      */
     public void drawStrip() {
-        stripGol = (GameOfLife) gameOfLife.clone();
+        GameOfLife stripGol = (GameOfLife) gameOfLife.clone();
         stripBoard = stripGol.getPlayBoard();
         canvasDrawer.drawStripBoard(stripGol, stripBoard, strip, currentCellColor);
     }
 
     /**
      * Method to exit the application. Is called when the user clicks on the "exit"-button.
-     * @param actionEvent - The event where the user clicks on the "exit"-button.
      * @see #editorCanvas
      */
-    public void closeClick(ActionEvent actionEvent) {
+    public void closeClick() {
         Stage currentStage = (Stage) editorCanvas.getScene().getWindow();
         currentStage.close();
     }
@@ -197,12 +192,11 @@ public class EditorController implements Initializable {
     /**
      * Method to change the current cell color. Is called when the user interacts with the cell color picker.
      * Sets the color and draws the board.
-     * @param actionEvent - The event where the user interacts with the color picker.
      * @see #currentCellColor
      * @see #cellColorPicker
      * @see #drawEditorBoard()
      */
-    public void chooseCellColor(ActionEvent actionEvent) {
+    public void chooseCellColor() {
         currentCellColor = cellColorPicker.getValue();
         drawEditorBoard();
     }
@@ -210,12 +204,11 @@ public class EditorController implements Initializable {
     /**
      * Method to change the current background color. Is called when the user interacts with the cell color picker.
      * Sets the color and draws the board.
-     * @param actionEvent - The event where the user interacts with the color picker.
      * @see #currentBackgroundColor
      * @see #backgroundColorPicker
      * @see #drawEditorBoard()
      */
-    public void chooseBackgroundColor(ActionEvent actionEvent) {
+    public void chooseBackgroundColor() {
         currentBackgroundColor = backgroundColorPicker.getValue();
         drawEditorBoard();
     }
@@ -300,13 +293,12 @@ public class EditorController implements Initializable {
     /**
      * Method called when the user presses enter within the rule text-box. Tries to set the rules of the
      * gameOfLife with the input in the text field, and produces a warning if it fails.
-     * @param actionEvent - The event of the user pressing enter within the text-box.
      * @see #ruleInputField
      * @see #drawStrip()
      * @see GameOfLife#setRuleString(String)
      * @see PopUpAlerts#ruleAlert2()
      */
-    public void setRules(ActionEvent actionEvent) {
+    public void setRules() {
         try {
             String ruleString = ruleInputField.getText().toUpperCase();
             gameOfLife.setRuleString(ruleString);
@@ -321,11 +313,10 @@ public class EditorController implements Initializable {
     /**
      * Method called when the user interacts with the gif-size choice box. Consists of a switch statement that
      * sets the gifSize according to what the user has selected.
-     * @param actionEvent - The event of the user interacting with the choice box.
      * @see #chooseSizeBox
      * @see #gifSize
      */
-    public void chooseSizeClick(ActionEvent actionEvent) {
+    public void chooseSizeClick() {
         String size = (String) chooseSizeBox.getValue();
 
         switch (size) {
@@ -354,11 +345,10 @@ public class EditorController implements Initializable {
      * Method called when the user interacts with the chooseDrawBox choice box. Consists of a if-else statement that
      * sets a boolean according to what the user has selected, and is responsible for whether the GIF exported
      * should include the entire board, or just the active pattern.
-     * @param actionEvent - The event of the user interacting with the choice box.
      * @see #chooseDrawBox
      * @see #drawEntireBoard
      */
-    public void chooseDrawClick (ActionEvent actionEvent) {
+    public void chooseDrawClick() {
         String draw = (String) chooseDrawBox.getValue();
 
         if (draw.equals("Entire Board")) {
@@ -385,7 +375,7 @@ public class EditorController implements Initializable {
      */
     public void saveRLEClick() {
 
-        //Creates the fields related to x, y and rules for the RLE's metadata.
+        //Creates the fields related to x, y and rules for the RLEs' metadata.
         int[] boundingBox = exportBoard.getBoundingBox();
         int x = Math.abs(boundingBox[1] - boundingBox[0] + 1);
         int y = Math.abs(boundingBox[3] - boundingBox[2] + 1);

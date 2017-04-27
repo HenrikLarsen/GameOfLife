@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class GameOfLife {
     private int genCounter = 0;
-    private Board playBoard;
+    private final Board playBoard;
     private ThreadWorker workers;
     private byte[][] neighbourCount;
     private byte[][] newGenerationCells;
@@ -188,7 +188,7 @@ public class GameOfLife {
      * @see Board#getWidth()
      * @see Board#getHeight()
      */
-    public void enforceRulesConcurrent(int curIndex) {
+    private void enforceRulesConcurrent(int curIndex) {
         for (int x = rowsPerWorker*curIndex; x < (curIndex+1)*rowsPerWorker && x < playBoard.getWidth(); x++) {
             for (int y = 0; y < playBoard.getHeight(); y++) {
                 updateNewGenerationCells(x,y);
@@ -245,58 +245,58 @@ public class GameOfLife {
      */
     public void setRuleString(String input) throws RulesFormatException{
         if(input != null){
-            if(input == "Life" || input.equals("B3/S23")){
+            if(input.equals("Life") || input.equals("B3/S23")){
                 ruleString = "B3/S23";
                 ruleDescription = "Highly complex behavior.";
                 ruleName = "Life";
-            }else if(input == "Replicator" || input.equals("B1357/S1357")){
+            }else if(input.equals("Replicator") || input.equals("B1357/S1357")){
                 ruleString = "B1357/S1357";
                 ruleDescription = "Edward Fredkin's replicating automaton: every pattern is eventually replaced by " +
                         "multiple copies of itself.";
                 ruleName = "Replicator";
-            }else if(input == "Seeds" || input.equals("B2/S")){
+            }else if(input.equals("Seeds") || input.equals("B2/S")){
                 ruleString = "B2/S";
                 ruleDescription = "All patterns are phoenixes, meaning that every live cell immediately dies, and " +
                         "many patterns lead to explosive chaotic growth. However, some engineered patterns with " +
                         "complex behavior are known.";
                 ruleName = "Seeds";
-            }else if(input == "Life Without Death" || input.equals("B3/S012345678")){
+            }else if(input.equals("Life Without Death") || input.equals("B3/S012345678")){
                 ruleString = "B3/S012345678";
                 ruleDescription = "Also known as Inkspot or Flakes. Cells that become alive never die. It combines " +
                         "chaotic growth with more structured ladder-like patterns that can be used to simulate " +
                         "arbitrary Boolean circuits.";
                 ruleName = "Life Without Death";
-            }else if(input == "34 Life" || input.equals("B34/S34")){
+            }else if(input.equals("34 Life") || input.equals("B34/S34")){
                 ruleString = "B34/S34";
                 ruleDescription = "Was initially thought to be a stable alternative to Life, until computer simulation " +
                         "found that larger patterns tend to explode. Has many small oscillators and spaceships.";
                 ruleName = "34 Life";
-            }else if(input == "Diamoeba" || input.equals("B35678/S5678")){
+            }else if(input.equals("Diamoeba") || input.equals("B35678/S5678")){
                 ruleString = "B35678/S5678";
                 ruleDescription = "Forms large diamonds with chaotically fluctuating boundaries. First studied by Dean " +
                         "Hickerson, who in 1993 offered a $50 prize to find a pattern that fills space with live cells; " +
                         "the prize was won in 1999 by David Bell.";
                 ruleName = "Diamoeba";
-            }else if(input == "2x2" || input.equals("B36/S125")){
+            }else if(input.equals("2x2") || input.equals("B36/S125")){
                 ruleString = "B36/S125";
                 ruleDescription = "If a pattern is composed of 2x2 blocks, it will continue to evolve in the same form; " +
                         "grouping these blocks into larger powers of two leads to the same behavior, but slower. Has " +
                         "complex oscillators of high periods as well as a small glider.";
                 ruleName = "2x2";
-            }else if(input == "Highlife" || input.equals("B36/S23")){
+            }else if(input.equals("Highlife") || input.equals("B36/S23")){
                 ruleString = "B36/S23";
                 ruleDescription = "Similar to Life but with a small self-replicating pattern.";
                 ruleName = "Highlife";
-            }else if(input == "Day & Night" || input.equals("B3678/S34678")){
+            }else if(input.equals("Day & Night") || input.equals("B3678/S34678")){
                 ruleString = "B3678/S34678";
                 ruleDescription = "Symmetric under on-off reversal. Has engineered patterns with highly complex behavior.";
                 ruleName = "Day & Night";
-            }else if(input == "Morley" || input.equals("B368/S245")){
+            }else if(input.equals("Morley") || input.equals("B368/S245")){
                 ruleString = "B368/S245";
                 ruleDescription = "Named after Stephen Morley; also called Move. Supports very high-period and " +
                         "slow spaceships.";
                 ruleName = "Morley";
-            }else if(input == "Anneal" || input.equals("B4678/S35678")){
+            }else if(input.equals("Anneal") || input.equals("B4678/S35678")){
                 ruleString = "B4678/S35678";
                 ruleDescription = "Also called the twisted majority rule. Symmetric under on-off reversal. Approximates " +
                         "the curve-shortening flow on the boundaries between live and dead cells.";
@@ -310,7 +310,7 @@ public class GameOfLife {
         }
 
         //Calls setRuleSet with the current ruleString if it is not empty.
-        if(ruleString == ""){
+        if(ruleString.equals("")){
             throw new  RulesFormatException();
         }else{
             setRuleSet(ruleString);
@@ -330,7 +330,7 @@ public class GameOfLife {
      */
     public void setRuleSet(String rules) throws RulesFormatException {
 
-        //Creates patterns and matchers to check for correct formatting of the rules.
+        //Creates patterns and matcher to check for correct formatting of the rules.
         Pattern rulePattern = Pattern.compile("[^sSbB012345678/]",Pattern.MULTILINE | Pattern.DOTALL);
         Pattern formatPattern = Pattern.compile("^[bB][0-8]*/[sS][0-8]*$");
 
@@ -358,7 +358,7 @@ public class GameOfLife {
             }
         }
 
-        //Removes duplicate numbers and puts them in accending order.
+        //Removes duplicate numbers and puts them in ascending order.
         StringBuilder surviveBuilder = new StringBuilder();
         StringBuilder bornBuilder = new StringBuilder();
         for (int i = 0; i < 9; i ++) {
@@ -377,9 +377,8 @@ public class GameOfLife {
     }
 
     /**
-     * Method that returns the current ruleString.
-     * @return ruleString - The current full rule String
-     * @see #ruleString
+     * Method that sets the current ThreadWorker .
+     * @see #workers
      */
     public void setThreadWorkers(ThreadWorker tw){
         this.workers = tw;

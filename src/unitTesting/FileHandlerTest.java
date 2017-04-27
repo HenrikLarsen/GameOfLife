@@ -7,7 +7,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by Oscar_000 on 10.04.2017.
+ * JUnit class for unit testing of methods in the FileHandler class.
+ *
+ * @author Oscar Vladau-Husevold
+ * @author Henrik Finnerud Larsen
+ * @version 1.0
  */
 public class FileHandlerTest {
     private Board board;
@@ -138,7 +142,9 @@ public class FileHandlerTest {
         try {
             fileHandler.readGameBoardFromDisk(file);
             org.junit.Assert.fail();
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+            System.out.println("Success");
+        }
     }
 
     @Test
@@ -265,7 +271,9 @@ public class FileHandlerTest {
         try {
             fileHandler.readGameBoardFromURL(url);
             org.junit.Assert.fail();
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+            System.out.println("Success");
+        }
     }
 
     @Test
@@ -283,10 +291,10 @@ public class FileHandlerTest {
             org.junit.Assert.fail();
         }
 
-        String expecedRules = "B2456/S28";
+        String expectedRules = "B2456/S28";
         String actualRules = gol.getRuleString();
 
-        org.junit.Assert.assertEquals(expecedRules, actualRules);
+        org.junit.Assert.assertEquals(expectedRules, actualRules);
     }
 
     @Test (expected = ExceptionInInitializerError.class)

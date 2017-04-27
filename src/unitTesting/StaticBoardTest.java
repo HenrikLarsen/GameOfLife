@@ -4,7 +4,13 @@ import model.Board;
 import org.junit.Test;
 import model.StaticBoard;
 
-
+/**
+ * JUnit class for unit testing of methods in the StaticBoard class.
+ *
+ * @author Oscar Vladau-Husevold
+ * @author Henrik Finnerud Larsen
+ * @version 1.0
+ */
 public class StaticBoardTest {
     private Board board;
 
@@ -399,12 +405,11 @@ public class StaticBoardTest {
                 {0, 1, 1}};
         board.setBoardFromRLE(rleBoard);
 
-        byte[][] expectedPattern = rleBoard;
         byte[][] actualPattern = board.getLoadedPattern();
         int[] expectedPatternBoundingBox = {3, 5, 3, 5};
         int[] actualPatternBoundingBox = board.getLoadedPatternBoundingBox();
 
-        org.junit.Assert.assertArrayEquals(expectedPattern, actualPattern);
+        org.junit.Assert.assertArrayEquals(rleBoard, actualPattern);
         org.junit.Assert.assertArrayEquals(expectedPatternBoundingBox, actualPatternBoundingBox);
     }
 
@@ -414,12 +419,11 @@ public class StaticBoardTest {
         byte[][] rleBoard = {{1}};
         board.setBoardFromRLE(rleBoard);
 
-        byte[][] expectedPattern = rleBoard;
         byte[][] actualPattern = board.getLoadedPattern();
         int[] expectedPatternBoundingBox = {4, 4, 4, 4};
         int[] actualPatternBoundingBox = board.getLoadedPatternBoundingBox();
 
-        org.junit.Assert.assertArrayEquals(expectedPattern, actualPattern);
+        org.junit.Assert.assertArrayEquals(rleBoard, actualPattern);
         org.junit.Assert.assertArrayEquals(expectedPatternBoundingBox, actualPatternBoundingBox);
     }
 
@@ -440,12 +444,11 @@ public class StaticBoardTest {
                 {0, 1, 1, 1, 0, 0, 0, 0, 1}};
         board.setBoardFromRLE(rleBoard);
 
-        byte[][] expectedPattern = rleBoard;
         byte[][] actualPattern = board.getLoadedPattern();
         int[] expectedPatternBoundingBox = {44, 54, 45, 53};
         int[] actualPatternBoundingBox = board.getLoadedPatternBoundingBox();
 
-        org.junit.Assert.assertArrayEquals(expectedPattern, actualPattern);
+        org.junit.Assert.assertArrayEquals(rleBoard, actualPattern);
         org.junit.Assert.assertArrayEquals(expectedPatternBoundingBox, actualPatternBoundingBox);
     }
 

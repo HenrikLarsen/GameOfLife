@@ -249,7 +249,7 @@ public abstract class Board {
      * @return boundingBox - An int array containing the minimum and maximum values for rows and columns.
      * @see #getCellState(int, int)
      */
-    public int[] getBoundingBox(byte[][] grid) {
+    private int[] getBoundingBox(byte[][] grid) {
 
         //Creates an array with 4 entries for the bounding box values.
         //The 4 entries are min x, max x, min y, max y, respectively.
@@ -372,8 +372,8 @@ public abstract class Board {
      * @see DynamicBoard#expandHeightDown(int)
      * @see DynamicBoard#expandWidthRight(int)
      * @see DynamicBoard#expandWidthLeft(int)
-     * @see DynamicBoard#setHasExpandedLeft(Boolean)
-     * @see DynamicBoard#setHasExpandedUp(Boolean)
+     * @see DynamicBoard#setHasExpandedLeftTrue()
+     * @see DynamicBoard#setHasExpandedUpTrue()
      */
     public void movePattern(String direction) {
         //Sets the initial values from the loadedPatternBoundingBox
@@ -382,63 +382,68 @@ public abstract class Board {
         int yStart = loadedPatternBoundingBox[2];
         int yStop = loadedPatternBoundingBox[3];
 
-        //Moves the pattern up
-        if (direction.equals("up")) {
-            if (loadedPatternBoundingBox[2] > 0) {
-                loadedPatternBoundingBox[2] = yStart - 1;
-                loadedPatternBoundingBox[3] = yStop - 1;
-            } else if (loadedPatternBoundingBox[2] == 0) { //Checks if it is on the edge already.
+        switch (direction) {
+            //Moves the pattern up
+            case "up":
+                if (loadedPatternBoundingBox[2] > 0) {
+                    loadedPatternBoundingBox[2] = yStart - 1;
+                    loadedPatternBoundingBox[3] = yStop - 1;
+                } else if (loadedPatternBoundingBox[2] == 0) { //Checks if it is on the edge already.
 
-                //Checks if the board is an instance of DynamicBoard and the height is within the limits, and expands.
-                if (this instanceof DynamicBoard && getHeight() < 1900) {
-                    ((DynamicBoard)this).expandHeightUp(1);
-                    ((DynamicBoard) this).setHasExpandedUp(true);
+                    //Checks if the board is an instance of DynamicBoard and the height is within the limits, and expands.
+                    if (this instanceof DynamicBoard && getHeight() < 1900) {
+                        ((DynamicBoard) this).expandHeightUp(1);
+                        ((DynamicBoard) this).setHasExpandedUpTrue();
+                    }
                 }
-            }
+                break;
 
             //Moves the pattern down
-        } else if (direction.equals("down")) {
-            if (loadedPatternBoundingBox[3] < getHeight()-1) {
-                loadedPatternBoundingBox[2] = yStart + 1;
-                loadedPatternBoundingBox[3] = yStop + 1;
-            } else if (loadedPatternBoundingBox[3] == getHeight()-1) { //Checks if it is on the edge already.
-
-                //Checks if the board is an instance of DynamicBoard and the height is within the limits, and expands.
-                if (this instanceof DynamicBoard && getHeight() < 1900) {
-                    ((DynamicBoard)this).expandHeightDown(1);
+            case "down":
+                if (loadedPatternBoundingBox[3] < getHeight() - 1) {
                     loadedPatternBoundingBox[2] = yStart + 1;
                     loadedPatternBoundingBox[3] = yStop + 1;
+                } else if (loadedPatternBoundingBox[3] == getHeight() - 1) { //Checks if it is on the edge already.
+
+                    //Checks if the board is an instance of DynamicBoard and the height is within the limits, and expands.
+                    if (this instanceof DynamicBoard && getHeight() < 1900) {
+                        ((DynamicBoard) this).expandHeightDown(1);
+                        loadedPatternBoundingBox[2] = yStart + 1;
+                        loadedPatternBoundingBox[3] = yStop + 1;
+                    }
                 }
-            }
+                break;
 
             //Moves the pattern left
-        } else if (direction.equals("left")) {
-            if (loadedPatternBoundingBox[0] > 0) {
-                loadedPatternBoundingBox[0] = xStart - 1;
-                loadedPatternBoundingBox[1] = xStop - 1;
-            } else if (loadedPatternBoundingBox[0] == 0) { //Checks if it is on the edge already.
+            case "left":
+                if (loadedPatternBoundingBox[0] > 0) {
+                    loadedPatternBoundingBox[0] = xStart - 1;
+                    loadedPatternBoundingBox[1] = xStop - 1;
+                } else if (loadedPatternBoundingBox[0] == 0) { //Checks if it is on the edge already.
 
-                //Checks if the board is an instance of DynamicBoard and the width is within the limits, and expands.
-                if (this instanceof DynamicBoard && getWidth() < 1900) {
-                    ((DynamicBoard) this).expandWidthLeft(1);
-                    ((DynamicBoard) this).setHasExpandedLeft(true);
+                    //Checks if the board is an instance of DynamicBoard and the width is within the limits, and expands.
+                    if (this instanceof DynamicBoard && getWidth() < 1900) {
+                        ((DynamicBoard) this).expandWidthLeft(1);
+                        ((DynamicBoard) this).setHasExpandedLeftTrue();
+                    }
                 }
-            }
+                break;
 
-        //Moves the pattern right
-        } else if (direction.equals("right")) {
-            if (loadedPatternBoundingBox[1] < getWidth() - 1) {
-                loadedPatternBoundingBox[0] = xStart + 1;
-                loadedPatternBoundingBox[1] = xStop + 1;
-            } else if (loadedPatternBoundingBox[1] == getWidth() - 1) { //Checks if it is on the edge already.
-
-                //Checks if the board is an instance of DynamicBoard and the width is within the limits, and expands.
-                if (this instanceof DynamicBoard && getWidth() < 1900) {
-                    ((DynamicBoard) this).expandWidthRight(1);
+            //Moves the pattern right
+            case "right":
+                if (loadedPatternBoundingBox[1] < getWidth() - 1) {
                     loadedPatternBoundingBox[0] = xStart + 1;
                     loadedPatternBoundingBox[1] = xStop + 1;
+                } else if (loadedPatternBoundingBox[1] == getWidth() - 1) { //Checks if it is on the edge already.
+
+                    //Checks if the board is an instance of DynamicBoard and the width is within the limits, and expands.
+                    if (this instanceof DynamicBoard && getWidth() < 1900) {
+                        ((DynamicBoard) this).expandWidthRight(1);
+                        loadedPatternBoundingBox[0] = xStart + 1;
+                        loadedPatternBoundingBox[1] = xStop + 1;
+                    }
                 }
-            }
+                break;
         }
     }
 
@@ -535,8 +540,8 @@ public abstract class Board {
      * @see DynamicBoard#expandHeightDown(int)
      * @see DynamicBoard#expandWidthRight(int)
      * @see DynamicBoard#expandWidthLeft(int)
-     * @see DynamicBoard#setHasExpandedLeft(Boolean)
-     * @see DynamicBoard#setHasExpandedUp(Boolean)
+     * @see DynamicBoard#setHasExpandedLeftTrue()
+     * @see DynamicBoard#setHasExpandedUpTrue()
      */
     private int[] setNewBoundingBox() {
 
@@ -583,7 +588,7 @@ public abstract class Board {
             if (newBoundingBox[0] < 0) {
                 int over = Math.abs(newBoundingBox[0]);
                 ((DynamicBoard) this).expandWidthLeft(over);
-                ((DynamicBoard) this).setHasExpandedLeft(true);
+                ((DynamicBoard) this).setHasExpandedLeftTrue();
                 newBoundingBox[0] += over;
                 newBoundingBox[1] += over;
             }
@@ -592,7 +597,7 @@ public abstract class Board {
             if (newBoundingBox[2] < 0) {
                 int over = Math.abs(newBoundingBox[2]);
                 ((DynamicBoard) this).expandHeightUp(over);
-                ((DynamicBoard) this).setHasExpandedUp(true);
+                ((DynamicBoard) this).setHasExpandedUpTrue();
                 newBoundingBox[2] += over;
                 newBoundingBox[3] += over;
             }
@@ -658,7 +663,7 @@ public abstract class Board {
 
     /**
      * Method that returns the bounding box of the current loaded pattern.
-     * @return loadedPatternboundingBox - The current bounding box for the loaded pattern.
+     * @return loadedPatternBoundingBox - The current bounding box for the loaded pattern.
      * @see #loadedPatternBoundingBox
      */
     public int[] getLoadedPatternBoundingBox() {
@@ -688,7 +693,7 @@ public abstract class Board {
      * @param aliveCells - The number of active cells to be set.
      * @see #cellsAlive
      */
-    public void setCellsAlive(int aliveCells) {
+    void setCellsAlive(int aliveCells) {
         cellsAlive = aliveCells;
     }
 
@@ -721,7 +726,7 @@ public abstract class Board {
     /**
      * Method that returns a string representation of the current cell grid, placing each cell in a long
      * string of 1s and 0s. Overrides Objects toString method.
-     * @return str.toString - The string representation of the current cellgrid.
+     * @return str.toString - The string representation of the current cellGrid.
      * @see #getCellState(int, int)
      * @see Object#toString()
      */

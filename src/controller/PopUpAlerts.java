@@ -65,7 +65,7 @@ public class PopUpAlerts {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Error");
         alert.setHeaderText("Invalid rules");
-        alert.setContentText("The rules you are trying to load are invalid. Remember that the rules must be formated" +
+        alert.setContentText("The rules you are trying to load are invalid. Remember that the rules must be formatted" +
                 " as 'Bxxx/Sxxx'. \n\n The standard rules (B3/S23) have been loaded.");
         alert.showAndWait();
     }
@@ -225,12 +225,14 @@ public class PopUpAlerts {
         Optional<ButtonType> result = gifSimilarityConfirmation.showAndWait();
 
         boolean b = false;
-        if (result.get() == ButtonType.OK) {
-            b = true;
-        }
+        if (result.isPresent()) {
+            if (result.get() == ButtonType.OK) {
+                b = true;
+            }
 
-        if (result.get() == ButtonType.CANCEL) {
-            b = false;
+            if (result.get() == ButtonType.CANCEL) {
+                b = false;
+            }
         }
 
         return b;
@@ -251,14 +253,16 @@ public class PopUpAlerts {
         Optional<ButtonType> result = resizeClearConfirmation.showAndWait();
 
         boolean b = false;
-        if (result.get() == ButtonType.OK) {
-            System.out.println("OK");
-            b = true;
-        }
+        if (result.isPresent()) {
+            if (result.get() == ButtonType.OK) {
+                System.out.println("OK");
+                b = true;
+            }
 
-        if (result.get() == ButtonType.CANCEL) {
-            System.out.println("CANCEL");
-            b = false;
+            if (result.get() == ButtonType.CANCEL) {
+                System.out.println("CANCEL");
+                b = false;
+            }
         }
 
         return b;

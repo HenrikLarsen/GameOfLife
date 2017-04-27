@@ -28,21 +28,21 @@ public class StatisticsController{
      */
     public void makeChart(){
         // Chart setup
-        XYChart.Series<String, Number> cellsAliveSeries = new XYChart.Series<String, Number>();
-        XYChart.Series<String, Number> cellsDiffSeries = new XYChart.Series<String, Number>();
-        XYChart.Series<String, Number> simularityMeasureSeries = new XYChart.Series<String, Number>();
+        XYChart.Series<String, Number> cellsAliveSeries = new XYChart.Series<>();
+        XYChart.Series<String, Number> cellsDiffSeries = new XYChart.Series<>();
+        XYChart.Series<String, Number> similarityMeasureSeries = new XYChart.Series<>();
         cellsAliveSeries.setName("Cells alive");
         cellsDiffSeries.setName("Cells difference");
-        simularityMeasureSeries.setName("Simularity measure");
+        similarityMeasureSeries.setName("Similarity measure");
 
         // Adds the data to the chart
         for(int i = 0; i < stat[0].length; i++){
             cellsAliveSeries.getData().add(new XYChart.Data(Integer.toString(i), stat[0][i]));
             cellsDiffSeries.getData().add(new XYChart.Data(Integer.toString(i), stat[1][i]));
-            simularityMeasureSeries.getData().add(new XYChart.Data(Integer.toString(i), stat[2][i]));
+            similarityMeasureSeries.getData().add(new XYChart.Data(Integer.toString(i), stat[2][i]));
         }
 
-        lineChart.getData().addAll(cellsAliveSeries, cellsDiffSeries, simularityMeasureSeries);
+        lineChart.getData().addAll(cellsAliveSeries, cellsDiffSeries, similarityMeasureSeries);
     }
 }
 

@@ -2,7 +2,6 @@ package controller;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,20 +16,17 @@ import model.Statistics;
 import java.io.IOException;
 
 /**
- * Created by henriklarsen on 21.04.2017.
+ * Created by henrikLarsen on 21.04.2017.
  */
 public class ProgressController {
-    private final int max = 101;
     private int[][] stat;
     private int iterations;
 
-    private Stage statisticStage;
-    private StatisticsController statisticsController;
     private GameOfLife gameOfLife;
     private Statistics statistics = new Statistics();
     private TaskService taskService;
 
-    @FXML GridPane gridpane;
+    @FXML GridPane gridPane;
     @FXML private Label progressLabel;
     @FXML private ProgressBar progressBar;
 
@@ -55,12 +51,12 @@ public class ProgressController {
     /**
      * Method which handles the Cancel button click action
      */
-    public void cancelClick(ActionEvent actionEvent) {
+    public void cancelClick() {
         taskService.cancel();
     }
 
     /**
-     * Method that sets the current gameoflife.
+     * Method that sets the current Game of Life object.
      * @see #gameOfLife
      */
     public void setGameOfLife(GameOfLife gOL){
@@ -79,6 +75,7 @@ public class ProgressController {
     private class MyTask extends Task<Void> {
         @Override
         public Void call() {
+            final int max = 100;
             for (int i = 1; i <= max; i++) {
                 if (isCancelled()){
                     break;
@@ -98,10 +95,10 @@ public class ProgressController {
         protected void succeeded() {
             super.succeeded();
             try{
-                statisticStage = new Stage();
+                Stage statisticStage = new Stage();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
                 Parent root = loader.load();
-                statisticsController = loader.getController();
+                StatisticsController statisticsController = loader.getController();
 
                 //Sets the statistics data to be considered, and creates a chart of the results.
                 statisticsController.setStat(stat);
@@ -116,7 +113,7 @@ public class ProgressController {
                 PopUpAlerts.ioAlertFXML();
             }
 
-            Stage currentStage = (Stage) gridpane.getScene().getWindow();
+            Stage currentStage = (Stage) gridPane.getScene().getWindow();
             currentStage.close();
         }
 
@@ -124,7 +121,7 @@ public class ProgressController {
         protected void cancelled() {
             super.cancelled();
             updateMessage("Loading stopped");
-            Stage currentStage = (Stage) gridpane.getScene().getWindow();
+            Stage currentStage = (Stage) gridPane.getScene().getWindow();
             currentStage.close();
         }
 

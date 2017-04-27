@@ -20,12 +20,12 @@ public class ThreadWorker {
 
     //The number of threads to be used. Equal to the system's available processors times two, because we assume the CPU
     //supports hyper-threading
-    private int numWorkers = Runtime.getRuntime().availableProcessors() * 2;
+    private final int numWorkers = Runtime.getRuntime().availableProcessors() * 2;
     private int threadIndex = 0;
-    private ExecutorService threadPool = Executors.newFixedThreadPool(numWorkers);
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(numWorkers);
 
     //The only time a threadWorker is initialized.
-    private static ThreadWorker threadWorker = new ThreadWorker();
+    private static final ThreadWorker threadWorker = new ThreadWorker();
 
     /**
      * Sole constructor, set private to prevent other class from initializing a ThreadWorker.
@@ -103,7 +103,7 @@ public class ThreadWorker {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {
-            System.out.println("Shutting down");
+            System.out.println("Shutting down...");
             threadPool.shutdownNow();
         }
     }
@@ -117,6 +117,13 @@ public class ThreadWorker {
         return numWorkers;
     }
 
+    /**
+     * Method to check whether or not the ExecutorService has been shut down. Returns true if it has, or false
+     * if it is still operational.
+     * @return threadPool.isShutdown() - The boolean value representing whether or not the ExecutorService has
+     * been shut down
+     * @see #threadPool
+     */
     public boolean getShutDownStatus() {
         return threadPool.isShutdown();
     }

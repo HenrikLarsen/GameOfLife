@@ -18,7 +18,7 @@ import model.GameOfLife;
  * @version 1.0
  */
 
-public class CanvasDrawer {
+class CanvasDrawer {
     private boolean erase;
     private double cellDrawSize = 20d;
     private double stripCellSize;
@@ -55,8 +55,8 @@ public class CanvasDrawer {
      * @see DynamicBoard#hasExpandedUp
      * @see DynamicBoard#hasExpandedLeft
      */
-    protected void drawBoard(Canvas canvas, Board board, GraphicsContext gc,
-                             Color cellColor, Color backgroundColor, boolean grid) {
+    void drawBoard(Canvas canvas, Board board, GraphicsContext gc,
+                   Color cellColor, Color backgroundColor, boolean grid) {
 
         gc.setFill(backgroundColor);
         gc.fillRect(0,0, canvas.getWidth(), canvas.getHeight());
@@ -149,7 +149,7 @@ public class CanvasDrawer {
      * @see #yDragOffset
      * @see #yZoomOffset
      */
-    public void drawLoadedPattern(GraphicsContext gc, byte[][] loadedPattern, int[] boundingBox) {
+    private void drawLoadedPattern(GraphicsContext gc, byte[][] loadedPattern, int[] boundingBox) {
 
         //Sets the alpha of the graphics context so as to draw the pattern semi-transparent.
         gc.setGlobalAlpha(0.5);
@@ -184,7 +184,7 @@ public class CanvasDrawer {
      * @see #stripCellSize
      * @see Board#trim()
      */
-    protected void drawStripBoard (GameOfLife stripGol, Board stripBoard, Canvas strip, Color cellColor){
+    void drawStripBoard(GameOfLife stripGol, Board stripBoard, Canvas strip, Color cellColor){
         GraphicsContext gc = strip.getGraphicsContext2D();
 
         //Clears the entire canvas before starting to draw.
@@ -264,7 +264,7 @@ public class CanvasDrawer {
      * @see Board#getCellState(int, int)
      * @see Board#setCellState(int, int, byte)
      */
-    protected void drawPressed(MouseEvent mouseEvent, Board board, boolean expandable) {
+    void drawPressed(MouseEvent mouseEvent, Board board, boolean expandable) {
 
         //Does a check to see if the board has a loaded pattern. Returns if yes, as the user is not allowed to
         //modify the board while a pattern is loaded without being finalized.
@@ -342,7 +342,7 @@ public class CanvasDrawer {
      * @see Board#getCellState(int, int)
      * @see Board#setCellState(int, int, byte)
      */
-    protected void drawDragged(MouseEvent mouseEvent, Board board, boolean expandable) {
+    void drawDragged(MouseEvent mouseEvent, Board board, boolean expandable) {
 
         //Does a check to see if the board has a loaded pattern. Returns if yes, as the user is not allowed to
         //modify the board while a pattern is loaded without being finalized.
@@ -388,7 +388,7 @@ public class CanvasDrawer {
      * Method that sets the boolean erase to false.
      * @see #erase
      */
-    protected void setEraseFalse() {
+    void setEraseFalse() {
         erase = false;
     }
 

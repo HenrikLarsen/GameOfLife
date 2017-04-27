@@ -1,7 +1,7 @@
 package model;
 
 /**
- * RulesFormatException is an exception thrown when trying to load a ruleset that is formatted wrong or invalid.
+ * RulesFormatException is an exception thrown when trying to load a rule set that is formatted wrong or invalid.
  *
  * @author Oscar Vladau-Husevold
  * @author Henrik Finnerud Larsen

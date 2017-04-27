@@ -6,10 +6,12 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-
 /**
- * Created by Oscar_000 on 10.04.2017.
+ * JUnit class for unit testing of methods in the Statistics class.
+ *
+ * @author Oscar Vladau-Husevold
+ * @author Henrik Finnerud Larsen
+ * @version 1.0
  */
 public class StatisticsTest {
     private Board board;
