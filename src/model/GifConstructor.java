@@ -27,10 +27,11 @@ public class GifConstructor {
     private java.awt.Color gifCellColor;
     private boolean drawEntireBoard;
 
+    //TODO JAVADOC DENNE
     public GifConstructor (GameOfLife gol, int iterations, int fps, boolean entireBoardBool, Color backgroundColor,
                            Color cellColor, int size) {
         this.gifGol = gol;
-        this.gifBoard = gifGol.playBoard;
+        this.gifBoard = gifGol.getPlayBoard();
         this.counter = iterations;
         this.milliseconds = 1000/fps;
         this.drawEntireBoard = entireBoardBool;

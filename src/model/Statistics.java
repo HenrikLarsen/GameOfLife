@@ -27,6 +27,7 @@ public class Statistics{
      * @param iterations - number of iteration to return.
      * @return statistics - A nested byte array containing the data to the statistics.
      * @see GameOfLife#clone()
+     * @see GameOfLife#getPlayBoard()
      * @see Board#countCellsAlive()
      * @see Board#getSumXYCoordinates()
      */
@@ -43,16 +44,16 @@ public class Statistics{
         }
 
         // First playboard to be measured with
-        int firstxySum = gameOfLife.playBoard.getSumXYCoordinates();
-        int firstCellsAlive = gameOfLife.playBoard.countCellsAlive();
+        int firstxySum = gameOfLife.getPlayBoard().getSumXYCoordinates();
+        int firstCellsAlive = gameOfLife.getPlayBoard().countCellsAlive();
         int firstCellsDifference = 0;
         double firstReducedBoard = 0.5 * firstCellsAlive + 3.0 * firstCellsDifference + 0.25 * firstxySum;
 
         // Loops throgh the number of generations given from the parameter.
         for(int j = 0; j < statistics[0].length; j++){
             // the playboard from current generation to be measured with the first board.
-            int xySum = gameOfLife.playBoard.getSumXYCoordinates();
-            int cellsAlive = gameOfLife.playBoard.countCellsAlive();
+            int xySum = gameOfLife.getPlayBoard().getSumXYCoordinates();
+            int cellsAlive = gameOfLife.getPlayBoard().countCellsAlive();
 
             int cellsDifference;
             if(j == 0){

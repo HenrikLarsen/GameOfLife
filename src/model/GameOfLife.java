@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 public class GameOfLife {
-    public int genCounter = 0;
-    public Board playBoard;
+    private int genCounter = 0;
+    private Board playBoard;
     private ThreadWorker workers;
-    public byte[][] neighbourCount;
-    public byte[][] newGenerationCells;
+    private byte[][] neighbourCount;
+    private byte[][] newGenerationCells;
 
     //Callable objects containing the tasks needed for each generation. Used when running concurrently.
     private Callable<Void> countNeighboursCallable;
@@ -437,6 +437,48 @@ public class GameOfLife {
      */
     public Board getPlayBoard() {
         return playBoard;
+    }
+
+    /**
+     * Method that returns the current genCounter.
+     * @return genCounter - The current number of iterations that have been run.
+     * @see #genCounter
+     */
+    public int getGenCounter () {
+        return genCounter;
+    }
+
+    /**
+     * Method that adds 1 to the generation counter.
+     * @see #genCounter
+     */
+    public void incrementGenCounter() {
+        genCounter++;
+    }
+
+    /**
+     * Method sets the generation counter back to 0.
+     * @see #genCounter
+     */
+    public void resetGenCounter() {
+        genCounter = 0;
+    }
+
+    /**
+     * Method that sets the neighbour count of this board. This method is only used during unit testing.
+     * @see #neighbourCount
+     */
+    public void setNeighbourCount(byte[][] neighbours) {
+        this.neighbourCount = neighbours;
+    }
+
+    /**
+     * Method that returns the current newGenerationCells 2D-byte-array. This method is only used during unit testing.
+     * @return newGenerationCells - The next generation of cells calculated by enforce rules.
+     * @see #newGenerationCells
+     */
+    public byte[][] getNewGenerationCells() {
+        return newGenerationCells;
     }
 
     /**

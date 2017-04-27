@@ -166,7 +166,8 @@ public class Controller implements Initializable {
      * @see #generationLabel
      * @see #aliveLabel
      * @see #draw()
-     * @see GameOfLife#genCounter
+     * @see GameOfLife#incrementGenCounter()
+     * @see GameOfLife#getGenCounter()
      * @see GameOfLife#nextGeneration()
      * @see Board#getCellsAlive()
      */
@@ -185,8 +186,8 @@ public class Controller implements Initializable {
             }
 
             draw();
-            gOL.genCounter++;
-            generationLabel.setText(Integer.toString(gOL.genCounter));
+            gOL.incrementGenCounter();
+            generationLabel.setText(Integer.toString(gOL.getGenCounter()));
             aliveLabel.setText(Integer.toString(board.getCellsAlive()));
         });
     }
@@ -304,7 +305,8 @@ public class Controller implements Initializable {
      * @see #generationLabel
      * @see #aliveLabel
      * @see #draw()
-     * @see GameOfLife#genCounter
+     * @see GameOfLife#resetGenCounter()
+     * @see GameOfLife#getGenCounter()
      * @see Board#resetBoard()
      * @see Board#getCellsAlive()
      * @see DynamicBoard#setGridSize(int)
@@ -317,8 +319,8 @@ public class Controller implements Initializable {
         startButton.setText("Start");
         isRunning = false;
         move = false;
-        gOL.genCounter = 0;
-        generationLabel.setText(Integer.toString(gOL.genCounter));
+        gOL.resetGenCounter();
+        generationLabel.setText(Integer.toString(gOL.getGenCounter()));
         board.resetBoard();
         if (board instanceof DynamicBoard) {
             ((DynamicBoard)board).setGridSize(50);
@@ -452,7 +454,8 @@ public class Controller implements Initializable {
      * @see #ruleLabel
      * @see #canvasArea
      * @see #draw()
-     * @see GameOfLife#genCounter
+     * @see GameOfLife#resetGenCounter()
+     * @see GameOfLife#getGenCounter()
      * @see FileHandler#readGameBoardFromDisk(File)
      * @see PopUpAlerts#ioAlertFromDisk()
      * @see CanvasDrawer#resetOffset(Board, Canvas)
@@ -471,8 +474,8 @@ public class Controller implements Initializable {
         //If a file was chosen, will stop the game and set the generation to 0 and try to load the file.
         if (file != null) {
             timeline.stop();
-            gOL.genCounter = 0;
-            generationLabel.setText(Integer.toString(gOL.genCounter));
+            gOL.resetGenCounter();
+            generationLabel.setText(Integer.toString(gOL.getGenCounter()));
             try {
                 fileHandler.readGameBoardFromDisk(file);
             } catch (IOException ie) {
@@ -503,7 +506,8 @@ public class Controller implements Initializable {
      * @see #ruleLabel
      * @see #canvasArea
      * @see #draw()
-     * @see GameOfLife#genCounter
+     * @see GameOfLife#resetGenCounter()
+     * @see GameOfLife#getGenCounter()
      * @see FileHandler#readGameBoardFromURL(String)
      * @see PopUpAlerts#ioAlertFromURL()
      * @see CanvasDrawer#resetOffset(Board, Canvas)
@@ -521,8 +525,8 @@ public class Controller implements Initializable {
         //If a String is present, will try to load it, and produce warning if not able to.
         if (url != null) {
             timeline.stop();
-            gOL.genCounter = 0;
-            generationLabel.setText(Integer.toString(gOL.genCounter));
+            gOL.resetGenCounter();
+            generationLabel.setText(Integer.toString(gOL.getGenCounter()));
             try {
                 fileHandler.readGameBoardFromURL(url);
                 aliveLabel.setText(Integer.toString(board.getCellsAlive()));
