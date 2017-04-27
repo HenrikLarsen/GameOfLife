@@ -174,12 +174,15 @@ public class Controller implements Initializable {
         return new KeyFrame(Duration.millis(1000), e -> {
 
             //Performs a check on the width of the board to see if it should run concurrently or not
-            /*if (board.getWidth() < 600) {
+            if (board.getWidth() < 600) {
                 gOL.nextGeneration();
             } else {
-                gOL.nextGenerationConcurrentPrintPerformance();
-            }*/
-            gOL.nextGenerationConcurrentPrintPerformance();
+                if (!threadWorker.getShutDownStatus()) {
+                    gOL.nextGenerationConcurrentPrintPerformance();
+                } else {
+                    gOL.nextGeneration();
+                }
+            }
 
             draw();
             gOL.genCounter++;
