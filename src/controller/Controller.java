@@ -46,7 +46,6 @@ public class Controller implements Initializable {
     @FXML private Slider speedSlider;
     @FXML private ColorPicker cellColorPicker;
     @FXML private ColorPicker backgroundColorPicker;
-    @FXML private TextField sizeInputField;
     @FXML private TextField ruleInputField;
     @FXML private Canvas canvasArea;
     @FXML private Label generationLabel;
@@ -149,7 +148,7 @@ public class Controller implements Initializable {
         backgroundColorPicker.setValue(currentBackgroundColor);
 
         Node[] traversableNodes = {canvasArea, speedSlider, cellColorPicker, backgroundColorPicker, startButton,
-                sizeInputField, ruleInputField, chooseRulesBox, centerButton, resetButton, gridToggleButton};
+                ruleInputField, chooseRulesBox, centerButton, resetButton, gridToggleButton};
         nodes.addAll(Arrays.asList(traversableNodes));
         setFocusTraversable(true);
 
@@ -346,29 +345,6 @@ public class Controller implements Initializable {
      */
     public void gridClick() {
         gridToggle = !gridToggle;
-        draw();
-    }
-
-    /**
-     * Method that sets the size the size of the cellGrid quadratically. Is called when the user presses enter
-     * while within the sizeInputField textfield.
-     * @see #sizeInputField
-     * @see #draw()
-     * @see DynamicBoard#setGridSize(int)
-     * @see CanvasDrawer#resetOffset(Board, Canvas)
-     */
-    public void cellSizeOnEnter() {
-
-        //Checks that the input contains something and that the board is an instance of DynamicBoard
-        if (!sizeInputField.getText().isEmpty() && board instanceof DynamicBoard) {
-            int size = Integer.parseInt(sizeInputField.getText());
-
-            //Sets the grid size to that of the input
-            ((DynamicBoard)board).setGridSize(size);
-        }
-
-        //Resets the offsets and draws the board.
-        canvasDrawer.resetOffset(board, canvasArea);
         draw();
     }
 

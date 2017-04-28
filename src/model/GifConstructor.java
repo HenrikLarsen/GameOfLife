@@ -17,14 +17,14 @@ import java.io.IOException;
  */
 public class GifConstructor {
     private double gifCellSize;
-    private int gifSize;
-    private Board gifBoard;
-    private GameOfLife gifGol;
-    private int counter;
-    private int milliseconds;
-    private java.awt.Color gifBackgroundColor;
-    private java.awt.Color gifCellColor;
-    private boolean drawEntireBoard;
+    private final int gifSize;
+    private final Board gifBoard;
+    private final GameOfLife gifGol;
+    private final int counter;
+    private final int milliseconds;
+    private final java.awt.Color gifBackgroundColor;
+    private final java.awt.Color gifCellColor;
+    private final boolean drawEntireBoard;
 
     /**
      * Sole constructor for a GifConstructor object. Sets all needed parameters to create a

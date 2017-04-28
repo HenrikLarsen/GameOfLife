@@ -245,67 +245,94 @@ public class GameOfLife {
      */
     public void setRuleString(String input) throws RulesFormatException{
         if(input != null){
-            if(input.equals("Life") || input.equals("B3/S23")){
-                ruleString = "B3/S23";
-                ruleDescription = "Highly complex behavior.";
-                ruleName = "Life";
-            }else if(input.equals("Replicator") || input.equals("B1357/S1357")){
-                ruleString = "B1357/S1357";
-                ruleDescription = "Edward Fredkin's replicating automaton: every pattern is eventually replaced by " +
-                        "multiple copies of itself.";
-                ruleName = "Replicator";
-            }else if(input.equals("Seeds") || input.equals("B2/S")){
-                ruleString = "B2/S";
-                ruleDescription = "All patterns are phoenixes, meaning that every live cell immediately dies, and " +
-                        "many patterns lead to explosive chaotic growth. However, some engineered patterns with " +
-                        "complex behavior are known.";
-                ruleName = "Seeds";
-            }else if(input.equals("Life Without Death") || input.equals("B3/S012345678")){
-                ruleString = "B3/S012345678";
-                ruleDescription = "Also known as Inkspot or Flakes. Cells that become alive never die. It combines " +
-                        "chaotic growth with more structured ladder-like patterns that can be used to simulate " +
-                        "arbitrary Boolean circuits.";
-                ruleName = "Life Without Death";
-            }else if(input.equals("34 Life") || input.equals("B34/S34")){
-                ruleString = "B34/S34";
-                ruleDescription = "Was initially thought to be a stable alternative to Life, until computer simulation " +
-                        "found that larger patterns tend to explode. Has many small oscillators and spaceships.";
-                ruleName = "34 Life";
-            }else if(input.equals("Diamoeba") || input.equals("B35678/S5678")){
-                ruleString = "B35678/S5678";
-                ruleDescription = "Forms large diamonds with chaotically fluctuating boundaries. First studied by Dean " +
-                        "Hickerson, who in 1993 offered a $50 prize to find a pattern that fills space with live cells; " +
-                        "the prize was won in 1999 by David Bell.";
-                ruleName = "Diamoeba";
-            }else if(input.equals("2x2") || input.equals("B36/S125")){
-                ruleString = "B36/S125";
-                ruleDescription = "If a pattern is composed of 2x2 blocks, it will continue to evolve in the same form; " +
-                        "grouping these blocks into larger powers of two leads to the same behavior, but slower. Has " +
-                        "complex oscillators of high periods as well as a small glider.";
-                ruleName = "2x2";
-            }else if(input.equals("Highlife") || input.equals("B36/S23")){
-                ruleString = "B36/S23";
-                ruleDescription = "Similar to Life but with a small self-replicating pattern.";
-                ruleName = "Highlife";
-            }else if(input.equals("Day & Night") || input.equals("B3678/S34678")){
-                ruleString = "B3678/S34678";
-                ruleDescription = "Symmetric under on-off reversal. Has engineered patterns with highly complex behavior.";
-                ruleName = "Day & Night";
-            }else if(input.equals("Morley") || input.equals("B368/S245")){
-                ruleString = "B368/S245";
-                ruleDescription = "Named after Stephen Morley; also called Move. Supports very high-period and " +
-                        "slow spaceships.";
-                ruleName = "Morley";
-            }else if(input.equals("Anneal") || input.equals("B4678/S35678")){
-                ruleString = "B4678/S35678";
-                ruleDescription = "Also called the twisted majority rule. Symmetric under on-off reversal. Approximates " +
-                        "the curve-shortening flow on the boundaries between live and dead cells.";
-                ruleName = "Anneal";
-            } else{
-                //If input does not match any of the above cases, sets this as the default values
-                ruleString = input;
-                ruleDescription = "No description";
-                ruleName = "No name";
+            switch (input) {
+                case "Life":
+                case "B3/S23":
+                    ruleString = "B3/S23";
+                    ruleDescription = "Highly complex behavior.";
+                    ruleName = "Life";
+                    break;
+                case "Replicator":
+                case "B1357/S1357":
+                    ruleString = "B1357/S1357";
+                    ruleDescription = "Edward Fredkin's replicating automaton: every pattern is eventually " +
+                            "replaced by multiple copies of itself.";
+                    ruleName = "Replicator";
+                    break;
+                case "Seeds":
+                case "B2/S":
+                    ruleString = "B2/S";
+                    ruleDescription = "All patterns are phoenixes, meaning that every live cell immediately " +
+                            "dies, and many patterns lead to explosive chaotic growth. However, some engineered " +
+                            "patterns with complex behavior are known.";
+                    ruleName = "Seeds";
+                    break;
+                case "Life Without Death":
+                case "B3/S012345678":
+                    ruleString = "B3/S012345678";
+                    ruleDescription = "Also known as Inkspot or Flakes. Cells that become alive never die. " +
+                            "It combines chaotic growth with more structured ladder-like patterns that can be " +
+                            "used to simulate arbitrary Boolean circuits.";
+                    ruleName = "Life Without Death";
+                    break;
+                case "34 Life":
+                case "B34/S34":
+                    ruleString = "B34/S34";
+                    ruleDescription = "Was initially thought to be a stable alternative to Life, until " +
+                            "computer simulation found that larger patterns tend to explode. Has many small " +
+                            "oscillators and spaceships.";
+                    ruleName = "34 Life";
+                    break;
+                case "Diamoeba":
+                case "B35678/S5678":
+                    ruleString = "B35678/S5678";
+                    ruleDescription = "Forms large diamonds with chaotically fluctuating boundaries. First " +
+                            "studied by Dean Hickerson, who in 1993 offered a $50 prize to find a pattern that " +
+                            "fills space with live cells; the prize was won in 1999 by David Bell.";
+                    ruleName = "Diamoeba";
+                    break;
+                case "2x2":
+                case "B36/S125":
+                    ruleString = "B36/S125";
+                    ruleDescription = "If a pattern is composed of 2x2 blocks, it will continue to evolve " +
+                            "in the same form; grouping these blocks into larger powers of two leads to the " +
+                            "same behavior, but slower. Has complex oscillators of high periods as well as " +
+                            "a small glider.";
+                    ruleName = "2x2";
+                    break;
+                case "Highlife":
+                case "B36/S23":
+                    ruleString = "B36/S23";
+                    ruleDescription = "Similar to Life but with a small self-replicating pattern.";
+                    ruleName = "Highlife";
+                    break;
+                case "Day & Night":
+                case "B3678/S34678":
+                    ruleString = "B3678/S34678";
+                    ruleDescription = "Symmetric under on-off reversal. Has engineered patterns with highly " +
+                            "complex behavior.";
+                    ruleName = "Day & Night";
+                    break;
+                case "Morley":
+                case "B368/S245":
+                    ruleString = "B368/S245";
+                    ruleDescription = "Named after Stephen Morley; also called Move. Supports very high-period and " +
+                            "slow spaceships.";
+                    ruleName = "Morley";
+                    break;
+                case "Anneal":
+                case "B4678/S35678":
+                    ruleString = "B4678/S35678";
+                    ruleDescription = "Also called the twisted majority rule. Symmetric under on-off reversal. " +
+                            "Approximates the curve-shortening flow on the boundaries between live and dead cells.";
+                    ruleName = "Anneal";
+                    break;
+                default:
+                    //If input does not match any of the above cases, sets this as the default values
+                    ruleString = input;
+                    ruleDescription = "No description";
+                    ruleName = "No name";
+                    break;
             }
         }
 
@@ -328,7 +355,7 @@ public class GameOfLife {
      * @see #surviveRules
      * @see PopUpAlerts#ruleAlert1()
      */
-    public void setRuleSet(String rules) throws RulesFormatException {
+    public void setRuleSet(String rules) {
 
         //Creates patterns and matcher to check for correct formatting of the rules.
         Pattern rulePattern = Pattern.compile("[^sSbB012345678/]",Pattern.MULTILINE | Pattern.DOTALL);

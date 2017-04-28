@@ -1,4 +1,3 @@
-
 package unitTesting;
 
 import model.Board;
@@ -820,13 +819,12 @@ public class DynamicBoardTest {
     }
 
     private String array2DToString(byte[][] neighbour) {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for (int y = 0; y < neighbour[0].length; y++) {
-            for (int x = 0; x < neighbour.length; x++) {
-                str = str + neighbour[x][y];
+            for (byte[] aNeighbour : neighbour) {
+                str.append(aNeighbour[y]);
             }
         }
-        return str;
+        return str.toString();
     }
-
 }

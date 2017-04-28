@@ -16,7 +16,7 @@ import java.io.IOException;
 public class GameOfLifeTest {
     private Board board;
     private GameOfLife gol;
-    private ThreadWorker threadWorker = ThreadWorker.getInstance();
+    private final ThreadWorker threadWorker = ThreadWorker.getInstance();
 
     @Test
     public void nextGenerationTest1() {
@@ -390,11 +390,8 @@ public class GameOfLifeTest {
 
         board.setBoard(testBoard);
         gol.setNeighbourCount(board.countNeighbours());
-        try {
-            gol.setRuleSet("B012345678/S");
-        } catch (RulesFormatException rfe) {
-            org.junit.Assert.fail();
-        }
+
+        gol.setRuleSet("B012345678/S");
         gol.enforceRules();
         board.setBoard(gol.getNewGenerationCells());
 
@@ -417,11 +414,8 @@ public class GameOfLifeTest {
 
         board.setBoard(testBoard);
         gol.setNeighbourCount(board.countNeighbours());
-        try {
-            gol.setRuleSet("B/S");
-        } catch (RulesFormatException rfe) {
-            org.junit.Assert.fail();
-        }
+
+        gol.setRuleSet("B/S");
         gol.enforceRules();
         board.setBoard(gol.getNewGenerationCells());
 
@@ -552,11 +546,7 @@ public class GameOfLifeTest {
         board = new DynamicBoard(8,8);
         gol = new GameOfLife(board);
 
-        try {
-            gol.setRuleSet("B4678/S35678");
-        } catch (RulesFormatException rfe) {
-            org.junit.Assert.fail();
-        }
+        gol.setRuleSet("B4678/S35678");
 
         String expectedRuleString = "B4678/S35678";
         String expectedBornRule = "4678";
@@ -572,11 +562,7 @@ public class GameOfLifeTest {
         board = new DynamicBoard(8,8);
         gol = new GameOfLife(board);
 
-        try {
-            gol.setRuleSet("B0123456777778/S000012333344567853478");
-        } catch (RulesFormatException rfe) {
-            org.junit.Assert.fail();
-        }
+        gol.setRuleSet("B0123456777778/S000012333344567853478");
 
         String expectedRuleString = "B012345678/S012345678";
         String expectedBornRule = "012345678";
@@ -592,11 +578,7 @@ public class GameOfLifeTest {
         board = new DynamicBoard(8,8);
         gol = new GameOfLife(board);
 
-        try {
-            gol.setRuleSet("B/S");
-        } catch (RulesFormatException rfe) {
-            org.junit.Assert.fail();
-        }
+        gol.setRuleSet("B/S");
 
         String expectedRuleString = "B/S";
         String expectedBornRule = "";
@@ -615,13 +597,7 @@ public class GameOfLifeTest {
     public void setRuleSetTest4() {
         board = new DynamicBoard(8,8);
         gol = new GameOfLife(board);
-
-        try {
-            gol.setRuleSet("B3/S9");
-            org.junit.Assert.fail();
-        } catch (RulesFormatException rfe) {
-            System.out.println("Success");
-        }
+        gol.setRuleSet("B3/S9");
     }
 
     @Test
