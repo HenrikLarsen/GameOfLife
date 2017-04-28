@@ -249,7 +249,8 @@ public class GameOfLife {
                 case "Life":
                 case "B3/S23":
                     ruleString = "B3/S23";
-                    ruleDescription = "Highly complex behavior.";
+                    ruleDescription = "The original rules for Conway's Game of Life. A chaotic rule that is by " +
+                            "far the most well-known and well-studied. It exhibits highly complex behavior.";
                     ruleName = "Life";
                     break;
                 case "Replicator":
