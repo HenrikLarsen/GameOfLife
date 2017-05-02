@@ -22,7 +22,7 @@ public class StatisticsController{
     /**
      * Method that sets the statistics data to be drawn on the chart.
      * @see #stat
-     * @param s - Array containing the statistcs
+     * @param s - Array containing the statistics
      */
     public void setStat(int[][] s){
         this.stat = s;

@@ -28,7 +28,3 @@ public class Main extends Application {
         launch(args);
     }
 }
-
-
-//TODO: Vurder å sette ny størrelse osv
-//TODO: Fiks warnings etc
