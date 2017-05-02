@@ -368,11 +368,13 @@ public class FileHandler {
      * @param file - The file to be written to.
      * @param x - The width of the pattern.
      * @param y - The height of the pattern.
+     * @param rules - String containing the data for the rules.
      * @param titleField - String containing the title metadata.
      * @param authorField - String containing the author metadata.
      * @param dateCheckBox - Checkbox that indicates if data information should be included.
      * @param commentField - String containing the comment metadata.
-     * @param splitString - String containing the RLE version of the pattern, split into 70-character lines..
+     * @param splitString - String containing the RLE version of the pattern, split into 70-character lines.
+     * @throws IOException if the file cannot be written to disk.
      */
     public void RLEtoDisk (File file, int x, int y, String rules, TextField titleField, TextField authorField,
                            CheckBox dateCheckBox, TextArea commentField, String splitString) throws IOException{

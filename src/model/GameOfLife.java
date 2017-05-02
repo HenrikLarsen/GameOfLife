@@ -405,7 +405,8 @@ public class GameOfLife {
     }
 
     /**
-     * Method that sets the current ThreadWorker .
+     * Method that sets the current ThreadWorker.
+     * @param tw - The ThreadWorker object to be set.
      * @see #workers
      */
     public void setThreadWorkers(ThreadWorker tw){
@@ -493,6 +494,7 @@ public class GameOfLife {
 
     /**
      * Method that sets the neighbour count of this board. This method is only used during unit testing.
+     * @param neighbours - The 2D-byte array to be set as the neighbours.
      * @see #neighbourCount
      */
     public void setNeighbourCount(byte[][] neighbours) {

@@ -65,6 +65,7 @@ public class ProgressController implements Initializable {
 
     /**
      * Method that sets the current Game of Life object.
+     * @param gOL - The GameOfLife object to be considered.
      * @see #gameOfLife
      */
     public void setGameOfLife(GameOfLife gOL){
@@ -73,6 +74,7 @@ public class ProgressController implements Initializable {
 
     /**
      * Method that sets the number of iterations to be measured and drawn.
+     * @param i - The number of iterations to be considered.
      * @see #iterations
      */
     public void setIterations(int i){

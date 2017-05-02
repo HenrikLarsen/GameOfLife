@@ -748,12 +748,14 @@ public abstract class Board {
     /**
      * Abstract method for returning an integer representing the width of the current cellGrid.
      * Needs to be overridden in a concrete subclass.
+     * @return The width of the playing board.
      */
     public abstract int getWidth();
 
     /**
      * Abstract method for returning an integer representing the height of the current cellGrid.
      * Needs to be overridden in a concrete subclass.
+     * @return The height of the playing board.
      */
     public abstract int getHeight();
 

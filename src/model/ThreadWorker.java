@@ -34,6 +34,7 @@ public class ThreadWorker {
 
     /**
      * Method that returns the ThreadWorker, allowing other classes to take use of the class.
+     * @return threadWorker - The threadWorker object that has been instanced.
      */
     public static ThreadWorker getInstance() {
         return threadWorker;
