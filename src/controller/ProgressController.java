@@ -117,7 +117,7 @@ public class ProgressController implements Initializable {
             super.succeeded();
             try{
                 Stage statisticStage = new Stage();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Statistics.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Statistics.fxml"));
                 Parent root = loader.load();
                 StatisticsController statisticsController = loader.getController();
 

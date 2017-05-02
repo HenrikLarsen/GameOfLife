@@ -705,7 +705,7 @@ public class Controller implements Initializable {
         editorStage = new Stage();
         editorStage.initModality(Modality.WINDOW_MODAL);
         editorStage.initOwner(canvasArea.getScene().getWindow());
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Editor.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Editor.fxml"));
 
         //Produces a warning to the user if the board size is larger than what the editor window can draw
         if (board.getWidth() > 1200 || board.getHeight() > 1200) {
@@ -789,7 +789,7 @@ public class Controller implements Initializable {
                 int iterations = Integer.parseInt(out);
 
                 progressStage = new Stage();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/Progress.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Progress.fxml"));
                 Parent root = loader.load();
                 progressController = loader.getController();
 
@@ -831,7 +831,7 @@ public class Controller implements Initializable {
         patternSelectStage = new Stage();
         patternSelectStage.initModality(Modality.WINDOW_MODAL);
         patternSelectStage.initOwner(canvasArea.getScene().getWindow());
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/PatternSelect.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PatternSelect.fxml"));
         try {
             //Tries to load the fxml and sets the patternPickerController from that.
             Parent root = fxmlLoader.load();
@@ -863,7 +863,7 @@ public class Controller implements Initializable {
      */
     public void showAbout() {
         Stage aboutStage = new Stage();
-        FXMLLoader aboutLoader = new FXMLLoader(getClass().getResource("../view/About.fxml"));
+        FXMLLoader aboutLoader = new FXMLLoader(getClass().getResource("/view/About.fxml"));
         try {
             //Tries to load the fxml for the about window
             Parent root = aboutLoader.load();
