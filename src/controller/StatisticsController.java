@@ -19,6 +19,11 @@ public class StatisticsController{
     //FXML fields
     @FXML private LineChart<String, Number> lineChart;
 
+    /**
+     * Method that sets the statistics data to be drawn on the chart.
+     * @see #stat
+     * @param s - Array containing the statistcs
+     */
     public void setStat(int[][] s){
         this.stat = s;
     }
