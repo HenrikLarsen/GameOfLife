@@ -7,7 +7,7 @@ package model;
  * @author Henrik Finnerud Larsen
  * @version 1.0
  */
-class PatternFormatException extends Exception {
+public class PatternFormatException extends Exception {
 
     /**
      * Default constructor, creates a new instance of PatternFormatException

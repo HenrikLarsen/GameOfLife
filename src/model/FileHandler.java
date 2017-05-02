@@ -94,7 +94,7 @@ public class FileHandler {
      * @exception ArrayIndexOutOfBoundsException - Thrown if the board is static, and the pattern exceeds its borders.
      * @exception RulesFormatException - Thrown if the read rules are incorrectly formatted
      */
-    private void readGameBoard(Reader reader) throws IOException, PatternFormatException,
+    public void readGameBoard(Reader reader) throws IOException, PatternFormatException,
             ArrayIndexOutOfBoundsException, RulesFormatException{
         BufferedReader br = new BufferedReader(reader);
 

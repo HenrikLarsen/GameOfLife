@@ -11,9 +11,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.FileHandler;
+import model.PatternFormatException;
+import model.RulesFormatException;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * The PatternSelectController allows the user to choose from a variety of predetermined patterns to load into
@@ -34,7 +35,7 @@ public class PatternSelectController implements Initializable {
     @FXML TextArea descriptionArea;
 
     private FileHandler fileHandler;
-    private File currentFile;
+    private InputStreamReader loadedStream;
 
     //The items to be set in the choice box
     private final ObservableList<String> choosePatternList = FXCollections.observableArrayList("Glider", "Acorn",
@@ -66,19 +67,24 @@ public class PatternSelectController implements Initializable {
     }
 
     /**
-     * Method that calls FileHandler's readGameBoardFromDisk() method using the currentFile as the file.
-     * Will load the pattern and close the window if successful, otherwise it will produce a warning to the user.
-     * @see #currentFile
+     * Method that calls FileHandler's readGameBoardFromDisk() method with a reader using the loadedStream
+     * as the resource. Will load the pattern and close the window if successful, otherwise it
+     * will produce a warning to the user.
+     * @see #loadedStream
      * @see FileHandler#readGameBoardFromDisk(File)
      * @see PopUpAlerts#ioAlertFromDisk()
      */
     public void loadPatternClick() {
         try {
-            fileHandler.readGameBoardFromDisk(currentFile);
+            fileHandler.readGameBoard(new BufferedReader(loadedStream));
             Stage currentStage = (Stage) imageView.getScene().getWindow();
             currentStage.close();
         } catch (IOException ie) {
             PopUpAlerts.ioAlertFromDisk();
+        } catch (PatternFormatException pfe) {
+            PopUpAlerts.patternFormatAlert();
+        } catch (RulesFormatException rfe) {
+            PopUpAlerts.ruleAlert2();
         }
     }
 
@@ -119,9 +125,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("The glider is the smallest, most common, and first-discovered spaceship." +
                         " It travels diagonally across the Life grid. The glider is often produced by " +
                         "randomly-generated starting patterns.");
-                Image gliderImage = new Image(new File("src/resources/images/glider.png").toURI().toString());
+                Image gliderImage = new Image(getClass().getResource("/resources/images/glider.png").toString());
                 imageView.setImage(gliderImage);
-                currentFile = new File("src/resources/rlefiles/glider.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/glider.rle"));
                 break;
 
             case "Gosper Glider Gun":
@@ -134,9 +140,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("The Gosper glider gun is the first known gun, and indeed the first " +
                         "known finite pattern with unbounded growth, found by Bill Gosper in November 1970. " +
                         "It consists of two queen bee shuttles stabilized by two blocks.");
-                Image gggImage = new Image(new File("src/resources/images/gosper.png").toURI().toString());
+                Image gggImage = new Image(getClass().getResource("/resources/images/gosper.png").toString());
                 imageView.setImage(gggImage);
-                currentFile = new File("src/resources/rlefiles/gosperglidergun.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/gosperglidergun.rle"));
                 break;
 
             case "Achim's p16":
@@ -148,9 +154,9 @@ public class PatternSelectController implements Initializable {
                 discoveredLabel.setText("1994");
                 descriptionArea.setText("Achim's p16 is a period 16 oscillator that was found by Achim Flammenkamp " +
                         "on July 27, 1994. With only 32 cells, it is the smallest known period 16 oscillator.");
-                Image p16Image = new Image(new File("src/resources/images/p16.png").toURI().toString());
+                Image p16Image = new Image(getClass().getResource("/resources/images/p16.png").toString());
                 imageView.setImage(p16Image);
-                currentFile = new File("src/resources/rlefiles/achimsp16.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/achimsp16.rle"));
                 break;
 
             case "Acorn":
@@ -163,9 +169,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("Acorn is a methuselah found by Charles Corderman. It was discovered no " +
                         "later than 1971, though its exact year of discovery is unknown. Its maximum population, " +
                         "1057, occurs in generation 4408.");
-                Image acornImage = new Image(new File("src/resources/images/acorn.png").toURI().toString());
+                Image acornImage = new Image(getClass().getResource("/resources/images/acorn.png").toString());
                 imageView.setImage(acornImage);
-                currentFile = new File("src/resources/rlefiles/acorn.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/acorn.rle"));
                 break;
 
             case "Penny lane":
@@ -177,9 +183,9 @@ public class PatternSelectController implements Initializable {
                 discoveredLabel.setText("1972");
                 descriptionArea.setText("Penny lane is a period 4 oscillator that was found by David " +
                         "Buckingham in 1972. It uses two blocks and a tub as induction coils.");
-                Image pennyImage = new Image(new File("src/resources/images/penny.png").toURI().toString());
+                Image pennyImage = new Image(getClass().getResource("/resources/images/penny.png").toString());
                 imageView.setImage(pennyImage);
-                currentFile = new File("src/resources/rlefiles/pennylane.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/pennylane.rle"));
                 break;
 
 
@@ -193,9 +199,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("A switch engine is a methuselah that was found by Charles Corderman " +
                         "in 1971. It produces a copy of itself after 48 generation, glide-reflected 4 cells " +
                         "northwest, along with some active junk.");
-                Image switchImage = new Image(new File("src/resources/images/switch.png").toURI().toString());
+                Image switchImage = new Image(getClass().getResource("/resources/images/switch.png").toString());
                 imageView.setImage(switchImage);
-                currentFile = new File("src/resources/rlefiles/switchengine.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/switchengine.rle"));
                 break;
 
             case "112P51":
@@ -208,9 +214,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("112P51 is an unnamed period-51 oscillator. It was the first non-trivial " +
                         "period-51 oscillator to be found, all previously known period-51 oscillators being made " +
                         "up of disjoint period-3 and period-17 oscillators.");
-                Image p51Image = new Image(new File("src/resources/images/112p51.png").toURI().toString());
+                Image p51Image = new Image(getClass().getResource("/resources/images/112p51.png").toString());
                 imageView.setImage(p51Image);
-                currentFile = new File("src/resources/rlefiles/112p51.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/112p51.rle"));
                 break;
 
             case "Flower of Eden":
@@ -223,9 +229,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("Flower of Eden, otherwise known as the Garden of Eden 5, was the " +
                         "smallest known Garden of Eden until December 2011. A Garden of Eden is " +
                         "a pattern that has no parents and thus can only occur in generation 0.");
-                Image flowerImage = new Image(new File("src/resources/images/flower.png").toURI().toString());
+                Image flowerImage = new Image(getClass().getResource("/resources/images/flower.png").toString());
                 imageView.setImage(flowerImage);
-                currentFile = new File("src/resources/rlefiles/flowerofeden.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/flowerofeden.rle"));
                 break;
 
             case "Period-45 glider gun":
@@ -238,10 +244,10 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("Period-45 glider gun is a true period 45 gun discovered by Matthias " +
                         "Merzenich in 2010, with improvements by Adam P. Goucher and Dave Greene. " +
                         "It consists of an object hassled by pentadecathlons.");
-                Image gliderGun45Image = new Image(new File("src/resources/images/period45gun." +
-                        "png").toURI().toString());
+                Image gliderGun45Image = new Image(getClass().getResource("/resources/images/period45gun." +
+                        "png").toString());
                 imageView.setImage(gliderGun45Image);
-                currentFile = new File("src/resources/rlefiles/period45glidergun.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/period45glidergun.rle"));
                 break;
 
             case "56P6H1V0":
@@ -254,9 +260,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("56P6H1V0 is a spaceship discovered by Hartmut Holzwart in April 2009 " +
                         "that travels at a speed of c/6 orthogonally. With 56 cells it is currently the smallest " +
                         "known orthogonal c/6 spaceship, surpassing dragon with 102 cells.");
-                Image p6h1Image = new Image(new File("src/resources/images/56P6H1V0.png").toURI().toString());
+                Image p6h1Image = new Image(getClass().getResource("/resources/images/56P6H1V0.png").toString());
                 imageView.setImage(p6h1Image);
-                currentFile = new File("src/resources/rlefiles/56p6h1v0.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/56p6h1v0.rle"));
                 break;
 
             case "Primer":
@@ -269,9 +275,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("Primer is a pattern that was constructed by Dean Hickerson on November " +
                         "1, 1991 that produces a stream of lightweight spaceships representing prime numbers. " +
                         "It was the first pattern created that computes prime numbers.");
-                Image primerImage = new Image(new File("src/resources/images/primer.png").toURI().toString());
+                Image primerImage = new Image(getClass().getResource("/resources/images/primer.png").toString());
                 imageView.setImage(primerImage);
-                currentFile = new File("src/resources/rlefiles/primer.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/primer.rle"));
                 break;
 
             case "Sidecar Gun":
@@ -284,10 +290,10 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("Sidecar gun is a period 60 gun that was constructed by Jason Summers " +
                         "on March 7, 2000 to fire sidecars. It works by using several variants of the Gosper " +
                         "glider gun to construct the necessary heavyweight spaceship and sidecar via glider synthesis.");
-                Image sidecarImage = new Image(new File("src/resources/images/" +
-                        "sidecargun.png").toURI().toString());
+                Image sidecarImage = new Image(getClass().getResource("/resources/images/" +
+                        "sidecargun.png").toString());
                 imageView.setImage(sidecarImage);
-                currentFile = new File("src/resources/rlefiles/sidecargun.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/sidecargun.rle"));
                 break;
 
             case "Star Gate":
@@ -300,9 +306,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("Star gate is a pattern based on the Fast Forward Force Field that was " +
                         "created on October 26, 1996 by Dietrich Leithner. It is a period 60 oscillator that " +
                         "allows lightweight spaceships to jump forward at the superluminous speed of 15c/14.");
-                Image sgImage = new Image(new File("src/resources/images/stargate.png").toURI().toString());
+                Image sgImage = new Image(getClass().getResource("/resources/images/stargate.png").toString());
                 imageView.setImage(sgImage);
-                currentFile = new File("src/resources/rlefiles/stargate.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/stargate.rle"));
                 break;
 
             case "Moving Sawtooth":
@@ -315,9 +321,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("Moving sawtooth is an orthogonal sawtooth with expansion factor 3. " +
                         "Its minimum infinite repeating population is 1239, and it is notable because it " +
                         "and its slight modifications are the only known sawtooths that move.");
-                Image msImage = new Image(new File("src/resources/images/sawtooth.png").toURI().toString());
+                Image msImage = new Image(getClass().getResource("/resources/images/sawtooth.png").toString());
                 imageView.setImage(msImage);
-                currentFile = new File("src/resources/rlefiles/movingsawtooth.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/movingsawtooth.rle"));
                 break;
 
             case "p690 60P5H2V0 gun":
@@ -330,9 +336,9 @@ public class PatternSelectController implements Initializable {
                 descriptionArea.setText("p690 60P5H2V0 gun is a period 690 gun that was constructed to fire copies " +
                         "of the 60P5H2V0 spaceship. It works by using several variants twin bees shuttle collisions " +
                         "to construct the necessary glider synthesis");
-                Image p690Image = new Image(new File("src/resources/images/p690.png").toURI().toString());
+                Image p690Image = new Image(getClass().getResource("/resources/images/p690.png").toString());
                 imageView.setImage(p690Image);
-                currentFile = new File("src/resources/rlefiles/p69060p5h2v0gun.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/p69060p5h2v0gun.rle"));
                 break;
 
             case "Turing Machine":
@@ -344,10 +350,12 @@ public class PatternSelectController implements Initializable {
                 discoveredLabel.setText("2000");
                 descriptionArea.setText("The Turing machine is, as its name suggests, a pattern that is capable of " +
                         "turing-complete computation. It was created by Paul Rendell and its " +
-                        "construction was completed on April 2, 2000. \nWARNING: The application might run slowly.");
-                Image turingImage = new Image(new File("src/resources/images/turing.png").toURI().toString());
+                        "construction was completed on April 2, 2000. \nWARNING: The application might run slower " +
+                        "because of the size of the Turing Machine. If you experience lag, try lowering the FPS" +
+                        " and turn off the grid.");
+                Image turingImage = new Image(getClass().getResource("/resources/images/turing.png").toString());
                 imageView.setImage(turingImage);
-                currentFile = new File("src/resources/rlefiles/turingmachine.rle");
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/turingmachine.rle"));
                 break;
         }
     }
