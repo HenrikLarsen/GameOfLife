@@ -41,7 +41,7 @@
             <padding>
                 <Insets left="10.0"/>
             </padding>
-            <Label text="Cell">
+            <Label text="Cell color">
                 <VBox.margin>
                     <Insets top="10.0"/>
                 </VBox.margin>
@@ -73,19 +73,6 @@
                     <Insets top="30.0"/>
                 </VBox.margin>
             </Button>
-            <Label text="Size">
-                <font>
-                    <Font size="12.0"/>
-                </font>
-                <VBox.margin>
-                    <Insets top="30.0"/>
-                </VBox.margin>
-            </Label>
-            <TextField fx:id="sizeInputField" onAction="#cellSizeOnEnter" prefHeight="27.0" prefWidth="90.0">
-                <VBox.margin>
-                    <Insets right="10.0"/>
-                </VBox.margin>
-            </TextField>
             <Label text="Set Rules">
                 <font>
                     <Font size="12.0"/>
@@ -111,7 +98,7 @@
                     <Font size="12.0"/>
                 </font>
                 <VBox.margin>
-                    <Insets top="80.0"/>
+                    <Insets top="150.0"/>
                 </VBox.margin>
             </Label>
             <Label fx:id="ruleLabel" prefHeight="15.0" prefWidth="76.0" text="B3/S23">

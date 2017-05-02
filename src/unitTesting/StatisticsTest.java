@@ -16,7 +16,7 @@ import java.io.IOException;
 public class StatisticsTest {
     private Board board;
     private GameOfLife gol;
-    private Statistics stats = new Statistics();
+    private final Statistics stats = new Statistics();
 
 
     @Test

@@ -13,7 +13,7 @@ package model;
 @Deprecated
 public class StaticBoard extends Board {
     private final int WIDTH, HEIGHT;
-    private byte[][] cellGrid;
+    private final byte[][] cellGrid;
 
     /**
      * Sole constructor, takes parameters x and y for width and height respectively, and creates a new 2D-array

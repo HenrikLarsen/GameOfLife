@@ -9,7 +9,6 @@ package model;
  */
 public class Statistics{
     private  int[][] statistics;
-    private double[] sim;
 
     /**
      * Constructor of the Statistics class.
@@ -65,10 +64,6 @@ public class Statistics{
             // Calculates the similarity measure
             double similarity = Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100;
             double similarityFloored =  Math.floor(similarity);
-
-            sim = new double[statistics[0].length];
-            sim[j] = similarity;
-
 
             // Entering statistics into the statistics array
             if(j == 0 || firstCellsAlive == 0){
