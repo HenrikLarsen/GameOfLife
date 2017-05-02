@@ -4,6 +4,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -23,7 +24,7 @@ import java.io.IOException;
  * @author Henrik Finnerud Larsen
  * @version 1.0
  */
-public class ProgressController {
+public class ProgressController implements Initializable {
     private int[][] stat;
     private int iterations;
 
@@ -42,8 +43,7 @@ public class ProgressController {
      * @see #progressLabel
      * @see #progressBar
      */
-    @FXML
-    public void initialize() {
+    public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         taskService = new TaskService();
         if (!progressLabel.textProperty().isBound())
         {
