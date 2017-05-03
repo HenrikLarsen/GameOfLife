@@ -279,5 +279,4 @@ public class StatisticsTest {
 
         org.junit.Assert.assertEquals(expectedOutput, actualOutput);
     }
-
 }

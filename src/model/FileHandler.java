@@ -4,7 +4,6 @@ import controller.PopUpAlerts;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,7 +22,6 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 public class FileHandler {
-
     private Board playBoard;
     private GameOfLife gameOfLife;
 
@@ -165,7 +163,7 @@ public class FileHandler {
      * Method that revises an RLE string, and creates a long string without leading numbers, only containing
      * o, b, $ and !.
      * @param rleString - The string to be revised.
-     * @see #decodeRLEtoNormalString(String, int)
+     * @see #decodeRLEtoStandardString(String, int)
      * @exception PatternFormatException - Thrown if the formatting of the file is incorrect
      */
     private String reviseRLEString(String rleString) throws PatternFormatException {
@@ -179,15 +177,15 @@ public class FileHandler {
             if(Character.isDigit(currentChar)) {
                 leadingNumber = (10 * leadingNumber) + (currentChar - '0');
 
-            //Calls decodeRLEtoNormalString for its respective character and appends it to the returnString.
+            //Calls decodeRLEtoStandardString for its respective character and appends it to the returnString.
             } else if (currentChar == 'o') {
-                returnString.append(decodeRLEtoNormalString("1", leadingNumber));
+                returnString.append(decodeRLEtoStandardString("1", leadingNumber));
                 leadingNumber = 0;
             } else if (currentChar == 'b'){
-                returnString.append(decodeRLEtoNormalString("0", leadingNumber));
+                returnString.append(decodeRLEtoStandardString("0", leadingNumber));
                 leadingNumber = 0;
             } else if (currentChar == '$') {
-                returnString.append(decodeRLEtoNormalString("$", leadingNumber));
+                returnString.append(decodeRLEtoStandardString("$", leadingNumber));
                 leadingNumber = 0;
 
             //Returns when it encounters '!', as it marks the end of the RLE-file.
@@ -209,7 +207,7 @@ public class FileHandler {
      * @param s - The character to be repeated.
      * @param i - The number of repetitions.
      */
-    private String decodeRLEtoNormalString(String s, int i) {
+    private String decodeRLEtoStandardString(String s, int i) {
         if (i == 0) {
             i = 1;
         }

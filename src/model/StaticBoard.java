@@ -106,5 +106,4 @@ public class StaticBoard extends Board {
         staticBoardClone.setBoard(cellGrid);
         return staticBoardClone;
     }
-
 }

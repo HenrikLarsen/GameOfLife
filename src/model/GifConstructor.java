@@ -2,9 +2,7 @@ package model;
 
 import controller.PopUpAlerts;
 import javafx.scene.paint.Color;
-
 import lieng.GIFWriter;
-
 import java.io.IOException;
 
 /**
@@ -98,7 +96,7 @@ public class GifConstructor {
             throws IOException {
         if (counter == 0) {
             writer.close();
-            System.out.println("DONE!");
+            System.out.println("Gif done!");
         }
         else {
             writer.createNextImage();

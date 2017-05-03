@@ -108,31 +108,6 @@ public class GameOfLife {
     }
 
     /**
-     * Method for printing out the time it takes for a call to nextGeneration() to finish.
-     * Used for verification and testing purposes, but not within the finished application.
-     * @see #nextGeneration()
-     */
-    public void nextGenerationPrintPerformance() {
-        long start = System.currentTimeMillis();
-        nextGeneration();
-        long elapsed = System.currentTimeMillis() - start;
-        System.out.println("Counting time (ms): " + elapsed);
-    }
-
-    /**
-     * Method for printing out the time it takes for a call to nextGenerationConcurrent() to finish.
-     * Used for verification and testing purposes, but not within the finished application.
-     * @see #nextGenerationConcurrent()
-     */
-    public void nextGenerationConcurrentPrintPerformance() {
-        long start = System.currentTimeMillis();
-        nextGenerationConcurrent();
-        long elapsed = System.currentTimeMillis() - start;
-        System.out.println("Counting time (ms): " + elapsed);
-    }
-
-
-    /**
      * Method for generating the Callable tasks the ThreadWorker class needs to perform. Is updated every generation
      * so that the rowsPerWorker is correct relative to the current cell grid. Because of how countNeighbours() in
      * Board is implemented, there are two separate Callable objects. This is because countNeighbours()
@@ -159,7 +134,6 @@ public class GameOfLife {
             return null;
         };
     }
-
 
     /**
      * A method for enforcing the rules of the game. Iterates throughout the entire cell grid and
@@ -345,7 +319,6 @@ public class GameOfLife {
         }
     }
 
-
     /**
      * Method to set the rules from a string. Does a check for the right formatting and sets the ruleString,
      * surviveRules and bornRules if the string contains valid information. If not, it shows a popup explaining
@@ -508,6 +481,30 @@ public class GameOfLife {
      */
     public byte[][] getNewGenerationCells() {
         return newGenerationCells;
+    }
+
+    /**
+     * Method for printing out the time it takes for a call to nextGeneration() to finish.
+     * Used for verification and testing purposes, but not within the finished application.
+     * @see #nextGeneration()
+     */
+    public void nextGenerationPrintPerformance() {
+        long start = System.currentTimeMillis();
+        nextGeneration();
+        long elapsed = System.currentTimeMillis() - start;
+        System.out.println("Counting time (ms): " + elapsed);
+    }
+
+    /**
+     * Method for printing out the time it takes for a call to nextGenerationConcurrent() to finish.
+     * Used for verification and testing purposes, but not within the finished application.
+     * @see #nextGenerationConcurrent()
+     */
+    public void nextGenerationConcurrentPrintPerformance() {
+        long start = System.currentTimeMillis();
+        nextGenerationConcurrent();
+        long elapsed = System.currentTimeMillis() - start;
+        System.out.println("Counting time (ms): " + elapsed);
     }
 
     /**

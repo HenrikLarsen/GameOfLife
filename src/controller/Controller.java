@@ -4,7 +4,6 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -21,7 +20,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +39,6 @@ import java.util.Optional;
  */
 
 public class Controller implements Initializable {
-
     //Fields from FXML
     @FXML private Slider speedSlider;
     @FXML private ColorPicker cellColorPicker;
@@ -71,7 +68,7 @@ public class Controller implements Initializable {
     private Timeline timeline;
     private boolean gridToggle = true;
     private boolean isRunning = false;
-    private boolean move = false;
+    private boolean isMovable = false;
 
     private Stage editorStage;
     private EditorController editorController;
@@ -80,15 +77,17 @@ public class Controller implements Initializable {
     private ProgressController progressController;
 
     private final TextInputDialog textInputDialogStatistics = new TextInputDialog();
-    private final ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator", "Seeds",
-            "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
-
+    private final ObservableList<String> chooseRulesList = FXCollections.observableArrayList("Life", "Replicator",
+            "Seeds", "Life Without Death", "34 Life", "Diamoeba", "2x2", "Highlife", "Day & Night", "Morley", "Anneal");
 
     /**
      * A concrete implementation of the method in interface Initializable.
      * Initializes the game, draws the first board and sets up the animation keyframe and timeline. Sets
      * formatting for text-input fields and sets initial values of ColorPickers and ChoiceBoxes.
      * Starts together with the application.
+     * @param location The location used to resolve relative paths for the root object,
+     *                 or null if the location is not known.
+     * @param resources The resources used to localize the root object, or null if the root object was not localized.
      * @see #timeline
      * @see #fpsLabel
      * @see #fileHandler
@@ -106,9 +105,6 @@ public class Controller implements Initializable {
      * @see FileHandler#setBoard(Board)
      * @see FileHandler#setGol(GameOfLife)
      * @see GameOfLife#setThreadWorkers(ThreadWorker)
-     * @param location The location used to resolve relative paths for the root object,
-     *                 or null if the location is not known.
-     * @param resources The resources used to localize the root object, or null if the root object was not localized.
      */
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
 
@@ -179,7 +175,7 @@ public class Controller implements Initializable {
                 //Does a check to see if threadWorkers executorService has been shut down for any reason.
                 //Runs nextGenerationConcurrent if it is still active, or normally if not.
                 if (!threadWorker.getShutDownStatus()) {
-                    gOL.nextGenerationConcurrentPrintPerformance();
+                    gOL.nextGenerationConcurrent();
                 } else {
                     gOL.nextGeneration();
                 }
@@ -250,7 +246,7 @@ public class Controller implements Initializable {
      * the timeline.
      * @see #isRunning
      * @see #startButton
-     * @see #move
+     * @see #isMovable
      * @see #aliveLabel
      * @see #timeline
      * @see Board#finalizeBoard()
@@ -260,7 +256,7 @@ public class Controller implements Initializable {
         if(!isRunning){
             startButton.setText("Pause");
             isRunning = true;
-            move = false;
+            isMovable = false;
             board.finalizeBoard();
             setFocusTraversable(true);
             aliveLabel.setText(Integer.toString(board.getCellsAlive()));
@@ -269,7 +265,7 @@ public class Controller implements Initializable {
         }else{
             startButton.setText("Start");
             isRunning = false;
-            move = false;
+            isMovable = false;
             board.finalizeBoard();
             setFocusTraversable(true);
             aliveLabel.setText(Integer.toString(board.getCellsAlive()));
@@ -298,7 +294,7 @@ public class Controller implements Initializable {
      * @see #timeline
      * @see #startButton
      * @see #isRunning
-     * @see #move
+     * @see #isMovable
      * @see #generationLabel
      * @see #aliveLabel
      * @see #draw()
@@ -315,7 +311,7 @@ public class Controller implements Initializable {
         timeline.stop();
         startButton.setText("Start");
         isRunning = false;
-        move = false;
+        isMovable = false;
         gOL.resetGenCounter();
         generationLabel.setText(Integer.toString(gOL.getGenCounter()));
         board.resetBoard();
@@ -375,7 +371,7 @@ public class Controller implements Initializable {
     /**
      * Method that lets the user interact with the board by pressing the mouse button on it. If the left mouse
      * button is clicked, it will call the method to draw cells on the board, while the right button will allow
-     * for panning around the canvas, allowing the user to move around the board visually.
+     * for panning around the canvas, allowing the user to isMovable around the board visually.
      * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
      * @see #aliveLabel
      * @see #canvasArea
@@ -406,8 +402,138 @@ public class Controller implements Initializable {
     }
 
     /**
+     * Method called when pressing enter within the rules input box. Allows for inputting custom rules, and will
+     * try setting them. Checks the predefined set of rules to take metadata from.
+     * Produces a warning if the formatting is wrong.
+     * @see #ruleInputField
+     * @see #ruleLabel
+     * @see #chooseRulesBox
+     * @see GameOfLife#setRuleString(String)
+     * @see PopUpAlerts#ruleAlert2()
+     */
+    public void rulesOnEnter() {
+        try {
+            String ruleString = ruleInputField.getText().toUpperCase();
+            gOL.setRuleString(ruleString);
+            ruleLabel.setText(gOL.getRuleString().toUpperCase());
+            ruleInputField.setText("");
+
+            //Checks if the input matches any predefined rules. Clears the selection if not.
+            if(!chooseRulesList.contains(gOL.getRuleName())){
+                chooseRulesBox.getSelectionModel().clearSelection();
+            }else{
+                chooseRulesBox.getSelectionModel().select(gOL.getRuleName());
+            }
+
+            //Produces a warning if a RulesFormatException is thrown
+        } catch (RulesFormatException rfe) {
+            PopUpAlerts.ruleAlert2();
+        }
+    }
+
+    /**
+     * Method called when choosing an element in the rule choice box. Sets the current playing rules to
+     * what is chosen.
+     * Produces a warning if something goes wrong.
+     * @see #chooseRulesBox
+     * @see #ruleLabel
+     * @see GameOfLife#getRuleString()
+     * @see GameOfLife#setRuleString(String)
+     * @see PopUpAlerts#ruleAlert2()
+     */
+    public void chooseRulesClick(){
+        String rules = (String)chooseRulesBox.getValue();
+        try{
+            gOL.setRuleString(rules);
+        }catch (RulesFormatException rfee) {
+            PopUpAlerts.ruleAlert2();
+        }
+        ruleLabel.setText(gOL.getRuleString().toUpperCase());
+    }
+
+    /**
+     * Method called when the user presses a keyboard button related to moving or rotating a loaded pattern. Will
+     * check if boolean isMovable is true, and return otherwise. If true, it will call the related method from the Board
+     * class in order to isMovable or rotate the loaded pattern. Move will only be true if a pattern is loaded and the
+     * game is not running.
+     * @param keyEvent - The key pressed by the user.
+     * @see #isMovable
+     * @see #draw()
+     * @see Board#getCellsAlive()
+     * @see Board#movePattern(String)
+     * @see Board#rotate(boolean)
+     * @see Board#finalizeBoard()
+     * @see Board#discardPattern()
+     */
+    public void movePattern(KeyEvent keyEvent) {
+        //Returns if boolean isMovable is false
+        if (!isMovable) {
+            return;
+        }
+
+        //Calls movePattern() from Board if the keys correspond with pattern movement (arrow or WASD)
+        if(keyEvent.getCode() == KeyCode.W || keyEvent.getCode() == KeyCode.UP) {
+            board.movePattern("up");
+        } else if (keyEvent.getCode() == KeyCode.S || keyEvent.getCode() == KeyCode.DOWN) {
+            board.movePattern("down");
+        } else if (keyEvent.getCode() == KeyCode.A || keyEvent.getCode() == KeyCode.LEFT){
+            board.movePattern("left");
+        } else if (keyEvent.getCode() == KeyCode.D || keyEvent.getCode() == KeyCode.RIGHT) {
+            board.movePattern("right");
+
+            //If the key is Q or E, it will call method to rotate counter-clockwise or clockwise respectively.
+        } else if (keyEvent.getCode() == KeyCode.Q || keyEvent.getCode() == KeyCode.PERIOD) {
+            board.rotate(false);
+        } else if (keyEvent.getCode() == KeyCode.E || keyEvent.getCode() == KeyCode.MINUS) {
+            board.rotate(true);
+
+            //Should the key be ENTER, it will call Board's finalizeBoard() method and update the aliveLabel.
+        } else if (keyEvent.getCode() == KeyCode.ENTER) {
+            board.finalizeBoard();
+            aliveLabel.setText(Integer.toString(board.getCellsAlive()));
+            isMovable = false;
+            setFocusTraversable(true);
+
+            //Should the key be ESCAPE, it will call Board's discardPattern() method.
+        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.ESCAPE) {
+            board.discardPattern();
+            isMovable = false;
+            setFocusTraversable(true);
+        }
+        draw();
+    }
+
+    /**
+     * Method related to zooming with the mouse wheel. Called when the user scrolls. Depending on what the
+     * current cell size is, it will divide the scrollEvent accordingly, so that the level of zoom remains
+     * relatively consistent. Calls CanvasDrawer's setZoom() and draw().
+     * @param scrollEvent - The event in which the user scrolls with the mouse wheel.
+     * @see #draw()
+     * @see CanvasDrawer#getCellDrawSize()
+     * @see CanvasDrawer#setZoomOffset(Board, Canvas)
+     */
+    public void scrollZoom (ScrollEvent scrollEvent){
+        //Sets the zoom value from the deltaY value of the scroll event
+        double zoom = scrollEvent.getDeltaY()/40;
+
+        //Divides the zoom value relative to the current cell draw size.
+        if (canvasDrawer.getCellDrawSize() < 3) {
+            zoom = zoom / 16;
+        } else if (canvasDrawer.getCellDrawSize() < 5) {
+            zoom = zoom / 8;
+        } else if (canvasDrawer.getCellDrawSize() < 8) {
+            zoom = zoom / 4;
+        } else if (canvasDrawer.getCellDrawSize() < 20 || canvasDrawer.getCellDrawSize() > 5) {
+            zoom = zoom / 2;
+        }
+
+        canvasDrawer.setZoom(canvasDrawer.getCellDrawSize() + zoom, canvasArea, board);
+        draw();
+    }
+
+    /**
      * Method for setting focus traversable for all traversable nodes. Used when importing a
-     * pattern to allow the arrow keys to move the pattern without moving the focus.
+     * pattern to allow the arrow keys to isMovable the pattern without moving the focus.
      * @param b - The value to set the node's traversable property.
      */
     private void setFocusTraversable(boolean b) {
@@ -456,7 +582,7 @@ public class Controller implements Initializable {
 
         aliveLabel.setText(Integer.toString(board.getCellsAlive()));
         ruleLabel.setText(gOL.getRuleString().toUpperCase());
-        move = true;
+        isMovable = true;
         canvasArea.requestFocus();
         setFocusTraversable(false);
 
@@ -504,63 +630,13 @@ public class Controller implements Initializable {
                 PopUpAlerts.ioAlertFromURL();
             }
         }
-        move = true;
+        isMovable = true;
         canvasArea.requestFocus();
         setFocusTraversable(false);
 
         //Resets offset to accommodate for the new pattern and calls draw().
         canvasDrawer.resetOffset(board, canvasArea);
         draw();
-    }
-
-    /**
-     * Method called when pressing enter within the rules input box. Allows for inputting custom rules, and will
-     * try setting them. Checks the predefined set of rules to take metadata from.
-     * Produces a warning if the formatting is wrong.
-     * @see #ruleInputField
-     * @see #ruleLabel
-     * @see #chooseRulesBox
-     * @see GameOfLife#setRuleString(String)
-     * @see PopUpAlerts#ruleAlert2()
-     */
-    public void rulesOnEnter() {
-        try {
-            String ruleString = ruleInputField.getText().toUpperCase();
-            gOL.setRuleString(ruleString);
-            ruleLabel.setText(gOL.getRuleString().toUpperCase());
-            ruleInputField.setText("");
-
-            //Checks if the input matches any predefined rules. Clears the selection if not.
-            if(!chooseRulesList.contains(gOL.getRuleName())){
-                chooseRulesBox.getSelectionModel().clearSelection();
-            }else{
-                chooseRulesBox.getSelectionModel().select(gOL.getRuleName());
-            }
-
-        //Produces a warning if a RulesFormatException is thrown
-        } catch (RulesFormatException rfe) {
-            PopUpAlerts.ruleAlert2();
-        }
-    }
-
-    /**
-     * Method called when choosing an element in the rule choice box. Sets the current playing rules to
-     * what is chosen.
-     * Produces a warning if something goes wrong.
-     * @see #chooseRulesBox
-     * @see #ruleLabel
-     * @see GameOfLife#getRuleString()
-     * @see GameOfLife#setRuleString(String)
-     * @see PopUpAlerts#ruleAlert2()
-     */
-    public void chooseRulesClick(){
-        String rules = (String)chooseRulesBox.getValue();
-        try{
-            gOL.setRuleString(rules);
-        }catch (RulesFormatException rfee) {
-            PopUpAlerts.ruleAlert2();
-        }
-        ruleLabel.setText(gOL.getRuleString().toUpperCase());
     }
 
     /**
@@ -596,86 +672,6 @@ public class Controller implements Initializable {
             description = fileHandler.metaData;
         }
         PopUpAlerts.metaData(title, description);
-    }
-
-    /**
-     * Method called when the user presses a keyboard button related to moving or rotating a loaded pattern. Will
-     * check if boolean move is true, and return otherwise. If true, it will call the related method from the Board
-     * class in order to move or rotate the loaded pattern. Move will only be true if a pattern is loaded and the
-     * game is not running.
-     * @param keyEvent - The key pressed by the user.
-     * @see #move
-     * @see #draw()
-     * @see Board#getCellsAlive()
-     * @see Board#movePattern(String)
-     * @see Board#rotate(boolean)
-     * @see Board#finalizeBoard()
-     * @see Board#discardPattern()
-     */
-    public void movePattern(KeyEvent keyEvent) {
-        //Returns if boolean move is false
-        if (!move) {
-            return;
-        }
-
-        //Calls movePattern() from Board if the keys correspond with pattern movement (arrow or WASD)
-        if(keyEvent.getCode() == KeyCode.W || keyEvent.getCode() == KeyCode.UP) {
-            board.movePattern("up");
-        } else if (keyEvent.getCode() == KeyCode.S || keyEvent.getCode() == KeyCode.DOWN) {
-            board.movePattern("down");
-        } else if (keyEvent.getCode() == KeyCode.A || keyEvent.getCode() == KeyCode.LEFT){
-            board.movePattern("left");
-        } else if (keyEvent.getCode() == KeyCode.D || keyEvent.getCode() == KeyCode.RIGHT) {
-            board.movePattern("right");
-
-        //If the key is Q or E, it will call method to rotate counter-clockwise or clockwise respectively.
-        } else if (keyEvent.getCode() == KeyCode.Q || keyEvent.getCode() == KeyCode.PERIOD) {
-            board.rotate(false);
-        } else if (keyEvent.getCode() == KeyCode.E || keyEvent.getCode() == KeyCode.MINUS) {
-            board.rotate(true);
-
-        //Should the key be ENTER, it will call Board's finalizeBoard() method and update the aliveLabel.
-        } else if (keyEvent.getCode() == KeyCode.ENTER) {
-            board.finalizeBoard();
-            aliveLabel.setText(Integer.toString(board.getCellsAlive()));
-            move = false;
-            setFocusTraversable(true);
-
-        //Should the key be ESCAPE, it will call Board's discardPattern() method.
-        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.ESCAPE) {
-            board.discardPattern();
-            move = false;
-            setFocusTraversable(true);
-        }
-        draw();
-    }
-
-    /**
-     * Method related to zooming with the mouse wheel. Called when the user scrolls. Depending on what the
-     * current cell size is, it will divide the scrollEvent accordingly, so that the level of zoom remains
-     * relatively consistent. Calls CanvasDrawer's setZoom() and draw().
-     * @param scrollEvent - The event in which the user scrolls with the mouse wheel.
-     * @see #draw()
-     * @see CanvasDrawer#getCellDrawSize()
-     * @see CanvasDrawer#setZoomOffset(Board, Canvas)
-     */
-    public void scrollZoom (ScrollEvent scrollEvent){
-        //Sets the zoom value from the deltaY value of the scroll event
-        double zoom = scrollEvent.getDeltaY()/40;
-
-        //Divides the zoom value relative to the current cell draw size.
-        if (canvasDrawer.getCellDrawSize() < 3) {
-            zoom = zoom / 16;
-        } else if (canvasDrawer.getCellDrawSize() < 5) {
-            zoom = zoom / 8;
-        } else if (canvasDrawer.getCellDrawSize() < 8) {
-            zoom = zoom / 4;
-        } else if (canvasDrawer.getCellDrawSize() < 20 || canvasDrawer.getCellDrawSize() > 5) {
-            zoom = zoom / 2;
-        }
-
-        canvasDrawer.setZoom(canvasDrawer.getCellDrawSize() + zoom, canvasArea, board);
-        draw();
     }
 
     /**
@@ -844,7 +840,7 @@ public class Controller implements Initializable {
             patternSelectStage.showAndWait();
 
             //Resets and redraws when the window is closed.
-            move = true;
+            isMovable = true;
             canvasDrawer.resetOffset(board, canvasArea);
             draw();
             canvasArea.requestFocus();

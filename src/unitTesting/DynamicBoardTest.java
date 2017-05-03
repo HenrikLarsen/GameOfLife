@@ -771,7 +771,7 @@ public class DynamicBoardTest {
     public void setOutOfBoundsTest1() {
         board = new DynamicBoard(1000, 1000);
 
-        int actual = ((DynamicBoard)board).setOutOfBounds(1005, board.getHeight());
+        int actual = ((DynamicBoard)board).calculateOutOfBounds(1005, board.getHeight());
         int expected = 6;
 
         org.junit.Assert.assertEquals(expected, actual);
@@ -781,7 +781,7 @@ public class DynamicBoardTest {
     public void setOutOfBoundsTest2() {
         board = new DynamicBoard(1000, 1000);
 
-        int actual = ((DynamicBoard)board).setOutOfBounds(-80, board.getHeight());
+        int actual = ((DynamicBoard)board).calculateOutOfBounds(-80, board.getHeight());
         int expected = 80;
 
         org.junit.Assert.assertEquals(expected, actual);
@@ -791,7 +791,7 @@ public class DynamicBoardTest {
     public void setOutOfBoundsTest3() {
         board = new DynamicBoard(1000, 1000);
 
-        int actual = ((DynamicBoard)board).setOutOfBounds(150, board.getWidth());
+        int actual = ((DynamicBoard)board).calculateOutOfBounds(150, board.getWidth());
         int expected = 0;
 
         org.junit.Assert.assertEquals(expected, actual);

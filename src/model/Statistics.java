@@ -18,8 +18,8 @@ public class Statistics{
 
     /**
      * Method to get the statistics data. Goes through to every generations and saves data from the generations.
-     * The number of cells alive, the difference between the cells alive to the number of cells alive in the previous generation
-     * and a similarity measure where each board will be measured with the first generation
+     * The number of cells alive, the difference between the cells alive to the number of cells alive in the
+     * previous generation and a similarity measure where each board will be measured with the first generation
      * will be saved and returned as a byte array.
      * @param game - the game.
      * @param iterations - number of iteration to return.
@@ -62,7 +62,7 @@ public class Statistics{
             double reducedBoard = 0.5 * cellsAlive + 3.0 * cellsDifference + 0.25 * xySum;
 
             // Calculates the similarity measure
-            double similarity = Math.min(firstReducedBoard, reducedBoard) / Math.max(firstReducedBoard, reducedBoard)*100;
+            double similarity = Math.min(firstReducedBoard, reducedBoard)/Math.max(firstReducedBoard, reducedBoard)*100;
             double similarityFloored =  Math.floor(similarity);
 
             // Entering statistics into the statistics array
@@ -83,6 +83,12 @@ public class Statistics{
         return statistics;
     }
 
+    /**
+     * Method that runs through a nested int array with statistics returning the generation with the
+     * highest probability of a recurring pattern by looking at the similarity measure.
+     * @param stat - The statistics to array to be considered.
+     * @return iteration - The iteration with the highest probability of a similar pattern.
+     */
     public int getHighestSimilarity(int[][] stat){
         int iteration = 0;
         double probability = 99.5;
@@ -95,7 +101,12 @@ public class Statistics{
         return iteration;
     }
 
-
+    /**
+     * Method that runs through a nested int array with statistics returning a string with the values for
+     * each parameter in its own line.
+     * @return String - The string containing the value of a patterns statistics
+     * @see #statistics
+     */
     public String statToString(){
         String CellsAlive = "CellsAlive:";
         for (int j = 0; j < statistics[0].length; j++) {

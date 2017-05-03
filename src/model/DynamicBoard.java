@@ -1,7 +1,6 @@
 package model;
 
 import controller.PopUpAlerts;
-
 import java.util.ArrayList;
 
 /**
@@ -16,8 +15,10 @@ import java.util.ArrayList;
 public class DynamicBoard extends Board{
     private ArrayList<ArrayList<Byte>> cellGrid;
     private int WIDTH, HEIGHT;
+
+    //The maximum size the user can expand, and maximum size allowed when expanding during simulation.
     private final int maxSize = 1900;
-    private final int runTimeExpansionLimit = 1000;
+    private final int runTimeExpansionLimit = 1200;
 
     //Boolean value to set whether or not the board is expandable.
     private boolean expandable = true;
@@ -32,7 +33,6 @@ public class DynamicBoard extends Board{
     //During game time, so that the CanvasDrawer can adjust its offset.
     private boolean hasExpandedLeft = false;
     private boolean hasExpandedUp = false;
-
 
     /**
      * Private Constructor that takes an 2D-ArrayList, width and height as parameters, and sets it as the
@@ -90,7 +90,7 @@ public class DynamicBoard extends Board{
      * @see #expandHeightDown(int)
      * @see #expandHeightUp(int)
      * @see #checkForExpand(int, int)
-     * @see #setOutOfBounds(int, int)
+     * @see #calculateOutOfBounds(int, int)
      * @see Board#setCellState(int, int, byte)
      * @see PopUpAlerts#edgeAlert()
      */
@@ -100,12 +100,11 @@ public class DynamicBoard extends Board{
         int column = y;
 
         //Check to see if the cell is within the width max limit.
-        int xOutOfBounds = setOutOfBounds(x, getWidth());
-        int yOutOfBounds = setOutOfBounds(y, getHeight());
+        int xOutOfBounds = calculateOutOfBounds(x, getWidth());
+        int yOutOfBounds = calculateOutOfBounds(y, getHeight());
         if ((x >= getWidth() || x < 0) && (getWidth() > maxSize || xOutOfBounds > maxSize-getWidth())) {
             //If it is outside of the current board and the limit, it will show a notification to the user.
             PopUpAlerts.edgeAlert();
-            System.out.println("x = "+x+"\nWidth = "+getWidth());
             return;
 
         //Checks if it is outside of the current board and the grid is expandable, and expands if it is.
@@ -122,7 +121,6 @@ public class DynamicBoard extends Board{
         if ((y >= getHeight() || y < 0) && (getHeight() > maxSize || yOutOfBounds > maxSize-getHeight())) {
             //If it is outside of the current board and the limit, it will show a notification to the user.
             PopUpAlerts.edgeAlert();
-            System.out.println("y = "+y+"\nHeight = "+getHeight());
             return;
 
         //Checks if it is outside of the current board and the grid is expandable, and expands if it is.
@@ -234,26 +232,6 @@ public class DynamicBoard extends Board{
     }
 
     /**
-     * Method to increase the WIDTH field of the Dynamic Board. Takes an integer
-     * to increase with, and adds it to WIDTH.
-     * @param increase - The size of the increase.
-     * @see #WIDTH
-     */
-    private void increaseWidth(int increase) {
-        WIDTH += increase;
-    }
-
-    /**
-     * Method to increase the HEIGHT field of the Dynamic Board. Takes an integer
-     * to increase with, and adds it to HEIGHT.
-     * @param increase - The size of the increase.
-     * @see #HEIGHT
-     */
-    private void increaseHeight(int increase) {
-        HEIGHT += increase;
-    }
-
-    /**
      * Method that flags the grid for an increase on each of the borders during run time. Checks if the cell is on
      * the borders of the grid, and if it is, it sets the corresponding boolean to true so that
      * the program knows to increase during a call to nextGeneration (GameOfLife)
@@ -332,7 +310,6 @@ public class DynamicBoard extends Board{
                 expandDown = false;
             }
         }
-        //System.out.println("Width = "+getWidth()+", Height = "+getHeight());
     }
 
     /**
@@ -426,6 +403,26 @@ public class DynamicBoard extends Board{
     }
 
     /**
+     * Method to increase the WIDTH field of the Dynamic Board. Takes an integer
+     * to increase with, and adds it to WIDTH.
+     * @param increase - The size of the increase.
+     * @see #WIDTH
+     */
+    private void increaseWidth(int increase) {
+        WIDTH += increase;
+    }
+
+    /**
+     * Method to increase the HEIGHT field of the Dynamic Board. Takes an integer
+     * to increase with, and adds it to HEIGHT.
+     * @param increase - The size of the increase.
+     * @see #HEIGHT
+     */
+    private void increaseHeight(int increase) {
+        HEIGHT += increase;
+    }
+
+    /**
      * Method that checks how far outside the board a cell is in one axis. Checks the cells relevant coordinate with
      * either the height or width of the board and returns a value representing how far out of the border it is.
      * Returns 0 if the cell is within the current grid size.
@@ -433,7 +430,7 @@ public class DynamicBoard extends Board{
      * @param widthOrHeight - The current boards width or height, depending on which axis it checks.
      * @return value - The absolute value of how far outside the cell is.
      */
-    public int setOutOfBounds(int i, int widthOrHeight) {
+    public int calculateOutOfBounds(int i, int widthOrHeight) {
         int value;
         if (i < 0) {
             value = Math.abs(i);

@@ -616,5 +616,4 @@ public class GameOfLifeTest {
         org.junit.Assert.assertFalse(clonedGol.getPlayBoard().getHeight() == board.getHeight());
         org.junit.Assert.assertFalse(clonedGol.getPlayBoard().getWidth() == board.getWidth());
     }
-
 }

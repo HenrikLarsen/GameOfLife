@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  */
 public class ThreadWorker {
-
     //The number of threads to be used. Equal to the system's available processors times two, because we assume the CPU
     //supports hyper-threading
     private final int numWorkers = Runtime.getRuntime().availableProcessors() * 2;
+
     private int threadIndex = 0;
     private final ExecutorService threadPool = Executors.newFixedThreadPool(numWorkers);
 
@@ -98,11 +98,18 @@ public class ThreadWorker {
      * @see #threadPool
      */
     public void shutDownExecutor() {
+        if (threadPool.isShutdown()) {
+            return;
+        }
+
+        //Tries shutting down the ExecutorService normally, waiting 3 seconds for it to finish
         try {
             threadPool.shutdown();
-            threadPool.awaitTermination(2, TimeUnit.SECONDS);
+            threadPool.awaitTermination(3, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+
+        //After waiting, it will do a hard shut down in case some threads are still not finished.
         } finally {
             System.out.println("Shutting down...");
             threadPool.shutdownNow();

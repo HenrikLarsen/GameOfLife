@@ -415,7 +415,7 @@ class CanvasDrawer {
      */
     public void setZoom (double size, Canvas canvas, Board board) {
         double originalSize = cellDrawSize;
-        if (size >= 0.3 && size < 60) {
+        if (size >= 0.38 && size < 60) {
             this.cellDrawSize = size;
         }
 
@@ -462,8 +462,6 @@ class CanvasDrawer {
         //Updates where the next drag event will start.
         xOnStartDrag = drag.getX();
         yOnStartDrag = drag.getY();
-
-
     }
 
     /**

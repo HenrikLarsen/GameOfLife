@@ -13,33 +13,35 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.GameOfLife;
 import model.Statistics;
-
 import java.io.IOException;
 
 
 /**
- * The ProgressController handles all within the progressbar window.
- * It contains the methods and parameters linked to the graphical user interface elements
+ * The ProgressController handles all interaction within the progressbar window. It is responsible for displaying
+ * and updating a progress bar while calculating the generations and statistics when the user opens the
+ * statistics window. It contains the methods and parameters linked to the graphical user interface elements.
  *
  * @author Henrik Finnerud Larsen
  * @version 1.0
  */
 public class ProgressController implements Initializable {
-    private int[][] stat;
-    private int iterations;
-
-    private GameOfLife gameOfLife;
-    private Statistics statistics = new Statistics();
-    private TaskService taskService;
-
     @FXML GridPane gridPane;
     @FXML private Label progressLabel;
     @FXML private ProgressBar progressBar;
 
+    private int[][] stat;
+    private int iterations;
+
+    private GameOfLife gameOfLife;
+    private final Statistics statistics = new Statistics();
+    private TaskService taskService;
 
     /**
      * A concrete implementation of the method in initialize.
      * Initializes the progressbar window, binding the GUI with the taskService.
+     * @param location The location used to resolve relative paths for the root object,
+     *                 or null if the location is not known.
+     * @param resources The resources used to localize the root object, or null if the root object was not localized.
      * @see #progressLabel
      * @see #progressBar
      */
@@ -81,7 +83,6 @@ public class ProgressController implements Initializable {
         this.iterations = i;
     }
 
-
     /**
      * This method is invoked on the background thread.
      *
@@ -89,8 +90,10 @@ public class ProgressController implements Initializable {
      * @version 1.0
      **/
     private class MyTask extends Task<Void> {
+
         /**
-         * This Method will run when a MyTask object is created. Updates the progressbar and progressLabel, while getting the statistics.
+         * This Method will run when a MyTask object is created. Updates the progressbar and progressLabel, while
+         * getting the statistics.
          */
         @Override
         public Void call() {
@@ -165,13 +168,11 @@ public class ProgressController implements Initializable {
  * @author Henrik Finnerud Larsen
  * @version 1.0
 **/
-private class TaskService extends Service<Void>
-    {
+private class TaskService extends Service<Void> {
         @Override
         protected Task<Void> createTask()
         {
             return new MyTask();
         }
-
     }
 }

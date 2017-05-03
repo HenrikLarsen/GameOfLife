@@ -158,9 +158,9 @@ public class PopUpAlerts {
         Alert editorAlert = new Alert(Alert.AlertType.WARNING);
         editorAlert.setTitle("Warning");
         editorAlert.setHeaderText("Board size very large!");
-        editorAlert.setContentText("The size of your board is very large. \n\nIn fact, it is so large that it might be" +
-                " difficult to draw the board on the limited size of the editor window. You will still be able to" +
-                " export the board as a GIF or RLE-file, but it might not be drawn in the editor.\n\n" +
+        editorAlert.setContentText("The size of your board is very large. \n\nIn fact, it is so large that " +
+                "it might be difficult to draw the board on the limited size of the editor window. You will " +
+                "still be able to export the board as a GIF or RLE-file, but it might not be drawn in the editor.\n\n" +
                 "To avoid this issue in the future, try resetting the board, and export a smaller pattern.");
         editorAlert.showAndWait();
     }
@@ -234,7 +234,6 @@ public class PopUpAlerts {
                 b = false;
             }
         }
-
         return b;
     }
 
@@ -264,7 +263,6 @@ public class PopUpAlerts {
                 b = false;
             }
         }
-
         return b;
     }
 }

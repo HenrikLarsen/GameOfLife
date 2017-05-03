@@ -11,8 +11,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/view/GUI.fxml"));
-        primaryStage.setTitle("GameOfLife");
-        primaryStage.setScene(new Scene(root, 900, 700));
+        primaryStage.setTitle("Conway's Game Of Life");
+        primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();
         primaryStage.show();
@@ -28,3 +28,6 @@ public class Main extends Application {
         launch(args);
     }
 }
+
+//TODO: Sett nye navn på GUI og Controller
+//MainWindow.FXML og MainWindowController.java ??

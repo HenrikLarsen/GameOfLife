@@ -14,15 +14,14 @@ import javafx.scene.chart.XYChart;
  * @version 1.0
  */
 public class StatisticsController{
-    private int[][] stat;
-
-    //FXML fields
     @FXML private LineChart<String, Number> lineChart;
+
+    private int[][] stat;
 
     /**
      * Method that sets the statistics data to be drawn on the chart.
-     * @see #stat
      * @param s - Array containing the statistics
+     * @see #stat
      */
     public void setStat(int[][] s){
         this.stat = s;
@@ -50,5 +49,3 @@ public class StatisticsController{
         lineChart.getData().addAll(cellsAliveSeries, cellsDiffSeries, similarityMeasureSeries);
     }
 }
-
-

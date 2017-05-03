@@ -13,5 +13,4 @@ public class RulesFormatException extends Exception {
      * Default constructor, creates a new instance of PatternFormatException
      */
     public RulesFormatException() {}
-
 }

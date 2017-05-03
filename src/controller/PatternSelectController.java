@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import model.FileHandler;
 import model.PatternFormatException;
 import model.RulesFormatException;
-
 import java.io.*;
 
 /**
@@ -24,6 +23,7 @@ import java.io.*;
  * @version 1.0
  */
 public class PatternSelectController implements Initializable {
+    //FXML fields
     @FXML ImageView imageView;
     @FXML ChoiceBox patternSelect;
     @FXML Label titleLabel;
@@ -55,15 +55,6 @@ public class PatternSelectController implements Initializable {
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         patternSelect.setItems(choosePatternList);
         patternSelect.getSelectionModel().selectFirst();
-    }
-
-    /**
-     * Method that sets the controllers active FileHandler object
-     * @param fh - The FileHandler object to be set.
-     * @see #fileHandler
-     */
-    public void setFileHandler(FileHandler fh) {
-        fileHandler = fh;
     }
 
     /**
@@ -142,7 +133,8 @@ public class PatternSelectController implements Initializable {
                         "It consists of two queen bee shuttles stabilized by two blocks.");
                 Image gggImage = new Image(getClass().getResource("/resources/images/gosper.png").toString());
                 imageView.setImage(gggImage);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/gosperglidergun.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "gosperglidergun.rle"));
                 break;
 
             case "Achim's p16":
@@ -156,7 +148,8 @@ public class PatternSelectController implements Initializable {
                         "on July 27, 1994. With only 32 cells, it is the smallest known period 16 oscillator.");
                 Image p16Image = new Image(getClass().getResource("/resources/images/p16.png").toString());
                 imageView.setImage(p16Image);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/achimsp16.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "achimsp16.rle"));
                 break;
 
             case "Acorn":
@@ -185,9 +178,9 @@ public class PatternSelectController implements Initializable {
                         "Buckingham in 1972. It uses two blocks and a tub as induction coils.");
                 Image pennyImage = new Image(getClass().getResource("/resources/images/penny.png").toString());
                 imageView.setImage(pennyImage);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/pennylane.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "pennylane.rle"));
                 break;
-
 
             case "Switch Engine":
                 titleLabel.setText("Switch Engine");
@@ -201,7 +194,8 @@ public class PatternSelectController implements Initializable {
                         "northwest, along with some active junk.");
                 Image switchImage = new Image(getClass().getResource("/resources/images/switch.png").toString());
                 imageView.setImage(switchImage);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/switchengine.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "switchengine.rle"));
                 break;
 
             case "112P51":
@@ -231,7 +225,8 @@ public class PatternSelectController implements Initializable {
                         "a pattern that has no parents and thus can only occur in generation 0.");
                 Image flowerImage = new Image(getClass().getResource("/resources/images/flower.png").toString());
                 imageView.setImage(flowerImage);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/flowerofeden.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "flowerofeden.rle"));
                 break;
 
             case "Period-45 glider gun":
@@ -247,7 +242,8 @@ public class PatternSelectController implements Initializable {
                 Image gliderGun45Image = new Image(getClass().getResource("/resources/images/period45gun." +
                         "png").toString());
                 imageView.setImage(gliderGun45Image);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/period45glidergun.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "period45glidergun.rle"));
                 break;
 
             case "56P6H1V0":
@@ -262,7 +258,8 @@ public class PatternSelectController implements Initializable {
                         "known orthogonal c/6 spaceship, surpassing dragon with 102 cells.");
                 Image p6h1Image = new Image(getClass().getResource("/resources/images/56P6H1V0.png").toString());
                 imageView.setImage(p6h1Image);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/56p6h1v0.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "56p6h1v0.rle"));
                 break;
 
             case "Primer":
@@ -293,7 +290,8 @@ public class PatternSelectController implements Initializable {
                 Image sidecarImage = new Image(getClass().getResource("/resources/images/" +
                         "sidecargun.png").toString());
                 imageView.setImage(sidecarImage);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/sidecargun.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "sidecargun.rle"));
                 break;
 
             case "Star Gate":
@@ -308,7 +306,8 @@ public class PatternSelectController implements Initializable {
                         "allows lightweight spaceships to jump forward at the superluminous speed of 15c/14.");
                 Image sgImage = new Image(getClass().getResource("/resources/images/stargate.png").toString());
                 imageView.setImage(sgImage);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/stargate.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "stargate.rle"));
                 break;
 
             case "Moving Sawtooth":
@@ -323,7 +322,8 @@ public class PatternSelectController implements Initializable {
                         "and its slight modifications are the only known sawtooths that move.");
                 Image msImage = new Image(getClass().getResource("/resources/images/sawtooth.png").toString());
                 imageView.setImage(msImage);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/movingsawtooth.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "movingsawtooth.rle"));
                 break;
 
             case "p690 60P5H2V0 gun":
@@ -338,7 +338,8 @@ public class PatternSelectController implements Initializable {
                         "to construct the necessary glider synthesis");
                 Image p690Image = new Image(getClass().getResource("/resources/images/p690.png").toString());
                 imageView.setImage(p690Image);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/p69060p5h2v0gun.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "p69060p5h2v0gun.rle"));
                 break;
 
             case "Turing Machine":
@@ -355,8 +356,18 @@ public class PatternSelectController implements Initializable {
                         " and turn off the grid.");
                 Image turingImage = new Image(getClass().getResource("/resources/images/turing.png").toString());
                 imageView.setImage(turingImage);
-                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/turingmachine.rle"));
+                loadedStream = new InputStreamReader(getClass().getResourceAsStream("/resources/rlefiles/" +
+                        "turingmachine.rle"));
                 break;
         }
+    }
+
+    /**
+     * Method that sets the controllers active FileHandler object
+     * @param fh - The FileHandler object to be set.
+     * @see #fileHandler
+     */
+    public void setFileHandler(FileHandler fh) {
+        fileHandler = fh;
     }
 }

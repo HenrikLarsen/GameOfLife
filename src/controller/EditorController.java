@@ -12,7 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.*;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -46,7 +45,6 @@ public class EditorController implements Initializable {
     @FXML ChoiceBox chooseSizeBox;
     @FXML ChoiceBox chooseDrawBox;
 
-
     private Board exportBoard;
     private Board stripBoard;
     private GameOfLife gameOfLife;
@@ -59,7 +57,8 @@ public class EditorController implements Initializable {
     private boolean drawEntireBoard = true;
     private final ObservableList<String> chooseSizeList = FXCollections.observableArrayList("640x640", "800x800",
             "1024x1024", "1200x1200", "1600x1600", "1920x1920", "2880x2880", "3840x3840");
-    private final ObservableList<String> chooseDrawList = FXCollections.observableArrayList("Entire Board", "Pattern Only");
+    private final ObservableList<String> chooseDrawList = FXCollections.observableArrayList("Entire Board",
+            "Pattern Only");
 
 
     /**
@@ -214,24 +213,6 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Method to set the current exportBoard object to that of the parameter.
-     * @param board - The new board to be set.
-     * @see #exportBoard
-     */
-    public void setExportBoard(Board board) {
-        this.exportBoard = board;
-    }
-
-    /**
-     * Method to set the current gameOfLife object to that of the parameter.
-     * @param gOL - The new GameOfLife object to be set.
-     * @see #exportBoard
-     */
-    public void setGameOfLife(GameOfLife gOL) {
-        this.gameOfLife = gOL;
-    }
-
-    /**
      * Method to be called when the user presses the mouse on the editor board, calling CanvasDrawers
      * drawPressed() method to let the user draw active cells on the board.
      * @param mouseEvent - The event of the mouse click.
@@ -318,7 +299,6 @@ public class EditorController implements Initializable {
      */
     public void chooseSizeClick() {
         String size = (String) chooseSizeBox.getValue();
-
         switch (size) {
             case "640x640": gifSize = 640;
                 break;
@@ -487,5 +467,23 @@ public class EditorController implements Initializable {
 
         //Calls the method to export the gif.
         gifConstructor.exportGif(filePath);
+    }
+
+    /**
+     * Method to set the current exportBoard object to that of the parameter.
+     * @param board - The new board to be set.
+     * @see #exportBoard
+     */
+    public void setExportBoard(Board board) {
+        this.exportBoard = board;
+    }
+
+    /**
+     * Method to set the current gameOfLife object to that of the parameter.
+     * @param gOL - The new GameOfLife object to be set.
+     * @see #exportBoard
+     */
+    public void setGameOfLife(GameOfLife gOL) {
+        this.gameOfLife = gOL;
     }
 }
