@@ -27,13 +27,13 @@ public class GifConstructor {
     /**
      * Sole constructor for a GifConstructor object. Sets all needed parameters to create a
      * GifConstructor object.
-     * @param gol - The GameOfLife object to be considered.
-     * @param iterations - The number of iterations to create a gif with.
-     * @param fps - The number of images per seconds to produce.
-     * @param entireBoardBool - Boolean representing whether to draw the entire board, or just the active pattern.
-     * @param backgroundColor - The background color to be drawn in the gif.
-     * @param cellColor - The color of the cells to be drawn in the gif.
-     * @param size - The size of the gif in pixels.
+     * @param gol The GameOfLife object to be considered.
+     * @param iterations The number of iterations to create a gif with.
+     * @param fps The number of images per seconds to produce.
+     * @param entireBoardBool Boolean representing whether to draw the entire board, or just the active pattern.
+     * @param backgroundColor The background color to be drawn in the gif.
+     * @param cellColor The color of the cells to be drawn in the gif.
+     * @param size The size of the gif in pixels.
      * @see #gifGol
      * @see #gifBoard
      * @see #counter
@@ -58,7 +58,7 @@ public class GifConstructor {
     /**
      * Method that exports a gif to file by creating a new GIFWriter and calling the writeGoLSequenceToGif method.
      * Catches an IOException if thrown, and shows a popup to the user explaining what went wrong.
-     * @param filePath - The filepath to write the new file in.
+     * @param filePath The filepath to write the new file in.
      * @see #writeGoLSequenceToGIF(GIFWriter, GameOfLife, int, java.awt.Color)
      * @see PopUpAlerts#ioeSaveError()
      * @see GIFWriter#GIFWriter(int, int, String, int)
@@ -80,10 +80,10 @@ public class GifConstructor {
      * should be drawn, or just the active pattern.
      * Uses recursion by counting down the number of iterations to be considered, and closes the writer when
      * the counter reaches 0.
-     * @param writer - The GIFWriter to handle the writing to disk.
-     * @param game - The GameOfLife object to be considered when creating images.
-     * @param counter - The number of iterations to be written.
-     * @param cellColor - The color to draw active cells.
+     * @param writer The GIFWriter to handle the writing to disk.
+     * @param game The GameOfLife object to be considered when creating images.
+     * @param counter The number of iterations to be written.
+     * @param cellColor The color to draw active cells.
      * @see #drawEntireBoard
      * @see #drawGifEntireBoard(GIFWriter, java.awt.Color)
      * @see #drawGifPatternOnly(GIFWriter, java.awt.Color)
@@ -119,8 +119,8 @@ public class GifConstructor {
     /**
      * Method that creates an image of the entire cell grid. Sets cell draw size from the width of the board
      * and constructs an image by iterating through the entire board.
-     * @param writer - The GIFWriter to handle the writing to disk.
-     * @param cellColor - The color to draw the active cells in.
+     * @param writer The GIFWriter to handle the writing to disk.
+     * @param cellColor The color to draw the active cells in.
      * @see #gifCellSize
      * @see #gifSize
      * @see Board#getWidth()
@@ -152,8 +152,8 @@ public class GifConstructor {
      * Method that creates an image of the active part of the cell grid. It creates a trimmed version of the
      * board, containing only the active bounding box, and sets cell draw size from the bounding box.
      * Iterates through the trimmed board and draws the active cells.
-     * @param writer - The GIFWriter to handle the writing to disk.
-     * @param cellColor - The color to draw the active cells in.
+     * @param writer The GIFWriter to handle the writing to disk.
+     * @param cellColor The color to draw the active cells in.
      * @see #gifCellSize
      * @see #gifSize
      * @see Board#trim()
@@ -192,7 +192,7 @@ public class GifConstructor {
 
     /**
      * Method that converts a javafx color to a java.awt color, by using the rgb values of the color.
-     * @param color - The javafx color to be converted
+     * @param color The javafx color to be converted
      * @return newColor - The converted color.
      */
     private java.awt.Color convertToAwtColor(Color color) {

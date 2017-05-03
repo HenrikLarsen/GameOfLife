@@ -38,7 +38,7 @@ public class GameOfLife {
 
     /**
      * Sole constructor, sets the parameter board as the current board.
-     * @param board - The board to be used.
+     * @param board The board to be used.
      */
     public GameOfLife(Board board) {
         this.playBoard = board;
@@ -157,7 +157,7 @@ public class GameOfLife {
      * A method for concurrently enforcing the rules of the game. Iterates through a portion of the current cell grid
      * based on the current cells index and rowsPerWorker, and calls updateNewGenerationCells() to enforce the
      * rules of the game.
-     * @param curIndex - The current thread's index.
+     * @param curIndex The current thread's index.
      * @see #rowsPerWorker
      * @see Board#getWidth()
      * @see Board#getHeight()
@@ -173,8 +173,8 @@ public class GameOfLife {
     /**
      * Compares the current cell with the neighbour count up against the current rules, and enforces the
      * rules of the game, setting the cell state of that cell in the newGenerationCells 2D-array.
-     * @param x - The x-coordinate of the current cell.
-     * @param y - The y-coordinate of the current cell.
+     * @param x The x-coordinate of the current cell.
+     * @param y The y-coordinate of the current cell.
      * @see #newGenerationCells
      * @see #neighbourCount
      * @see #bornRules
@@ -210,7 +210,7 @@ public class GameOfLife {
     /**
      * Method to set the rules from a number of presets. Checks what the user has selected, and sets the ruleString
      * accordingly. Does a call to setRuleSet at the end to update the rules.
-     * @param input - The string containing either the name of the rule, or the rule formatted after RLE standards.
+     * @param input The string containing either the name of the rule, or the rule formatted after RLE standards.
      * @see #ruleString
      * @see #ruleDescription
      * @see #ruleName
@@ -323,7 +323,7 @@ public class GameOfLife {
      * Method to set the rules from a string. Does a check for the right formatting and sets the ruleString,
      * surviveRules and bornRules if the string contains valid information. If not, it shows a popup explaining
      * to the user that the rules are formatted wrongly, and sets the rules to the standard Life rules.
-     * @param rules - The string containing the rules formatted in the RLE-style (Bxxx/Sxxx).
+     * @param rules The string containing the rules formatted in the RLE-style (Bxxx/Sxxx).
      * @see #ruleString
      * @see #bornRules
      * @see #surviveRules
@@ -379,7 +379,7 @@ public class GameOfLife {
 
     /**
      * Method that sets the current ThreadWorker.
-     * @param tw - The ThreadWorker object to be set.
+     * @param tw The ThreadWorker object to be set.
      * @see #workers
      */
     public void setThreadWorkers(ThreadWorker tw){
@@ -467,7 +467,7 @@ public class GameOfLife {
 
     /**
      * Method that sets the neighbour count of this board. This method is only used during unit testing.
-     * @param neighbours - The 2D-byte array to be set as the neighbours.
+     * @param neighbours The 2D-byte array to be set as the neighbours.
      * @see #neighbourCount
      */
     public void setNeighbourCount(byte[][] neighbours) {

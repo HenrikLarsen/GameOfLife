@@ -45,9 +45,9 @@ public abstract class Board {
      * neighbours 2D-byte array is split up according to how many active threads there are, and each thread
      * iterates through its portion of the array. Calls setNeighbours if the cell is active for it
      * to add 1 to each surrounding cell. Returns the 2D-array with the neighbour count for each cell.
-     * @param neighbours - 2D-byte array where new neighbours are set.
-     * @param curIndex - The current thread's index.
-     * @param rowsPerWorker - The number of rows each thread should consider.
+     * @param neighbours 2D-byte array where new neighbours are set.
+     * @param curIndex The current thread's index.
+     * @param rowsPerWorker The number of rows each thread should consider.
      * @return neighbours - 2D-array with neighbours counted for each cell.
      * @see #getCellState(int, int)
      * @see #setNeighbours(byte[][], int, int)
@@ -69,9 +69,9 @@ public abstract class Board {
     /**
      * A synchronized method for adding neighbours around an active cell. Adds 1 to each cell surrounding the
      * current cell. Is synchronized in order to avoid a race condition.
-     * @param neighbours - The 2D-array to operate on
-     * @param x - The x coordinate of the cell to be considered.
-     * @param y - The y coordinate of the cell to be considered.
+     * @param neighbours The 2D-array to operate on
+     * @param x The x coordinate of the cell to be considered.
+     * @param y The y coordinate of the cell to be considered.
      */
     private synchronized void setNeighbours(byte[][] neighbours, int x, int y){
         //Adds a neighbour to the upper left corner cell.
@@ -136,7 +136,7 @@ public abstract class Board {
     /**
      * A method for setting the cell grid from an existing 2D-array. Iterates through newGrid and sets the cells
      * of the corresponding places in the cell grid to be equal to those of newGrid.
-     * @param newGrid - The grid to be placed in the current cell grid.
+     * @param newGrid The grid to be placed in the current cell grid.
      * @see #setCellState(int, int, byte)
      */
     public void setBoard(byte[][] newGrid) {
@@ -152,9 +152,9 @@ public abstract class Board {
      * The new grid is split into as many parts as there are threads, and each thread iterates through
      * it's portion of the newGrid and sets the cells of the corresponding (x,y)-coordinates in the cell grid to be
      * equal to those of newGrid.
-     * @param newGrid - The grid to be placed in the current cell grid.
-     * @param curIndex - The current thread's index.
-     * @param rowsPerWorker - The number of rows each thread should operate on.
+     * @param newGrid The grid to be placed in the current cell grid.
+     * @param curIndex The current thread's index.
+     * @param rowsPerWorker The number of rows each thread should operate on.
      * @see #setCellState(int, int, byte)
      */
     public void setBoardConcurrent(byte[][] newGrid, int curIndex, int rowsPerWorker) {
@@ -245,7 +245,7 @@ public abstract class Board {
      * A method that returns the bounding box of a 2D-byte array. The bounding box is the smallest area
      * around the active cells of the cell grid, and is represented by 4 values, the minimum and maximum of rows and
      * columns. Returns an int array.
-     * @param grid - the grid that should be considered when creating the bounding box.
+     * @param grid The grid that should be considered when creating the bounding box.
      * @return boundingBox - An int array containing the minimum and maximum values for rows and columns.
      * @see #getCellState(int, int)
      */
@@ -322,7 +322,7 @@ public abstract class Board {
      * A method that sets loadedPattern and loadedPatternBoundingBox from a loaded pattern. The bounding box
      * of the loaded pattern is initially set so that the pattern will be placed in the middle of the
      * current cell grid.
-     * @param importedBoard - The grid that has been loaded, and is to be set.
+     * @param importedBoard The grid that has been loaded, and is to be set.
      * @see #loadedPattern
      * @see #loadedPatternBoundingBox
      * @see #getBoundingBox(byte[][])
@@ -363,7 +363,7 @@ public abstract class Board {
      * where wanted instead of locking it to the initial position. If the board is an instance of DynamicBoard, the
      * cell grid will expand when the pattern reaches the edges of the cell grid. If the board is an instance of
      * StaticBoard and the pattern reaches the edge, it will do nothing.
-     * @param direction - the direction the pattern should be moved.
+     * @param direction The direction the pattern should be moved.
      * @see #loadedPattern
      * @see #loadedPatternBoundingBox
      * @see DynamicBoard#expandHeightUp(int)
@@ -448,7 +448,7 @@ public abstract class Board {
     /**
      * Method for rotating the loaded pattern within the cell grid. Takes a parameter which indicates if it should
      * be rotated clockwise or counter clockwise, in which the order of operations is different.
-     * @param clockwise - A boolean describing whether of not the pattern should be rotated clockwise.
+     * @param clockwise A boolean describing whether of not the pattern should be rotated clockwise.
      * @see #loadedPattern
      * @see #loadedPatternBoundingBox
      * @see #transposePattern(byte[][])
@@ -486,7 +486,7 @@ public abstract class Board {
     /**
      * Method that transposes a pattern by making the rows columns and vice versa. Takes a pattern
      * as parameter and returns a transposed version of its 2D-array.
-     * @param patternGrid - The 2D-array to be transposed.
+     * @param patternGrid The 2D-array to be transposed.
      * @return transposedPattern - The transposed 2D-array.
      */
     private byte[][] transposePattern(byte[][] patternGrid) {
@@ -506,7 +506,7 @@ public abstract class Board {
     /**
      * Method that reverses each row of a 2D-array, so that the last element is placed first etc. Needed
      * for rotating a pattern.
-     * @param patternGrid - The 2D-array to be reversed.
+     * @param patternGrid The 2D-array to be reversed.
      * @return reversedPattern - The reversed 2D-array.
      * @see #getBoundingBox(byte[][])
      */
@@ -688,7 +688,7 @@ public abstract class Board {
 
     /**
      * Method to set the counter of active cells to that of the aliveCells parameter.
-     * @param aliveCells - The number of active cells to be set.
+     * @param aliveCells The number of active cells to be set.
      * @see #cellsAlive
      */
     void setCellsAlive(int aliveCells) {
@@ -760,8 +760,8 @@ public abstract class Board {
     /**
      * Abstract method for returning a byte value representing the state of a certain cell with coordinates (x,y).
      * Needs to be overridden in a concrete subclass.
-     * @param x - the x coordinate.
-     * @param y - the y coordinate.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
      * @return byte - A byte value representing the state of the requested cell.
      */
     public abstract byte getCellState(int x, int y);
@@ -769,9 +769,9 @@ public abstract class Board {
     /**
      * Abstract method for setting the state of a cell with coordinates (x,y).
      * Needs to be overridden in a concrete subclass.
-     * @param x - the x coordinate.
-     * @param y - the y coordinate.
-     * @param state - The state the cell should be set to.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     * @param state The state the cell should be set to.
      */
     public abstract void setCellState(int x, int y, byte state);
 

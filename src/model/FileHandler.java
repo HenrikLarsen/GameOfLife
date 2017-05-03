@@ -32,7 +32,7 @@ public class FileHandler {
     /**
      * Method to read a file from a disk. Calls the readGameBoard method, and catches several exceptions,
      * giving a popup alert for many errors, explaining to the user what is wrong.
-     * @param file - The file to be read from disk.
+     * @param file The file to be read from disk.
      * @see #readGameBoard(Reader)
      * @see PopUpAlerts#patternFormatAlert()
      * @see PopUpAlerts#outOfBounds()
@@ -54,7 +54,7 @@ public class FileHandler {
     /**
      * Method to read a file from an URL. Calls the readGameBoard method, and catches several exceptions,
      * giving a popup alert for many errors, explaining to the user what is wrong.
-     * @param url - The url to the file to be read from disk.
+     * @param url The url to the file to be read from disk.
      * @see #readGameBoard(Reader)
      * @see PopUpAlerts#patternFormatAlert()
      * @see PopUpAlerts#outOfBounds()
@@ -79,7 +79,7 @@ public class FileHandler {
      * Method that reads a pattern from a file. Goes through the file line for line and updates the metaData
      * and metaTitle as well as sending a pattern to the Board. Heavy use of regular expressions to ensure
      * that the file is formatted correctly, and that all necessary information is covered.
-     * @param reader - the reader that will iterate through the file.
+     * @param reader the reader that will iterate through the file.
      * @see #reviseRLEString(String)
      * @see #boardFromFile(String, int, int)
      * @see #formatMetadata(StringBuilder)
@@ -162,7 +162,7 @@ public class FileHandler {
     /**
      * Method that revises an RLE string, and creates a long string without leading numbers, only containing
      * o, b, $ and !.
-     * @param rleString - The string to be revised.
+     * @param rleString The string to be revised.
      * @see #decodeRLEtoStandardString(String, int)
      * @exception PatternFormatException - Thrown if the formatting of the file is incorrect
      */
@@ -204,8 +204,8 @@ public class FileHandler {
 
     /**
      * Method that takes a leading number and a character, and returns a string of that character times leading number.
-     * @param s - The character to be repeated.
-     * @param i - The number of repetitions.
+     * @param s The character to be repeated.
+     * @param i The number of repetitions.
      */
     private String decodeRLEtoStandardString(String s, int i) {
         if (i == 0) {
@@ -223,9 +223,9 @@ public class FileHandler {
     /**
      * Method that creates a 2D-array the size of its x and y parameters, and puts the cell states from the string
      * into the 2D-array.
-     * @param s - The string to be converted to a cell grid
-     * @param x - the width of the new grid.
-     * @param y - the height of the new grid.
+     * @param s The string to be converted to a cell grid
+     * @param x The width of the new grid.
+     * @param y The height of the new grid.
      * @return loadedBoard - The board created from the string.
      */
     private byte[][] boardFromFile(String s, int x, int y){
@@ -249,7 +249,7 @@ public class FileHandler {
     /**
      * Method that formats the read metadata into a coherent string. Removes the annotations (#C etc) and
      * adds descriptions of the lines such as title, etc, and sets metaTitle and metaData accordingly.
-     * @param meta - The metadata that has been read by the reader.
+     * @param meta The metadata that has been read by the reader.
      * @see #metaTitle
      * @see #metaData
      */
@@ -302,7 +302,7 @@ public class FileHandler {
      * A method to convert a 2D-array to a string according to RLE standards, but without the encoding of
      * leading numbers before a character. Iterates through the 2D-array and appends the stringBuilder according
      * to the cell state.
-     * @param pattern - The pattern to be converted into a string
+     * @param pattern The pattern to be converted into a string
      * @return patternString.toString() - The string representation of the pattern.
      */
     public String patternExportToString(byte[][] pattern) {
@@ -334,7 +334,7 @@ public class FileHandler {
     /**
      * A method that encodes a regular string to an RLE-string, changing repeating characters to a character with a
      * leading number.
-     * @param rawString - The string to be encoded
+     * @param rawString The string to be encoded
      * @return RLEString.toString() - The encoded RLE-string
      */
     public String stringToRLE(String rawString) {
@@ -363,15 +363,15 @@ public class FileHandler {
     /**
      * A method for writing an RLE file to disk using a PrintWriter. Takes all metadata and the RLE file
      * and revise it to fit into the RLE standard, such as annotating metadata.
-     * @param file - The file to be written to.
-     * @param x - The width of the pattern.
-     * @param y - The height of the pattern.
-     * @param rules - String containing the data for the rules.
-     * @param titleField - String containing the title metadata.
-     * @param authorField - String containing the author metadata.
-     * @param dateCheckBox - Checkbox that indicates if data information should be included.
-     * @param commentField - String containing the comment metadata.
-     * @param splitString - String containing the RLE version of the pattern, split into 70-character lines.
+     * @param file The file to be written to.
+     * @param x The width of the pattern.
+     * @param y The height of the pattern.
+     * @param rules String containing the data for the rules.
+     * @param titleField String containing the title metadata.
+     * @param authorField String containing the author metadata.
+     * @param dateCheckBox Checkbox that indicates if data information should be included.
+     * @param commentField String containing the comment metadata.
+     * @param splitString String containing the RLE version of the pattern, split into 70-character lines.
      * @throws IOException if the file cannot be written to disk.
      */
     public void RLEtoDisk (File file, int x, int y, String rules, TextField titleField, TextField authorField,
@@ -409,7 +409,7 @@ public class FileHandler {
 
     /**
      * Method that sets the current playBoard.
-     * @param board - The board to be set as current playBoard.
+     * @param board The board to be set as current playBoard.
      * @see #playBoard
      */
     public void setBoard (Board board) {
@@ -418,7 +418,7 @@ public class FileHandler {
 
     /**
      * Method that sets the current GameOfLife.
-     * @param gol - The GameOfLife to be set as current gameOfLife.
+     * @param gol The GameOfLife to be set as current gameOfLife.
      * @see #gameOfLife
      */
     public void setGol (GameOfLife gol) {

@@ -44,7 +44,7 @@ public class ThreadWorker {
      * Method that takes a Callable task and is responsible for having all workers execute that task. Calls on
      * createCallableList() to create a list the size of the current threadPool containing that task, and calls
      * runCallableList to execute all tasks in the list.
-     * @param task - The Callable task to be executed by all threads
+     * @param task The Callable task to be executed by all threads
      */
     public void runWorkers(Callable task) {
         List<Callable<Void>> callableList = createCallableList(task);
@@ -54,7 +54,7 @@ public class ThreadWorker {
     /**
      * Method that takes a Callable task and creates a list the size of the current threadPool with each entry being
      * the parameter task.
-     * @param task - The Callable task to be added into the list
+     * @param task The Callable task to be added into the list
      */
     private List<Callable<Void>> createCallableList(Callable task) {
         List<Callable<Void>> newList = new ArrayList<>();
@@ -67,7 +67,7 @@ public class ThreadWorker {
     /**
      * Method that takes a list of Callable objects and calls ExecutorService's invokeAll() which will execute all
      * Callable objects in the list and wait until they are all done before continuing.
-     * @param callableList - The list of Callable objects to be executed.
+     * @param callableList The list of Callable objects to be executed.
      */
     private void runCallableList(List<Callable<Void>> callableList) {
         try {

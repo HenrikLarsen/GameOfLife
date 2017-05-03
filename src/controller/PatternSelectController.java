@@ -101,7 +101,7 @@ public class PatternSelectController implements Initializable {
     /**
      * Method that updates all information about a pattern and sets the current file to be the relevant file on
      * the disk. Consists of a switch-statement going through all possible options.
-     * @param chosenPattern - The string representing the pattern chosen from the ChoiceBox
+     * @param chosenPattern The string representing the pattern chosen from the ChoiceBox
      */
     private void newPatternInfo(String chosenPattern) {
         switch (chosenPattern) {
@@ -364,7 +364,7 @@ public class PatternSelectController implements Initializable {
 
     /**
      * Method that sets the controllers active FileHandler object
-     * @param fh - The FileHandler object to be set.
+     * @param fh The FileHandler object to be set.
      * @see #fileHandler
      */
     public void setFileHandler(FileHandler fh) {

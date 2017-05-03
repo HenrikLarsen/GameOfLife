@@ -37,9 +37,9 @@ public class DynamicBoard extends Board{
     /**
      * Private Constructor that takes an 2D-ArrayList, width and height as parameters, and sets it as the
      * new board with parameters width and height as the width and height.
-     * @param newBoard - 2D-ArrayList to be set as the new board
-     * @param x - The width of the playing board.
-     * @param y - The width of the playing board.
+     * @param newBoard 2D-ArrayList to be set as the new board
+     * @param x The width of the playing board.
+     * @param y The width of the playing board.
      */
     private DynamicBoard(ArrayList<ArrayList<Byte>> newBoard, int x, int y){
         this.cellGrid = newBoard;
@@ -50,8 +50,8 @@ public class DynamicBoard extends Board{
     /**
      * Constructor that takes width and height as parameters, and creates a new 2D-arrayList from those dimensions.
      * Sets all elements to be 0 (inactive)
-     * @param width - The width of the new playing board.
-     * @param height - The width of the new playing board.
+     * @param width The width of the new playing board.
+     * @param height The width of the new playing board.
      */
     public DynamicBoard(int width, int height) {
         WIDTH = width;
@@ -69,7 +69,7 @@ public class DynamicBoard extends Board{
     /**
      * A method for setting the cell grid from an existing 2D-arrayList. Takes 2D-arrayList as parameter, and sets
      * cellGrid to be this.
-     * @param newGrid - The grid to be placed in the current cell grid.
+     * @param newGrid The grid to be placed in the current cell grid.
      * @see #cellGrid
      */
     private void setBoard(ArrayList<ArrayList<Byte>> newGrid) {
@@ -80,9 +80,9 @@ public class DynamicBoard extends Board{
      * Concrete implementation of setCellState in the Board class. Sets the value of the cell in the
      * coordinates (x, y) equal to the state parameter. If the cell requested is outside of the current cell grid
      * the grid will expand, as long as it is within the limit.
-     * @param x - the x coordinate.
-     * @param y - the y coordinate.
-     * @param state - The state the cell should be set to.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     * @param state The state the cell should be set to.
      * @see #expandable
      * @see #maxSize
      * @see #expandWidthRight(int)
@@ -147,8 +147,8 @@ public class DynamicBoard extends Board{
     /**
      * Concrete implementation of getCellState in the Board class. Returns the value of the cell in the
      * coordinates requested (x, y). Returns 0 if the cell is outside of the cell grid.
-     * @param x - the x coordinate.
-     * @param y - the y coordinate.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
      * @return state - A byte value representing the state of the requested cell.
      * @see Board#getCellState(int, int)
      */
@@ -208,7 +208,7 @@ public class DynamicBoard extends Board{
     /**
      * Method to resize the grid size quadratically. Takes a size parameter, and creates a new 2D-arrayList of
      * that dimension filled with inactive cells and sets it as the new cellGrid.
-     * @param size - The size the quadratic grid should be.
+     * @param size The size the quadratic grid should be.
      * @see #WIDTH
      * @see #HEIGHT
      * @see #setBoard(ArrayList)
@@ -235,8 +235,8 @@ public class DynamicBoard extends Board{
      * Method that flags the grid for an increase on each of the borders during run time. Checks if the cell is on
      * the borders of the grid, and if it is, it sets the corresponding boolean to true so that
      * the program knows to increase during a call to nextGeneration (GameOfLife)
-     * @param x - The x-coordinate of the cell.
-     * @param y - The y-coordinate of the cell.
+     * @param x The x-coordinate of the cell.
+     * @param y The y-coordinate of the cell.
      * @see #expandLeft
      * @see #expandRight
      * @see #expandUp
@@ -316,7 +316,7 @@ public class DynamicBoard extends Board{
      * Method to expand the board in the right border. Checks that the expansion parameter is of a valid value,
      * and adds a list for each row and fills the list with empty elements. Then calls increaseWidth to
      * add the expansion to WIDTH.
-     * @param expansion - The number of rows to be added.
+     * @param expansion The number of rows to be added.
      * @see #getWidth()
      * @see #getHeight()
      * @see #increaseWidth(int)
@@ -339,7 +339,7 @@ public class DynamicBoard extends Board{
      * Method to expand the board in the left border. Checks that the expansion parameter is of a valid value,
      * and adds a list for each row on index 0 and fills the list with empty elements. Then calls increaseWidth to
      * add the expansion to WIDTH.
-     * @param expansion - The number of rows to be added.
+     * @param expansion The number of rows to be added.
      * @see #getWidth()
      * @see #getHeight()
      * @see #increaseWidth(int)
@@ -362,7 +362,7 @@ public class DynamicBoard extends Board{
      * Method to expand the board in the lower border. Checks that the expansion parameter is of a valid value,
      * and adds the right number of elements to each row. Then calls increaseHeight to
      * add the expansion to HEIGHT.
-     * @param expansion - The number of rows to be added.
+     * @param expansion The number of rows to be added.
      * @see #getWidth()
      * @see #getHeight()
      * @see #increaseHeight(int)
@@ -384,7 +384,7 @@ public class DynamicBoard extends Board{
      * Method to expand the board in the upper border. Checks that the expansion parameter is of a valid value,
      * and adds the right number of elements to each row from index 0. Then calls increaseHeight to
      * add the expansion to HEIGHT.
-     * @param expansion - The number of rows to be added.
+     * @param expansion The number of rows to be added.
      * @see #getWidth()
      * @see #getHeight()
      * @see #increaseHeight(int)
@@ -405,7 +405,7 @@ public class DynamicBoard extends Board{
     /**
      * Method to increase the WIDTH field of the Dynamic Board. Takes an integer
      * to increase with, and adds it to WIDTH.
-     * @param increase - The size of the increase.
+     * @param increase The size of the increase.
      * @see #WIDTH
      */
     private void increaseWidth(int increase) {
@@ -415,7 +415,7 @@ public class DynamicBoard extends Board{
     /**
      * Method to increase the HEIGHT field of the Dynamic Board. Takes an integer
      * to increase with, and adds it to HEIGHT.
-     * @param increase - The size of the increase.
+     * @param increase The size of the increase.
      * @see #HEIGHT
      */
     private void increaseHeight(int increase) {
@@ -426,8 +426,8 @@ public class DynamicBoard extends Board{
      * Method that checks how far outside the board a cell is in one axis. Checks the cells relevant coordinate with
      * either the height or width of the board and returns a value representing how far out of the border it is.
      * Returns 0 if the cell is within the current grid size.
-     * @param i - The x or y coordinate of the cell.
-     * @param widthOrHeight - The current boards width or height, depending on which axis it checks.
+     * @param i The x or y coordinate of the cell.
+     * @param widthOrHeight The current boards width or height, depending on which axis it checks.
      * @return value - The absolute value of how far outside the cell is.
      */
     public int calculateOutOfBounds(int i, int widthOrHeight) {

@@ -6,6 +6,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * This is the driver class for this implementation of Game of Life. It contains the start method from
+ * Application, and the main method for the application.
+ *
+ * @author Oscar Vladau-Husevold
+ * @author Henrik Finnerud Larsen
+ * @version 1.0
+ */
 public class Main extends Application {
 
     @Override

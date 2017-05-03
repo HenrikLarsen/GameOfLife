@@ -21,9 +21,9 @@ public class Statistics{
      * The number of cells alive, the difference between the cells alive to the number of cells alive in the
      * previous generation and a similarity measure where each board will be measured with the first generation
      * will be saved and returned as a byte array.
-     * @param game - the game.
-     * @param iterations - number of iteration to return.
-     * @return statistics - A nested byte array containing the data to the statistics.
+     * @param game The game.
+     * @param iterations Number of iteration to return.
+     * @return statistics A nested byte array containing the data to the statistics.
      * @see GameOfLife#clone()
      * @see GameOfLife#getPlayBoard()
      * @see Board#countCellsAlive()
@@ -86,7 +86,7 @@ public class Statistics{
     /**
      * Method that runs through a nested int array with statistics returning the generation with the
      * highest probability of a recurring pattern by looking at the similarity measure.
-     * @param stat - The statistics to array to be considered.
+     * @param stat The statistics to array to be considered.
      * @return iteration - The iteration with the highest probability of a similar pattern.
      */
     public int getHighestSimilarity(int[][] stat){

@@ -36,12 +36,12 @@ class CanvasDrawer {
      * draws it on the canvas if it is a live cell, relative to the offset created by dragging or zooming on the
      * play board. It will also draw a grid around each cell, dead or alive, should the grid parameter be true.
      * Should the board have a pattern loaded from file or URL, it will call the drawLoadedPattern() method.
-     * @param canvas - The canvas to be drawn upon.
-     * @param board - The active board to be drawn
-     * @param gc - The Graphics Context related to the canvas.
-     * @param cellColor - The color of live cells to be drawn
-     * @param backgroundColor - The background color to be drawn.
-     * @param grid - Boolean deciding whether or not to draw a grid around each cell.
+     * @param canvas The canvas to be drawn upon.
+     * @param board The active board to be drawn
+     * @param gc The Graphics Context related to the canvas.
+     * @param cellColor The color of live cells to be drawn
+     * @param backgroundColor The background color to be drawn.
+     * @param grid Boolean deciding whether or not to draw a grid around each cell.
      * @see #xZoomOffset
      * @see #yZoomOffset
      * @see #xDragOffset
@@ -100,9 +100,9 @@ class CanvasDrawer {
      * Method for drawing the grid around each cell. Draws a grid for every cell that can be seen on the current canvas
      * disregarding whether or not the board fill, so that the user is not actively aware of how large the current
      * cell grid is. Draws one line per x and y cell that can be seen.
-     * @param gc - The graphic context to draw on.
-     * @param xOffset - The sum of drag and zoom offset on the x axis
-     * @param yOffset - The sum of drag and zoom offset on the y axis
+     * @param gc The graphic context to draw on.
+     * @param xOffset The sum of drag and zoom offset on the x axis
+     * @param yOffset The sum of drag and zoom offset on the y axis
      * @see #cellDrawSize
      */
     private void drawGrid(GraphicsContext gc, double xOffset, double yOffset) {
@@ -140,9 +140,9 @@ class CanvasDrawer {
     /**
      * Method for drawing boards loaded pattern onto the canvas. Will produce a semi-transparent representation
      * of the loaded pattern so that the user can move it around without it interfering with already active cells.
-     * @param gc - The graphic context to draw on.
-     * @param loadedPattern - A 2D-array containing the cell grid of the loaded pattern
-     * @param boundingBox - The patterns bounding box relative to the active board.
+     * @param gc The graphic context to draw on.
+     * @param loadedPattern A 2D-array containing the cell grid of the loaded pattern
+     * @param boundingBox The patterns bounding box relative to the active board.
      * @see #cellDrawSize
      * @see #xZoomOffset
      * @see #xDragOffset
@@ -177,10 +177,10 @@ class CanvasDrawer {
      * Method for drawing the strip in the editor, a sequence of iterations after each other.
      * This differs from the regular draw method in that the drawing head of the canvas is moved to the right
      * for each iteration, allowing all iterations to be drawn side by side.
-     * @param stripGol - The GameOfLife object to be iterated through
-     * @param stripBoard - The Board object to be considered.
-     * @param strip - The canvas to be drawn upon.
-     * @param cellColor - The color in which to draw the active cells.
+     * @param stripGol The GameOfLife object to be iterated through
+     * @param stripBoard The Board object to be considered.
+     * @param strip The canvas to be drawn upon.
+     * @param cellColor The color in which to draw the active cells.
      * @see #stripCellSize
      * @see Board#trim()
      */
@@ -249,9 +249,9 @@ class CanvasDrawer {
      * If the board is an instance of DynamicBoard, it will also expand the board should the user draw outside
      * of the already defined board, in order to house that cell, up to a certain point. If the action comes
      * from the EditorController, the board will not expand.
-     * @param mouseEvent - The event of the mouse clicked.
-     * @param board - The Board object to be considered.
-     * @param expandable - A boolean deciding whether or not the board is expandable through drawing.
+     * @param mouseEvent The event of the mouse clicked.
+     * @param board The Board object to be considered.
+     * @param expandable A boolean deciding whether or not the board is expandable through drawing.
      * @see #cellDrawSize
      * @see #xZoomOffset
      * @see #xDragOffset
@@ -327,9 +327,9 @@ class CanvasDrawer {
      * If the board is an instance of DynamicBoard, it will also expand the board should the user draw outside
      * of the already defined board, in order to house that cell, up to a certain point. If the action comes
      * from the EditorController, the board will not expand.
-     * @param mouseEvent - The event of the mouse clicked.
-     * @param board - The Board object to be considered.
-     * @param expandable - A boolean deciding whether or not the board is expandable through drawing.
+     * @param mouseEvent The event of the mouse clicked.
+     * @param board The Board object to be considered.
+     * @param expandable A boolean deciding whether or not the board is expandable through drawing.
      * @see #cellDrawSize
      * @see #xZoomOffset
      * @see #xDragOffset
@@ -394,7 +394,7 @@ class CanvasDrawer {
 
     /**
      * Method that sets the cellDrawSize to the value of the parameter, should it be of a valid value
-     * @param size - The size to be set
+     * @param size The size to be set
      * @see #cellDrawSize
      */
     public void setCellDrawSize (double size) {
@@ -406,9 +406,9 @@ class CanvasDrawer {
     /**
      * Method that sets the cellDrawSize when zooming using the mouse wheel, and compensates for the offset
      * by setting x and y offsets from that value. This will always zoom relative to the center of the active board.
-     * @param size - The size to be set
-     * @param canvas - The canvas in question
-     * @param board - The current board.
+     * @param size The size to be set
+     * @param canvas The canvas in question
+     * @param board The current board.
      * @see #cellDrawSize
      * @see #xZoomOffset
      * @see #yZoomOffset
@@ -431,8 +431,8 @@ class CanvasDrawer {
     /**
      * Method that sets the initial zoom offset relative to the width and height of the canvas and the current
      * cellDrawSize, so that the board is centered in the view of the user.
-     * @param canvas - The canvas in question
-     * @param board - The current board.
+     * @param canvas The canvas in question
+     * @param board The current board.
      * @see #cellDrawSize
      * @see #xZoomOffset
      * @see #yZoomOffset
@@ -445,7 +445,7 @@ class CanvasDrawer {
     /**
      * Method that sets drag offset when the user drags with the right mouse button clicked. Allows the user
      * to pan around the board in order to view different areas of the board.
-     * @param drag - The event of the user dragging the mouse
+     * @param drag The event of the user dragging the mouse
      * @see #xOnStartDrag
      * @see #yOnStartDrag
      * @see #xDragOffset
@@ -466,7 +466,7 @@ class CanvasDrawer {
 
     /**
      * Method that sets the x and y coordinates of where a drag event started.
-     * @param mouseEvent - The event of the user clicking and dragging the mouse.
+     * @param mouseEvent The event of the user clicking and dragging the mouse.
      * @see #xOnStartDrag
      * @see #yOnStartDrag
      */
@@ -478,8 +478,8 @@ class CanvasDrawer {
     /**
      * Method that resets the drag offsets and sets the zoom offset to the initial value, resulting in a centering
      * of the board within the canvas.
-     * @param board - The current play board
-     * @param canvas - The canvas the board is drawn on.
+     * @param board The current play board
+     * @param canvas The canvas the board is drawn on.
      * @see #xDragOffset
      * @see #yDragOffset
      * @see #setZoomOffset(Board, Canvas)
@@ -511,8 +511,8 @@ class CanvasDrawer {
      * Method that adjusts the zoom offset when the board is expanding in negative direction, so that the
      * board does not "move about". Does a check if the x and y value are negative, and adds to the offset
      * if they are.
-     * @param x - The x coordinate of the cell in question
-     * @param y - The y coordinate of the cell in question
+     * @param x The x coordinate of the cell in question
+     * @param y The y coordinate of the cell in question
      * @see #xZoomOffset
      * @see #yZoomOffset
      * @see #cellDrawSize

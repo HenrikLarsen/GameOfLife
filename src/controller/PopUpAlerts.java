@@ -182,9 +182,9 @@ public class PopUpAlerts {
 
     /**
      * Creates a popup window containing the description of the current playing rules.
-     * @param ruleName - The name of the rules.
-     * @param ruleString - The RLE-formatting of the current rules.
-     * @param ruleDescription - The description of the current rules.
+     * @param ruleName The name of the rules.
+     * @param ruleString The RLE-formatting of the current rules.
+     * @param ruleDescription The description of the current rules.
      */
     public static void ruleDescription (String ruleName, String ruleString, String ruleDescription) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -196,8 +196,8 @@ public class PopUpAlerts {
 
     /**
      * Creates a popup window containing the meta data of the currently loaded pattern.
-     * @param header - The name of the pattern.
-     * @param description - The metadata of the pattern.
+     * @param header The name of the pattern.
+     * @param description The metadata of the pattern.
      */
     public static void metaData (String header, String description) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -211,7 +211,7 @@ public class PopUpAlerts {
      * Creates a popup when trying to save a gif, and the statistics have identified a high probability of a repeating
      * pattern. It informs the user that the pattern is likely to repeat after n-number of iterations, and asks
      * if it should set the number of images to that number. Returns true if yes or false if no.
-     * @param iterations - The number of iterations identified as a possible pattern repeat.
+     * @param iterations The number of iterations identified as a possible pattern repeat.
      * @return b - The users answer.
      */
     public static boolean gifSimilarityAlert(int iterations) {

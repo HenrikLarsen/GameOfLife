@@ -25,8 +25,6 @@ import java.io.IOException;
  * @author Oscar Vladau-Husevold
  * @version 1.0
  */
-
-
 public class EditorController implements Initializable {
 
     //FXML fields
@@ -215,7 +213,7 @@ public class EditorController implements Initializable {
     /**
      * Method to be called when the user presses the mouse on the editor board, calling CanvasDrawers
      * drawPressed() method to let the user draw active cells on the board.
-     * @param mouseEvent - The event of the mouse click.
+     * @param mouseEvent The event of the mouse click.
      * @see #drawEditorBoard()
      * @see CanvasDrawer#drawPressed(MouseEvent, Board, boolean)
      */
@@ -227,7 +225,7 @@ public class EditorController implements Initializable {
     /**
      * Method to be called when the user drags the mouse on the editor board, calling CanvasDrawers
      * drawDragged() method to let the user draw active cells on the board by dragging.
-     * @param mouseEvent - The event of the mouse drag.
+     * @param mouseEvent The event of the mouse drag.
      * @see #drawEditorBoard()
      * @see CanvasDrawer#drawDragged(MouseEvent, Board, boolean)
      */
@@ -471,7 +469,7 @@ public class EditorController implements Initializable {
 
     /**
      * Method to set the current exportBoard object to that of the parameter.
-     * @param board - The new board to be set.
+     * @param board The new board to be set.
      * @see #exportBoard
      */
     public void setExportBoard(Board board) {
@@ -480,7 +478,7 @@ public class EditorController implements Initializable {
 
     /**
      * Method to set the current gameOfLife object to that of the parameter.
-     * @param gOL - The new GameOfLife object to be set.
+     * @param gOL The new GameOfLife object to be set.
      * @see #exportBoard
      */
     public void setGameOfLife(GameOfLife gOL) {

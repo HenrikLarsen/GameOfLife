@@ -348,7 +348,7 @@ public class MainWindowController implements Initializable {
      * Method that lets the user interact with the board by pressing the mouse button on it. If the left mouse
      * button is clicked, it will call the method to draw cells on the board, while the right button will set an
      * initial value for panning, if the user ends up dragging the mouse.
-     * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
+     * @param mouseEvent The event where the user presses the left mouse button on the canvas.
      * @see #aliveLabel
      * @see #canvasArea
      * @see #board
@@ -372,7 +372,7 @@ public class MainWindowController implements Initializable {
      * Method that lets the user interact with the board by pressing the mouse button on it. If the left mouse
      * button is clicked, it will call the method to draw cells on the board, while the right button will allow
      * for panning around the canvas, allowing the user to isMovable around the board visually.
-     * @param mouseEvent - The event where the user presses the left mouse button on the canvas.
+     * @param mouseEvent The event where the user presses the left mouse button on the canvas.
      * @see #aliveLabel
      * @see #canvasArea
      * @see #board
@@ -456,7 +456,7 @@ public class MainWindowController implements Initializable {
      * check if boolean isMovable is true, and return otherwise. If true, it will call the related method from the Board
      * class in order to isMovable or rotate the loaded pattern. Move will only be true if a pattern is loaded and the
      * game is not running.
-     * @param keyEvent - The key pressed by the user.
+     * @param keyEvent The key pressed by the user.
      * @see #isMovable
      * @see #draw()
      * @see Board#getCellsAlive()
@@ -507,7 +507,7 @@ public class MainWindowController implements Initializable {
      * Method related to zooming with the mouse wheel. Called when the user scrolls. Depending on what the
      * current cell size is, it will divide the scrollEvent accordingly, so that the level of zoom remains
      * relatively consistent. Calls CanvasDrawer's setZoom() and draw().
-     * @param scrollEvent - The event in which the user scrolls with the mouse wheel.
+     * @param scrollEvent The event in which the user scrolls with the mouse wheel.
      * @see #draw()
      * @see CanvasDrawer#getCellDrawSize()
      * @see CanvasDrawer#setZoomOffset(Board, Canvas)
@@ -534,7 +534,7 @@ public class MainWindowController implements Initializable {
     /**
      * Method for setting focus traversable for all traversable nodes. Used when importing a
      * pattern to allow the arrow keys to isMovable the pattern without moving the focus.
-     * @param b - The value to set the node's traversable property.
+     * @param b The value to set the node's traversable property.
      */
     private void setFocusTraversable(boolean b) {
         for (Node n : nodes) n.setFocusTraversable(b);

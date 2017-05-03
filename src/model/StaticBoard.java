@@ -18,8 +18,8 @@ public class StaticBoard extends Board {
     /**
      * Sole constructor, takes parameters x and y for width and height respectively, and creates a new 2D-array
      * with those dimensions which is set as the cellGrid.
-     * @param x - The width of the playing board.
-     * @param y - The width of the playing board.
+     * @param x The width of the playing board.
+     * @param y The width of the playing board.
      */
     public StaticBoard(int x, int y) {
         WIDTH = x;
@@ -52,8 +52,8 @@ public class StaticBoard extends Board {
     /**
      * Concrete implementation of getCellState in the Board class. Returns the value of the cell in the
      * coordinates requested (x, y)
-     * @param x - the x coordinate.
-     * @param y - the y coordinate.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
      * @return state - A byte value representing the state of the requested cell.
      * @exception ArrayIndexOutOfBoundsException - If the cell requested is not within the bounds of the grid.
      * @see Board#getCellState(int, int)
@@ -70,9 +70,9 @@ public class StaticBoard extends Board {
     /**
      * Concrete implementation of setCellState in the Board class. Sets the value of the cell in the
      * coordinates (x, y) equal to the state parameter.
-     * @param x - the x coordinate.
-     * @param y - the y coordinate.
-     * @param state - The state the cell should be set to.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     * @param state The state the cell should be set to.
      * @exception ArrayIndexOutOfBoundsException - If the cell requested is not within the bounds of the grid.
      * @see Board#setCellState(int, int, byte)
      */
