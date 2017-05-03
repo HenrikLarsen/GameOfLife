@@ -248,12 +248,12 @@ public class DynamicBoardTest {
 
     @Test
     public void expandBoardTest5() {
-        board = new DynamicBoard(1000, 1000);
+        board = new DynamicBoard(1200, 1200);
         board.setCellState(0,0, (byte)1);
         ((DynamicBoard)board).expandBoardDuringRunTime();
 
-        org.junit.Assert.assertEquals(1000, board.getHeight());
-        org.junit.Assert.assertEquals(1000, board.getWidth());
+        org.junit.Assert.assertEquals(1200, board.getHeight());
+        org.junit.Assert.assertEquals(1200, board.getWidth());
         org.junit.Assert.assertFalse(((DynamicBoard)board).getHasExpandedLeft());
         org.junit.Assert.assertFalse(((DynamicBoard)board).getHasExpandedUp());
     }

@@ -313,10 +313,7 @@ public class FileHandlerTest {
         }
     }
 
-    //There appears to be a bug that makes the popup window shown when the formatting is wrong
-    //to throw NoClassDefFoundError instead of ExceptionInInitializerError when using junit.
-    //As long as the error comes from a popup window, the right exception is thrown in the method.
-    @Test(expected = NoClassDefFoundError.class)
+    @Test(expected = ExceptionInInitializerError.class)
     public void negativeFormatImportTest() {
         board = new DynamicBoard(8,8);
         gol = new GameOfLife(board);

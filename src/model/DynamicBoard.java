@@ -7,6 +7,10 @@ import java.util.ArrayList;
  * DynamicBoard is a concrete implementation of the abstract Board class. It handles the playing board of the game,
  * containing the current cell grid and is responsible for manipulating the current cell grid.
  * DynamicBoard's cellGrid is of a dynamic data structure, and it is able to expand to a certain point when needed.
+ * The maximum values of expansion is decided by variables maxSize which is the maximum width and height a user
+ * can make the board by drawing, while runTimeExpansionLimit represents how far the board can expand due to the
+ * evolution of a pattern. It should be noted that the board can exceed these limitations when loading in a pattern
+ * from an rle-file that is wider og taller than the limit.
  *
  * @author Oscar Vladau-Husevold
  * @author Henrik Finnerud Larsen
