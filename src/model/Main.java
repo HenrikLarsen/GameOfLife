@@ -1,9 +1,11 @@
 package model;
 
+import controller.MainWindowController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -23,6 +25,8 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();
+        primaryStage.getIcons().add(new Image(MainWindowController.class.getResourceAsStream("/resources/" +
+                "images/glider.png")));
         primaryStage.show();
 
         //Makes sure that ThreadWorker's shutDownExecutor() method is called when JVM shuts down
