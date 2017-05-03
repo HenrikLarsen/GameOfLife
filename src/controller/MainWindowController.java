@@ -38,7 +38,7 @@ import java.util.Optional;
  * @version 1.0
  */
 
-public class Controller implements Initializable {
+public class MainWindowController implements Initializable {
     //Fields from FXML
     @FXML private Slider speedSlider;
     @FXML private ColorPicker cellColorPicker;
