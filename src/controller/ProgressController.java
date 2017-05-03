@@ -84,7 +84,9 @@ public class ProgressController implements Initializable {
     }
 
     /**
-     * This method is invoked on the background thread.
+     * MyTask is a nested class within the ProgressController that extends the Task class in the javafx.concurrent
+     * package. The class is invoked on the background thread, and represents the task to be done. The class is
+     * nested because it is only used within the ProgressController.
      *
      * @author Henrik Finnerud Larsen
      * @version 1.0
@@ -162,13 +164,15 @@ public class ProgressController implements Initializable {
         }
     }
 
-/**
- * The TaskService provides access to Task
- *
- * @author Henrik Finnerud Larsen
- * @version 1.0
-**/
-private class TaskService extends Service<Void> {
+    /**
+    * TaskService is a nested class within the ProgressController that extends Service in the javafx.concurrent
+    * package. An object of TaskService holds an instance of MyTask. The class is nested because it is only used
+    * within the ProgressController.
+    *
+    * @author Henrik Finnerud Larsen
+    * @version 1.0
+    **/
+    private class TaskService extends Service<Void> {
         @Override
         protected Task<Void> createTask()
         {
