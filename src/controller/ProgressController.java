@@ -19,7 +19,8 @@ import java.io.IOException;
 /**
  * The ProgressController handles all interaction within the progressbar window. It is responsible for displaying
  * and updating a progress bar while calculating the generations and statistics when the user opens the
- * statistics window. It contains the methods and parameters linked to the graphical user interface elements.
+ * statistics window. It contains the methods and parameters linked to the graphical user interface elements. It also
+ * contains two nested classes, MyTask and TaskService for running tasks concurrently.
  *
  * @author Henrik Finnerud Larsen
  * @version 1.0
