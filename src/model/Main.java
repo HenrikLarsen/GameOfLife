@@ -29,7 +29,7 @@ public class Main extends Application {
         //to ensure that the ExecutorService is properly terminated.
         ThreadWorker workers = ThreadWorker.getInstance();
         primaryStage.setOnCloseRequest(event -> workers.shutDownExecutor());
-        Runtime.getRuntime().addShutdownHook(new Thread() {public void run() {workers.shutDownExecutor();}});
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> workers.shutDownExecutor()));
     }
 
     public static void main(String[] args) {
