@@ -1,12 +1,13 @@
 package model;
 
 import controller.MainWindowController;
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import javax.swing.*;
 
 /**
  * This is the driver class for this implementation of Game of Life. It contains the start method from
@@ -16,7 +17,7 @@ import javafx.stage.Stage;
  * @author Henrik Finnerud Larsen
  * @version 1.0
  */
-public class Main extends Application {
+public class Main extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -26,7 +27,14 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();
         primaryStage.getIcons().add(new Image(MainWindowController.class.getResourceAsStream("/resources/" +
-                "images/glider.png")));
+                "images/GameofLife2.png")));
+
+        com.apple.eawt.Application macApp = com.apple.eawt.Application.getApplication();
+        macApp.setDockIconImage (new ImageIcon (getClass ().
+                getResource ("/resources/" +
+                        "images/GameofLife2.png")).
+                getImage ());
+
         primaryStage.show();
 
         //Makes sure that ThreadWorker's shutDownExecutor() method is called when JVM shuts down
