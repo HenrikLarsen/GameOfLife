@@ -1,4 +1,4 @@
-# Program Development assignemt DATS1600
+# Game Of Life
 Implementation of <b>Conway's Game of Life</b> for Program Development (DATS1600) at Oslo and Akershus University College (HiOA), spring 2017. The assignment recieved an A. 
 
 ## Created by:
@@ -32,13 +32,13 @@ There are several other rule variations. You can use the rule drop-down menu to 
 ## Controlls: 
 * Scroll Wheel 			      – Zoom in and out. 
 * Left Mouse Button 		  – Draw and erase cells from the board.
-* Right Mouse Button 	    – Drag the board to look around. (PS: If you get lost, press the center view button)
+* Right Mouse Button 	    – Drag the board to look around.
 
 
 *When loading a pattern*
 * Arrow Keys or WASD	      – Move the Pattern around
-* ENTER or Q 			          – Rotate the loaded pattern counter clockwise
-* MINUS or E 			          – Rotate the loaded pattern clockwise.
+* Q 			                  – Rotate the loaded pattern counter clockwise
+* E 			                  – Rotate the loaded pattern clockwise.
 * ENTER 				            – Finalises the pattern and puts it as a permanent part of the board
 * ESC 					            – Discards the loaded pattern. 
 
