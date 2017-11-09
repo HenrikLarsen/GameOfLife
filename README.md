@@ -1,5 +1,5 @@
 # Game Of Life
-Implementation of <b>Conway's Game of Life</b> for Program Development (DATS1600) at Oslo and Akershus University College (HiOA), spring 2017. The assignment recieved an A. 
+Implementation of <b>Conway's Game of Life</b> for Program Development (DATS1600) at Oslo and Akershus University College (HiOA), spring 2017. The assignment recieved an A. The file <b>GameOfLife.jar</b> includes a runnable package of the application. 
 
 ## Created by:
 Henrik Finnerud Larsen <br>
